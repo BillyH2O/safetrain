@@ -34,16 +34,15 @@ export default function RootLayout({
 
       <html lang="en">
         <body className={cn(inter.className,  "min-h-screen antialiased")}>
-        <header>
+          <Providers>
+          <div className="w-2">
             <SignedOut>
               <SignInButton />
             </SignedOut>
             <SignedIn>
               <UserButton />
             </SignedIn>
-          </header>
-
-          <Providers>
+          </div>
           <main className="h-screen dark text-foreground bg-background">{children}</main>
           </Providers>
         </body>

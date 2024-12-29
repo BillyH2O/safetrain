@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Message, useChat } from 'ai/react'
 import React from 'react'
