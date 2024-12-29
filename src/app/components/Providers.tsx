@@ -4,7 +4,9 @@ import { NextUIProvider } from '@nextui-org/react'
 import React, { PropsWithChildren } from 'react'
 
 export default function Providers({children}: PropsWithChildren) {
-  return <NextUIProvider>
+  return (
+    <NextUIProvider>
         {children}
     </NextUIProvider>
+  );
 }

@@ -1,6 +1,9 @@
 import type { Config } from "tailwindcss";
 
 const {nextui} = require("@nextui-org/react");
+const {
+	default: flattenColorPalette,
+  } = require("tailwindcss/lib/util/flattenColorPalette");
 
 export default {
     darkMode: ["class"],
@@ -58,8 +61,32 @@ export default {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		animation: {
+			aurora: "aurora 60s linear infinite",
+		},
+		keyframes: {
+		aurora: {
+			from: {
+			backgroundPosition: "50% 50%, 50% 50%",
+			},
+			to: {
+			backgroundPosition: "350% 50%, 350% 50%",
+			},
+		},
+		},
   	}
   },
-  plugins: [require("tailwindcss-animate"), nextui()],
+  plugins: [require("tailwindcss-animate"), addVariablesForColors],
 } satisfies Config;
+
+function addVariablesForColors({ addBase, theme }: any) {
+	let allColors = flattenColorPalette(theme("colors"));
+	let newVars = Object.fromEntries(
+	  Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
+	);
+   
+	addBase({
+	  ":root": newVars,
+	});
+  }

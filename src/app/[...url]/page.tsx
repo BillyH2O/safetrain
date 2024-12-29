@@ -4,11 +4,10 @@ import ChatWrapper from '../components/ChatWrapper';
 import { RagChat } from '../lib/rag-chat';
 import { redis } from '../lib/redis';
 
-interface PageProps {
-  params: {
-    url: string | string[] | undefined;
-  };
-}
+type PageProps = {
+  params: { url: string | string[] | undefined };
+};
+
 
 function reconstructUrl({ url }: { url: string[] }){
   const decodedComponents = url.map((component) => decodeURIComponent(component));
