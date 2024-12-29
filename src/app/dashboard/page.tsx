@@ -11,6 +11,8 @@ import {
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { cn } from "../lib/utils";
+import { FileUpload } from "../components/FileUpload";
 
 const Page = () => {
   const links = [
@@ -98,17 +100,24 @@ const Logo = () => {
         animate={{ opacity: 1 }}
         className="font-medium text-black dark:text-white whitespace-pre"
       >
-        Acet Labs
+        SafeTrain IA
       </motion.span>
     </Link>
   );
 };
 
 const Dashboard = () => {
+
+  const [files, setFiles] = useState<File[]>([]);
+  const handleFileUpload = (files: File[]) => {
+    setFiles(files);
+    console.log(files);
+  };
+
   return (
     <div className="flex flex-1">
-      <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
-        <div className="flex gap-2">
+      <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full ">
+        {/*<div className="flex gap-2">
           {[...new Array(4)].map((_, index) => (
             <div
               key={`first-${index}`}
@@ -123,6 +132,9 @@ const Dashboard = () => {
               className="h-full w-full rounded-lg bg-gray-100 dark:bg-neutral-800 animate-pulse"
             ></div>
           ))}
+        </div>*/}
+        <div className="w-full max-w-4xl flex justify-center item mx-auto min-h-96 border border-dashed dark:bg-black  dark:border-neutral-800 rounded-lg">
+          <FileUpload onChange={handleFileUpload} />
         </div>
       </div>
     </div>

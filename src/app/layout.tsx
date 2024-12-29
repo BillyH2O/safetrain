@@ -31,11 +31,10 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-
-      <html lang="en">
+      <html lang="en" className="dark">
         <body className={cn(inter.className,  "min-h-screen antialiased")}>
           <Providers>
-          <div className="w-2">
+          <div className="h-14 flex justify-center items-center">
             <SignedOut>
               <SignInButton />
             </SignedOut>
@@ -43,7 +42,7 @@ export default function RootLayout({
               <UserButton />
             </SignedIn>
           </div>
-          <main className="h-screen dark text-foreground bg-background">{children}</main>
+          <main className="h-screen text-foreground bg-background">{children}</main>
           </Providers>
         </body>
       </html>
