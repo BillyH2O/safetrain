@@ -34,14 +34,6 @@ export default function RootLayout({
       <html lang="en" className="dark">
         <body className={cn(inter.className,  "min-h-screen antialiased")}>
           <Providers>
-          <div className="h-14 flex justify-center items-center">
-            <SignedOut>
-              <SignInButton />
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-          </div>
           <main className="h-screen text-foreground bg-background">{children}</main>
           </Providers>
         </body>

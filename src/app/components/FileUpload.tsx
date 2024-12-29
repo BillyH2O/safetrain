@@ -3,6 +3,7 @@ import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { IconUpload } from "@tabler/icons-react";
 import { useDropzone } from "react-dropzone";
+import { uploadToS3 } from "../lib/s3";
 
 const mainVariant = {
   initial: {
@@ -42,12 +43,30 @@ export const FileUpload = ({
     fileInputRef.current?.click();
   };
 
-  const { getRootProps, isDragActive } = useDropzone({
-    accept: {'application/pdf': [".pdf"]},
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: {
+        'application/pdf': ['.pdf'],
+      },
     maxFiles : 1,
     multiple: false,
-    noClick: true,
-    onDrop: handleFileChange,
+    //noClick: true,
+    onDrop: async (acceptedFiles) => {
+        console.log("acceptedFiles", acceptedFiles);
+        const file = acceptedFiles[0];
+        if (file.size > 10 * 1024 * 1024) { // > 10 Mb
+            alert('uploadez un fichier inférieaur à 10 Mb');
+            return
+        }
+
+        try{
+            const data = await uploadToS3(file);
+            console.log("data", data);
+            handleFileChange(acceptedFiles);
+        } catch (error) {
+            console.log(error);
+        }
+        
+    },
     onDropRejected: (error) => {
       console.log(error);
     },
@@ -60,13 +79,7 @@ export const FileUpload = ({
         whileHover="animate"
         className="p-10 group/file block rounded-lg cursor-pointer w-full relative overflow-hidden"
       >
-        <input
-          ref={fileInputRef}
-          id="file-upload-handle"
-          type="file"
-          onChange={(e) => handleFileChange(Array.from(e.target.files || []))}
-          className="hidden"
-        />
+        <input {...getInputProps()} />
         <div className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,white,transparent)]">
           <GridPattern />
         </div>
