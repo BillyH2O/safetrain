@@ -3,13 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "set NODE_OPTIONS=--max-old-space-size=8192 && next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.9.6",
+    "@langchain/community": "^0.3.20",
+    "@langchain/core": "^0.3.26",
     "@neondatabase/serverless": "^0.10.4",
     "@nextui-org/react": "^2.6.10",
     "@pinecone-database/pinecone": "^4.0.0",
@@ -28,6 +30,7 @@
     "langchain": "^0.3.8",
     "lucide-react": "^0.469.0",
     "next": "15.1.2",
+    "pdf-parse": "^1.1.1",
     "pg": "^8.13.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
