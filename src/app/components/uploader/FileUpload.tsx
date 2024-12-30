@@ -1,12 +1,14 @@
-import {cn}  from "../lib/utils";
+import {cn}  from "../../lib/utils";
 import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { IconUpload } from "@tabler/icons-react";
 import { useDropzone } from "react-dropzone";
-import { uploadToS3 } from "../lib/s3";
+import { uploadToS3 } from "../../lib/s3";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios"
 import toast from "react-hot-toast";
+import { useFileUpload } from "@/app/hooks/useFileUpload";
+import { GridPattern } from "./GridPattern";
 
 const mainVariant = {
   initial: {
@@ -34,29 +36,13 @@ export const FileUpload = ({
 }: {
   onChange?: (files: File[]) => void;
 }) => {
-  const [files, setFiles] = useState<File[]>([]);
-  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleFileChange = (newFiles: File[]) => {
-    setFiles((prevFiles) => {
-        const updatedFiles = [...prevFiles, ...newFiles];
-        onChange && onChange(updatedFiles); // Send the updated files to the parent
-        return updatedFiles; // Return the updated list for local state
-      });
-  };
 
   const handleClick = () => {
     fileInputRef.current?.click();
   };
 
-  const {mutate} = useMutation({ 
-    mutationFn: async ({file_key, file_name}:{file_key: string, file_name: string}) => {
-        const response = await axios.post('/api/create-chat', {file_key, file_name}) // hit le backend
-        return response.data
-    }
-  })
-
+  const { files, uploading, handleDrop } = useFileUpload(onChange);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
         'application/pdf': ['.pdf'],
@@ -64,38 +50,7 @@ export const FileUpload = ({
     maxFiles : 2,
     multiple: true,
     noClick: false,
-    onDrop: async (acceptedFiles) => {
-        console.log("acceptedFiles", acceptedFiles);
-        const file = acceptedFiles[0];
-        if (file.size > 10 * 1024 * 1024) { // > 10 Mb
-            toast.error("Fichier trop volumineux (10 Mb max)");
-            return
-        }
-
-        try{
-            setUploading(true);
-            const data = await uploadToS3(file);
-            if (!data?.file_key || !data?.file_name){
-                toast.error("l'objet data ne possède pas de clé ou de nom de fichier");
-                return;
-            }
-            mutate(data,{
-                onSuccess: (data) => {
-                    console.log("data", data);
-                    toast.success(data.message);
-                    handleFileChange(acceptedFiles);
-                },
-                onError: (err) => {
-                    toast.error("Erreur lors de la création du chat");
-                }
-            })
-            
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setUploading(false)
-        }
-    },
+    onDrop: handleDrop,
     onDropRejected: (error) => {
       console.log(error);
     },
@@ -120,7 +75,7 @@ export const FileUpload = ({
             Drag or drop votre fichier ici ou cliquez sur le bouton
           </p>
           <div className="relative w-full mt-10 max-w-xl mx-auto">
-            {files.length && (
+            
               <motion.div
                 layoutId="file-upload"
                 variants={mainVariant}
@@ -147,41 +102,15 @@ export const FileUpload = ({
                   <IconUpload className="h-4 w-4 text-neutral-600 dark:text-neutral-300" />
                 )}
               </motion.div>
-            )}
-
-            {files.length && (
+            
               <motion.div
                 variants={secondaryVariant}
                 className="absolute opacity-0 border border-dashed border-sky-400 inset-0 z-30 bg-transparent flex items-center justify-center h-32 mt-4 w-full max-w-[8rem] mx-auto rounded-md"
               ></motion.div>
-            )}
+            
           </div>
         </div>
       </motion.div>
     </div>
   );
 };
-
-export function GridPattern() {
-  const columns = 41;
-  const rows = 11;
-  return (
-    <div className="flex bg-gray-100 dark:bg-neutral-900 flex-shrink-0 flex-wrap justify-center items-center gap-x-px gap-y-px  scale-105">
-      {Array.from({ length: rows }).map((_, row) =>
-        Array.from({ length: columns }).map((_, col) => {
-          const index = row * columns + col;
-          return (
-            <div
-              key={`${col}-${row}`}
-              className={`w-10 h-10 flex flex-shrink-0 rounded-[2px] ${
-                index % 2 === 0
-                  ? "bg-gray-50 dark:bg-neutral-950"
-                  : "bg-gray-50 dark:bg-neutral-950 shadow-[0px_0px_1px_3px_rgba(255,255,255,1)_inset] dark:shadow-[0px_0px_1px_3px_rgba(0,0,0,1)_inset]"
-              }`}
-            />
-          );
-        })
-      )}
-    </div>
-  );
-}
