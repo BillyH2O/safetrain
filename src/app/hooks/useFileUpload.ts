@@ -3,11 +3,13 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { uploadToS3 } from "../lib/s3";
+import { useRouter } from "next/navigation";
 
 
 export const useFileUpload = (onChange?: (files: File[]) => void) => {
   const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
+  const router = useRouter()
 
   const { mutate } = useMutation({
     mutationFn: async ({ file_key, file_name }: { file_key: string; file_name: string }) => {
@@ -44,8 +46,9 @@ export const useFileUpload = (onChange?: (files: File[]) => void) => {
       }
 
       mutate(data, {
-        onSuccess: (response) => {
-          toast.success(response.message);
+        onSuccess: ({chat_id}) => {
+          toast.success("le chat a été crée");
+          router.push(`/chat/${chat_id}`)
           handleFileChange(acceptedFiles);
         },
         onError: () => {
