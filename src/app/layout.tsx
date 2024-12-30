@@ -5,6 +5,7 @@ import { cn } from "./lib/utils";
 import { Inter } from "next/font/google";
 import Providers from "./components/Providers";
 import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import {Toaster} from 'react-hot-toast'
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -31,20 +32,12 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-
-      <html lang="en">
+      <html lang="en" className="dark">
         <body className={cn(inter.className,  "min-h-screen antialiased")}>
           <Providers>
-          <div className="w-2">
-            <SignedOut>
-              <SignInButton />
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-          </div>
-          <main className="h-screen dark text-foreground bg-background">{children}</main>
+          <main className="h-screen text-foreground bg-background">{children}</main>
           </Providers>
+          <Toaster position="bottom-right" reverseOrder={false}/>
         </body>
       </html>
     </ClerkProvider>
