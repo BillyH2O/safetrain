@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { IconUpload } from "@tabler/icons-react";
 import { useDropzone } from "react-dropzone";
 import { uploadToS3 } from "../lib/s3";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios"
 
 const mainVariant = {
   initial: {
@@ -43,6 +45,13 @@ export const FileUpload = ({
     fileInputRef.current?.click();
   };
 
+  const {mutate} = useMutation({
+    mutationFn: async ({file_key, file_name}:{file_key: string, file_name: string}) => {
+        const response = await axios.post('/api/create-chat', {file_key, file_name})
+        return response.data
+    }
+  })
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
         'application/pdf': ['.pdf'],
@@ -60,8 +69,20 @@ export const FileUpload = ({
 
         try{
             const data = await uploadToS3(file);
-            console.log("data", data);
-            handleFileChange(acceptedFiles);
+            if (!data?.file_key || !data?.file_name){
+                alert("l'objet data ne possède pas de clé ou de nom de fichier");
+                return;
+            }
+            mutate(data,{
+                onSuccess: (data) => {
+                    console.log("data", data);
+                    handleFileChange(acceptedFiles);
+                },
+                onError: (err) => {
+                    console.log(err);
+                }
+            })
+            
         } catch (error) {
             console.log(error);
         }
