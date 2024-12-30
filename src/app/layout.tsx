@@ -5,6 +5,7 @@ import { cn } from "./lib/utils";
 import { Inter } from "next/font/google";
 import Providers from "./components/Providers";
 import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import {Toaster} from 'react-hot-toast'
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -36,6 +37,7 @@ export default function RootLayout({
           <Providers>
           <main className="h-screen text-foreground bg-background">{children}</main>
           </Providers>
+          <Toaster position="bottom-right" reverseOrder={false}/>
         </body>
       </html>
     </ClerkProvider>

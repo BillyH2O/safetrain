@@ -6,6 +6,7 @@ import { useDropzone } from "react-dropzone";
 import { uploadToS3 } from "../lib/s3";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios"
+import toast from "react-hot-toast";
 
 const mainVariant = {
   initial: {
@@ -34,20 +35,24 @@ export const FileUpload = ({
   onChange?: (files: File[]) => void;
 }) => {
   const [files, setFiles] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (newFiles: File[]) => {
-    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
-    onChange && onChange(newFiles);
+    setFiles((prevFiles) => {
+        const updatedFiles = [...prevFiles, ...newFiles];
+        onChange && onChange(updatedFiles); // Send the updated files to the parent
+        return updatedFiles; // Return the updated list for local state
+      });
   };
 
   const handleClick = () => {
     fileInputRef.current?.click();
   };
 
-  const {mutate} = useMutation({
+  const {mutate} = useMutation({ 
     mutationFn: async ({file_key, file_name}:{file_key: string, file_name: string}) => {
-        const response = await axios.post('/api/create-chat', {file_key, file_name})
+        const response = await axios.post('/api/create-chat', {file_key, file_name}) // hit le backend
         return response.data
     }
   })
@@ -56,37 +61,40 @@ export const FileUpload = ({
     accept: {
         'application/pdf': ['.pdf'],
       },
-    maxFiles : 1,
-    multiple: false,
-    //noClick: true,
+    maxFiles : 2,
+    multiple: true,
+    noClick: false,
     onDrop: async (acceptedFiles) => {
         console.log("acceptedFiles", acceptedFiles);
         const file = acceptedFiles[0];
         if (file.size > 10 * 1024 * 1024) { // > 10 Mb
-            alert('uploadez un fichier inférieaur à 10 Mb');
+            toast.error("Fichier trop volumineux (10 Mb max)");
             return
         }
 
         try{
+            setUploading(true);
             const data = await uploadToS3(file);
             if (!data?.file_key || !data?.file_name){
-                alert("l'objet data ne possède pas de clé ou de nom de fichier");
+                toast.error("l'objet data ne possède pas de clé ou de nom de fichier");
                 return;
             }
             mutate(data,{
                 onSuccess: (data) => {
                     console.log("data", data);
+                    toast.success(data.message);
                     handleFileChange(acceptedFiles);
                 },
                 onError: (err) => {
-                    console.log(err);
+                    toast.error("Erreur lors de la création du chat");
                 }
             })
             
         } catch (error) {
             console.log(error);
+        } finally {
+            setUploading(false)
         }
-        
     },
     onDropRejected: (error) => {
       console.log(error);
@@ -112,57 +120,7 @@ export const FileUpload = ({
             Drag or drop votre fichier ici ou cliquez sur le bouton
           </p>
           <div className="relative w-full mt-10 max-w-xl mx-auto">
-            {files.length > 0 &&
-              files.map((file, idx) => (
-                <motion.div
-                  key={"file" + idx}
-                  layoutId={idx === 0 ? "file-upload" : "file-upload-" + idx}
-                  className={cn(
-                    "relative overflow-hidden z-40 bg-white dark:bg-neutral-900 flex flex-col items-start justify-start md:h-24 p-4 mt-4 w-full mx-auto rounded-md",
-                    "shadow-sm"
-                  )}
-                >
-                  <div className="flex justify-between w-full items-center gap-4">
-                    <motion.p
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      layout
-                      className="text-base text-neutral-700 dark:text-neutral-300 truncate max-w-xs"
-                    >
-                      {file.name}
-                    </motion.p>
-                    <motion.p
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      layout
-                      className="rounded-lg px-2 py-1 w-fit flex-shrink-0 text-sm text-neutral-600 dark:bg-neutral-800 dark:text-white shadow-input"
-                    >
-                      {(file.size / (1024 * 1024)).toFixed(2)} MB
-                    </motion.p>
-                  </div>
-
-                  <div className="flex text-sm md:flex-row flex-col items-start md:items-center w-full mt-2 justify-between text-neutral-600 dark:text-neutral-400">
-                    <motion.p
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      layout
-                      className="px-1 py-0.5 rounded-md bg-gray-100 dark:bg-neutral-800 "
-                    >
-                      {file.type}
-                    </motion.p>
-
-                    <motion.p
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      layout
-                    >
-                      modifié le {" "}
-                      {new Date(file.lastModified).toLocaleDateString()}
-                    </motion.p>
-                  </div>
-                </motion.div>
-              ))}
-            {!files.length && (
+            {files.length && (
               <motion.div
                 layoutId="file-upload"
                 variants={mainVariant}
@@ -191,7 +149,7 @@ export const FileUpload = ({
               </motion.div>
             )}
 
-            {!files.length && (
+            {files.length && (
               <motion.div
                 variants={secondaryVariant}
                 className="absolute opacity-0 border border-dashed border-sky-400 inset-0 z-30 bg-transparent flex items-center justify-center h-32 mt-4 w-full max-w-[8rem] mx-auto rounded-md"
