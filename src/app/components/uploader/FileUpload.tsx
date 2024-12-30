@@ -9,6 +9,7 @@ import axios from "axios"
 import toast from "react-hot-toast";
 import { useFileUpload } from "@/app/hooks/useFileUpload";
 import { GridPattern } from "./GridPattern";
+import { Loader2 } from "lucide-react";
 
 const mainVariant = {
   initial: {
@@ -74,8 +75,14 @@ export const FileUpload = ({
           <p className="relative z-20 font-sans font-normal text-neutral-400 dark:text-neutral-400 text-base mt-2">
             Drag or drop votre fichier ici ou cliquez sur le bouton
           </p>
+
+          {uploading ? (
+            <div className="mt-10 flex flex-col justify-center items-center gap-6">
+              <Loader2 className="h-10 w-10 text-sky-400 animate-spin"/>
+              <p className="text-sm text-slate-200"> Envoie au serveur ...</p>
+            </div>
+          ) : (
           <div className="relative w-full mt-10 max-w-xl mx-auto">
-            
               <motion.div
                 layoutId="file-upload"
                 variants={mainVariant}
@@ -109,6 +116,8 @@ export const FileUpload = ({
               ></motion.div>
             
           </div>
+          )}
+          
         </div>
       </motion.div>
     </div>
