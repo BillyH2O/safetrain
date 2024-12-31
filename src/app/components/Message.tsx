@@ -15,7 +15,7 @@ export const Message = ({ content, isUserMessage }: MessageProps) => {
       })}
     >
       <div className="p-6">
-        <div className="max-w-3xl mx-auto flex items-start gap-2.5">
+        <div className="mx-auto flex items-start gap-2.5">
           <div
             className={cn(
               "size-10 shrink-0 aspect-square rounded-full border border-zinc-700 bg-zinc-900 flex justify-center items-center",
@@ -30,11 +30,11 @@ export const Message = ({ content, isUserMessage }: MessageProps) => {
           <div className="flex flex-col ml-6 w-full">
             <div className="flex items-center space-x-2">
               <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                {isUserMessage ? "You" : "Website"}
+                {isUserMessage ? "Moi" : "SafeTrain AI"}
               </span>
             </div>
 
-            <p className="text-sm font-normal py-2.5 text-gray-900 dark:text-white">{content}</p>
+            <p className="font-normal py-2.5 text-gray-900 dark:text-white">{content}</p>
           </div>
         </div>
       </div>

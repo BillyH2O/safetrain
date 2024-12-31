@@ -1,30 +1,28 @@
 'use client';
 
 import { useChat } from 'ai/react';
+import Messages from '../Messages';
+import { ChatInput } from '../ChatInput';
 
 export default function Chat() {
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
+  const { messages, input, setInput, handleInputChange, handleSubmit } = useChat();
   return (
-    <div className="flex flex-col w-full h-[90%] px-16 py-10 mx-auto stretch overflow-y-scroll">
-      <div className="space-y-5">
-        {messages.map(m => (
-          <div key={m.id} className="whitespace-pre-wrap">
-            <div>
-              <div className="font-bold">{m.role}</div>
-              <p>{m.content}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className='relative min-h-full bg-zinc-900 flex divide-y divide-zinc-700 flex-col justify-between gap-2'>
+        <div className= 'flex-1 text-black bg-zinc-800 justify-between flex flex-col'>
+            <Messages messages={messages}/>
+        </div>
+        
+        {/*<form onSubmit={handleSubmit}> 
+            <input className='text-black' value={input} onChange={handleInputChange} type="text"/>
+            <button type='submit'>Submit</button>
+        </form>*/}
 
-      <form onSubmit={handleSubmit}>
-        <input
-          className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl text-black"
-          value={input}
-          placeholder="Say something..."
-          onChange={handleInputChange}
+        <ChatInput 
+            input={input}
+            handleInputChange={handleInputChange}
+            handleSubmit={handleSubmit} 
+            setInput={setInput}
         />
-      </form>
     </div>
   );
 }
