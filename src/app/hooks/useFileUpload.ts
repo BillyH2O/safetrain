@@ -47,9 +47,11 @@ export const useFileUpload = (onChange?: (files: File[]) => void) => {
 
       mutate(data, {
         onSuccess: ({chat_id}) => {
+          console.log("chat_id :", chat_id);
           toast.success("le chat a été crée");
-          router.push(`/chat/${chat_id}`)
+          //router.push(`/dashboard/chat/${chat_id}`)
           handleFileChange(acceptedFiles);
+          setUploading(false);
         },
         onError: () => {
           toast.error("Erreur lors de la création du chat");
@@ -57,9 +59,7 @@ export const useFileUpload = (onChange?: (files: File[]) => void) => {
       });
     } catch (error) {
       console.error(error);
-    } finally {
-      setUploading(false);
-    }
+    } 
   };
 
   return {
