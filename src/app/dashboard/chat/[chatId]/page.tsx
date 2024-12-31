@@ -33,7 +33,7 @@ const ChatPage = async ({params: {chatId} }: Props) => {
       <ChatList chats={_chats} chatId={parseInt(chatId)}/>
     </div>
     <div className='w-[45%] h-full'>
-      <Chat/>
+      <Chat chatId={parseInt(chatId)}/>
     </div>
     <div className='flex-1'>
       <PDFViewer pdf_url={chat?.pdfUrl || ""}/>
