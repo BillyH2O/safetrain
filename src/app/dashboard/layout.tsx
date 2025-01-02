@@ -6,6 +6,7 @@ import Logo from "../components/dashboard/Logo";
 import { cn } from "../lib/utils";
 import SidebarLinks from "../components/SidebarLinks";
 import DashboardLoader from "../components/dashboard/DashboardLoader";
+import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
@@ -39,11 +40,22 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
         </SidebarBody>
       </Sidebar>
-      <div className="flex flex-1 flex-col items-center
-      bg-white dark:bg-neutral-900  overflow-hidden  
-        rounded-tl-2xl border border-neutral-200 dark:border-neutral-700">
-        {children}
-      </div>
+      
+      {/*<div>
+        <div className="h-12 bg-red-500">
+            <SignedOut>
+              <SignInButton />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+          </div>*/}
+        <div className="flex flex-1 flex-col items-center
+        bg-white dark:bg-neutral-900  overflow-hidden  
+          rounded-tl-2xl border border-neutral-200 dark:border-neutral-700">
+            
+          {children}
+        </div>
     </div>
   );
 };
