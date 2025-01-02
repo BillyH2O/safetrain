@@ -51,7 +51,6 @@ export default function Chat({chatId}: Props) {
             <Messages messages={messages}/>
         </div>
 
-        
         <ChatInput
             input={input}
             handleInputChange={handleInputChange}

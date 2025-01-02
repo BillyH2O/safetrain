@@ -7,7 +7,7 @@ import PDF from "./PDF";
 import { Switch } from "@nextui-org/react";
 import { useState } from "react";
 
-export const UploadedFilesList = () => {
+export const PDFList = () => {
   const [isEnabled, setIsEnabled] = useState(true);
   
   const { data: chats = [], isLoading } = useQuery({
