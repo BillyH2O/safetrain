@@ -1,7 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { FileUpload } from "./FileUpload";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+  Switch,
+} from "@nextui-org/react";
 
 const MainUploader = () => {
   const handleFileUpload = (newFiles: File[]) => {
@@ -9,11 +19,33 @@ const MainUploader = () => {
     console.log("files dashboard", newFiles);
   };
 
+  const [isEnabled, setIsEnabled] = useState(false);
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+
+  const handleSwitchChange = () => {
+    setIsEnabled((prev) => !prev); // Inverse la valeur actuelle
+    console.log("isEnabled", isEnabled);
+  };
+
   return (
-    <div className="w-full max-w-4xl flex justify-center items-center mx-auto min-h-96 border border-dashed dark:bg-black dark:border-neutral-800 rounded-lg">
-      <FileUpload onChange={handleFileUpload} />
+    <div className="relative"> 
+      <Button className="dark:bg-black dark:border-neutral-800 rounded-lg absolute right-0" size="lg" onPress={onOpen}>Upload</Button>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="full" placement="center">
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <div className="w-full h-full flex justify-center items-center mx-auto min-h-96 border border-dashed dark:bg-black dark:border-neutral-800 rounded-lg">
+                <FileUpload onChange={handleFileUpload} />
+              </div>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 };
 
 export default MainUploader;
+
+
+

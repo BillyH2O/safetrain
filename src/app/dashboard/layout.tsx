@@ -39,7 +39,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
         </SidebarBody>
       </Sidebar>
-      <div className="flex flex-1 bg-white dark:bg-neutral-900 flex-col overflow-hidden">
+      <div className="flex flex-1 flex-col items-center
+      bg-white dark:bg-neutral-900  overflow-hidden  
+        rounded-tl-2xl border border-neutral-200 dark:border-neutral-700">
         {children}
       </div>
     </div>

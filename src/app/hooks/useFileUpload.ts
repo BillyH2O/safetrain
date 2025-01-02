@@ -49,14 +49,11 @@ export const useFileUpload = (onChange?: (files: File[]) => void) => {
 
       mutate(data, {
         onSuccess: ({chat_id}) => {
-          console.log("chat_id :", chat_id);
-          toast.success("le chat a été crée");
-          //router.push(`/dashboard/chat/${chat_id}`)
-          handleFileChange(acceptedFiles);
           queryClient.invalidateQueries({
             queryKey: ["chats"],
           });
-          
+          console.log("chat_id :", chat_id);
+          toast.success("le chat a été crée");
           setUploading(false);
         },
         onError: () => {

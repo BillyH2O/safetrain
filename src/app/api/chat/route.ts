@@ -21,6 +21,7 @@ export async function POST(req: Request) {
   const fileKey = _chats[0].fileKey;
   const lastMessage = messages[messages.length - 1];
   const context = await getContext(lastMessage.content, fileKey);
+  console.log("[CONTEXT]", context)
 
   const prompt0 = {
     role: "system",
