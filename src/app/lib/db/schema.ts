@@ -14,6 +14,7 @@ export const chats = pgTable("chats", { // chats
     id: serial('id').primaryKey(),
     pdfName: text('pdf_name').notNull(),
     pdfUrl: text('pdf_url').notNull(),
+    thumbnailUrl: text("thumbnailUrl"), 
     createdAt: timestamp('created_at').notNull().defaultNow(),
     userId: varchar('user_id', {length:256}).notNull(),
     fileKey: text('file_key').notNull(),
