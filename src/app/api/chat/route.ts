@@ -1,17 +1,57 @@
 import { getContext } from '@/app/lib/context';
 import { db } from '@/app/lib/db';
 import { chats, messages as _messages } from '@/app/lib/db/schema';
-import { openai } from '@ai-sdk/openai';
 import { convertToCoreMessages, Message, streamText } from 'ai';
 import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
+import { createXai } from '@ai-sdk/xai';
+import { createOpenAI } from '@ai-sdk/openai';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 
-// Allow streaming responses up to 30 seconds
+const google = createGoogleGenerativeAI({
+  apiKey: process.env.GEMINI_API_KEY, 
+});
+
+const openai = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY, 
+});
+
+const xai = createXai({
+  apiKey: process.env.GROK_API_KEY ,
+});
+
+function getModelFromKey(selectedModelKey: string) {
+  switch (selectedModelKey) {
+    case 'o1-preview':
+      return openai('o1');
+    case 'gpt-4o':
+      return openai('gpt-4o');
+    case 'gpt-4o-mini':
+      return openai('gpt-4o-mini');
+    case 'gpt-4-turbo':
+      return openai('gpt-4-turbo');
+    case 'grok-2-1212':
+      return xai('grok-2-1212');
+    case 'grok-beta':
+      return xai('grok-beta');
+    case 'gemini-2.0-flash-exp':
+      return google('gemini-2.0-flash-exp');
+    case 'gemini-1.5-flash-latest':
+      return google('gemini-1.5-flash-latest');
+    case 'gemini-1.5-flash':
+      return google('gemini-1.5-flash');
+      break;
+    default:
+      throw new Error(`Modèle inconnu: ${selectedModelKey}`);
+  }
+}
+
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const { messages, chatId} = await req.json();
+  const { messages, chatId, selectedModel} = await req.json();
   console.log("chatId : ", chatId);
+  console.log("selectedModel : ", selectedModel);
 
   const _chats = await db.select().from(chats).where(eq(chats.id, chatId));
   if (_chats.length != 1) {
@@ -22,6 +62,8 @@ export async function POST(req: Request) {
   const lastMessage = messages[messages.length - 1];
   const context = await getContext(lastMessage.content, fileKey);
   console.log("[CONTEXT]", context)
+
+  const modelInstance = getModelFromKey(selectedModel);
 
   const prompt0 = {
     role: "system",
@@ -62,7 +104,7 @@ export async function POST(req: Request) {
       //  prompt,
         //...messages.filter((message: Message) => message.role === "user"),
       //],
-    model: openai('gpt-4o'),
+      model: modelInstance,
     system: prompt,
     prompt: lastMessage.content,
     onFinish: async ({ text }) => {
