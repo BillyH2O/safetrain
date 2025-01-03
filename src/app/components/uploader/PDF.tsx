@@ -43,7 +43,7 @@ const PDF = ({chat, isEnabled}: PdfProps) => {
     <div key={chat.id}>
       
       {isEnabled ? (
-        <button onClick={onOpen} className="h-96">
+        <button onClick={onOpen} className="h-64">
           <img
             src={chat.thumbnailUrl || chat.pdfUrl}
             alt={chat.pdfName}

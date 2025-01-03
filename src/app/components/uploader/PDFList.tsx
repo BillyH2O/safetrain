@@ -27,12 +27,12 @@ export const PDFList = () => {
   }
 
   return (
-    <div className="pl-10 h-[80%] w-full mt-20">
-    <div className="flex justify-between mb-24">
+    <div className="pl-10 h-full w-full flex flex-col">
+    <div className="flex justify-between mb-12 w-[90%] ">
       <h1 className="text-4xl font-normal">Mes PDF</h1>
       <Switch isSelected={isEnabled} color="success" aria-label="Automatic updates" onChange={handleSwitchChange}/>
     </div>
-    <div className="mt-10 flex gap-16 flex-wrap h-full overflow-y-auto">
+    <div className="mt-10 flex gap-16 flex-wrap flex-1 overflow-y-auto">
       {chats.map((chat: any) => (
         <PDF chat={chat} isEnabled={isEnabled}/>
         

@@ -30,7 +30,9 @@ const MainUploader = () => {
   return (
     <div className="relative"> 
       <Button className="dark:bg-black dark:border-neutral-800 rounded-lg absolute right-0" size="lg" onPress={onOpen}>Upload</Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="full" placement="center">
+      <Modal backdrop="opaque" classNames={{
+          backdrop: "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",
+        }} isOpen={isOpen} onOpenChange={onOpenChange} size="4xl" placement="center">
         <ModalContent>
           {(onClose) => (
             <>

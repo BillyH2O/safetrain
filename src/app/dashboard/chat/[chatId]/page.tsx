@@ -49,7 +49,7 @@ export default function ChatPage() {
 
   return (
     <div className="h-full w-full flex justify-center items-center">
-      <div className="w-[25%] max-w-96 h-full">
+      <div className="w-[15%] max-w-96 h-full">
         <ChatList chats={chats} chatId={chatIdNumber} />
       </div>
 
