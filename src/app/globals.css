@@ -70,3 +70,13 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(90deg, #f97316, #ffcc33); /* Dégradé orange -> jaune */
+    -webkit-background-clip: text; /* Clip le background au texte */
+    -webkit-text-fill-color: transparent; /* Rends le texte transparent */
+    background-clip: text; /* Support pour d'autres navigateurs */
+    text-fill-color: transparent; /* Support supplémentaire */
+  }
+}
