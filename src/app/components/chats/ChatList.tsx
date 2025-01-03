@@ -5,12 +5,12 @@ import React from 'react'
 
 type Props = {
     chats: {
-        userId: string;
-        id: number;
-        pdfName: string;
-        pdfUrl: string;
-        createdAt: Date;
-        fileKey: string;
+    userId: string;
+    id: number;
+    pdfName: string;
+    pdfUrl: string;
+    createdAt: Date;
+    fileKey: string;
     }[],
     chatId: number;
 }

@@ -19,8 +19,7 @@ export const PDFList = () => {
   });
 
   const handleSwitchChange = () => {
-    setIsEnabled((prev) => !prev); // Inverse la valeur actuelle
-    console.log("isEnabled", isEnabled);
+    setIsEnabled((prev) => !prev);
   };
   
   if (isLoading) {

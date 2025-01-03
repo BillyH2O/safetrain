@@ -49,12 +49,10 @@ export default function Chat({ chatId }: Props) {
 
   return (
     <div className='h-full w-full flex flex-col'>
-      {/* 50% du conteneur pour l’affichage des messages */}
       <div className='h-[80%] overflow-auto border-b border-zinc-700'>
         <Messages messages={messages} />
       </div>
 
-      {/* 50% du conteneur pour l’input et la sélection du modèle */}
       <div className='flex-1'>
         <ChatInput
           input={input}
