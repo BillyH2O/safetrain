@@ -1,54 +1,76 @@
-"use client";
+import React from 'react'
 
-import { Button, Textarea } from "@nextui-org/react";
-import { Send } from "lucide-react";
-import { type useChat } from "ai/react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Image from 'next/image';
+import OpenAiLogo from "../../assets/openai-logo.png";
+import OpenAiLogo2 from "../../assets/openai-logo2.png";
+import GrokLogo from "../../assets/grok-logo.png";
+import GeminiLogo from "../../assets/gemini-logo.png";
+import GeminiLogo2 from "../../assets/gemini-logo2.png";
+import { useState } from 'react';
+import { ChatRequestOptions } from 'ai';
+import { PlaceholdersAndVanishInput } from './ui/placeholders-and-vanish_input';
 
-type HandleInputChange = ReturnType<typeof useChat>["handleInputChange"];
-type HandleSubmit = ReturnType<typeof useChat>["handleSubmit"];
-type SetInput = ReturnType<typeof useChat>["setInput"];
-
-interface ChatInputProps {
-  input: string;
-  handleInputChange: HandleInputChange;
-  handleSubmit: HandleSubmit;
-  setInput: SetInput;
+type ChatInputProps = {
+    input: string,
+    handleInputChange: (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => void,
+    handleSubmit: (event?: {
+        preventDefault?: () => void;
+    }, chatRequestOptions?: ChatRequestOptions) => void,
+    selectedModel: string | undefined;
+    onModelChange: (model: string) => void;
 }
 
-export const ChatInput = ({ handleInputChange, handleSubmit, input, setInput }: ChatInputProps) => {
-  return (
-    <div className="z-10 bg-zinc-900 absolute bottom-0 left-0 w-full">
-      <div className="mx-2 flex flex-row gap-3 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
-        <div className="relative flex h-full flex-1 items-stretch md:flex-col">
-          <div className="relative flex flex-col w-full flex-grow p-4">
-            <form onSubmit={handleSubmit} className="relative">
-              <Textarea
-                minRows={4}
-                autoFocus
-                onChange={handleInputChange}
-                value={input}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSubmit();
-                    setInput("");
-                  }
-                }}
-                placeholder="Enter your question..."
-                className="resize-none bg-zinc-800 hover:bg-zinc-900 rounded-xl text-base"
-              />
+const ChatInput = ({input, handleInputChange, handleSubmit, selectedModel, onModelChange}: ChatInputProps) => {
+    
+    
 
-              <Button
-                size="sm"
-                type="submit"
-                className="absolute z-10 border border-border bg-zinc-900 right-2 bottom-2"
-              >
-                <Send className="size-4" />
-              </Button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+    const placeholders = [
+        "Quels sont les objectifs du document ?",
+        "Quels sont les concepts ou idées clés ?",
+        "Quelles données ou preuves sont utilisées pour étayer les arguments ?",
+        "Quelle est la structure générale du document ?",
+        "Quelle est la conclusion ?",
+      ];
+  return (
+    <div className='flex flex-col h-full w-full justify-center items-center '>
+        
+        <Select onValueChange={(value) => onModelChange(value)} value={selectedModel}>
+          <SelectTrigger className="w-[300px]">
+            <SelectValue placeholder="Modèle"/>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>modèle</SelectLabel>
+              <SelectItem value="gpt-4o"><div className='flex gap-3'>gpt-4o<Image src={OpenAiLogo2} alt="logo open ai" width={24} height={24}/></div></SelectItem>
+              <SelectItem value="gpt-4o-mini"><div className='flex gap-3'>gpt-4o-mini<Image src={OpenAiLogo} alt="logo open ai" width={24} height={24}/></div></SelectItem>
+              <SelectItem value="gpt-4-turbo"><div className='flex gap-3'>gpt-4-turbo<Image src={OpenAiLogo} alt="logo open ai" width={24} height={24}/></div></SelectItem>
+              <SelectItem value="grok-2-1212"><div className='flex gap-3'>grok-2-1212<Image src={GrokLogo} alt="logo open ai" width={20} height={5}/></div></SelectItem>
+              <SelectItem value="grok-beta"><div className='flex gap-3'>grok-beta<Image src={GrokLogo} alt="logo open ai" width={20} height={5}/></div></SelectItem>
+              <SelectItem value="gemini-2.0-flash-exp"><div className='flex gap-3'>gemini-2.0-flash-exp<Image src={GeminiLogo} alt="logo open ai" width={17} height={17}/></div></SelectItem>
+              <SelectItem value="gemini-1.5-flash-latest"><div className='flex gap-3'>gemini-1.5-flash-latest<Image src={GeminiLogo2} alt="logo open ai" width={17} height={17}/></div></SelectItem>
+              <SelectItem value="gemini-1.5-flash"><div className='flex gap-3'>gemini-1.5-flash<Image src={GeminiLogo2} alt="logo open ai" width={17} height={17}/></div></SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+     
+        <PlaceholdersAndVanishInput
+          input={input}
+          placeholders={placeholders}
+          onChange={handleInputChange}
+          onSubmit={handleSubmit}
+        />
+
+      </div>  
+  )
+}
+
+export default ChatInput

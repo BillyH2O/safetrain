@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "./lib/utils";
 import { Inter } from "next/font/google";
+import { Aleo } from 'next/font/google';
 import Providers from "./components/Providers";
 import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import {Toaster} from 'react-hot-toast'
@@ -10,14 +11,9 @@ import {Toaster} from 'react-hot-toast'
 
 const inter = Inter({ subsets: ["latin"] });
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const aleo = Aleo({
+  subsets: ['latin'], // Pour inclure le support des caractères latins
+  weight: ['300', '400', '700'], // Poids de la police
 });
 
 export const metadata: Metadata = {
@@ -33,7 +29,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" className="dark">
-        <body className={cn(inter.className,  "min-h-screen antialiased")}>
+        <body className={cn(aleo.className,  "min-h-screen antialiased")}>
           <Providers>
           <main className="h-screen text-foreground bg-background">{children}</main>
           </Providers>

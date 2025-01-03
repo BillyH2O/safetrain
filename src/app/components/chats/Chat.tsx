@@ -1,33 +1,67 @@
 'use client';
 
-import { useChat } from 'ai/react';
+import { Message, useChat } from 'ai/react';
 import Messages from '../Messages';
-import { ChatInput } from '../ChatInput';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { PlaceholdersAndVanishInput } from '../ui/placeholders-and-vanish_input';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Image from 'next/image';
+import OpenAiLogo from "../../../assets/openai-logo.png";
+import OpenAiLogo2 from "../../../assets/openai-logo2.png";
+import GrokLogo from "../../../assets/grok-logo.png";
+import GeminiLogo from "../../../assets/gemini-logo.png";
+import GeminiLogo2 from "../../../assets/gemini-logo2.png";
+import { useState } from 'react';
+import ChatInput from '../ChatInput';
 
-type Props = {chatId: number};
+type Props = { chatId: number };
 
-export default function Chat({chatId}: Props) {
+export default function Chat({ chatId }: Props) {
+  const [selectedModel, setSelectedModel] = useState<string | undefined>(undefined);
+
+  // Chargement initial (messages)
+  const { data, isLoading } = useQuery({
+    queryKey: ["chat", chatId],
+    queryFn: async () => {
+      const response = await axios.post<Message[]>("/api/get-messages", {
+        chatId,
+        selectedModel,
+      });
+      return response.data;
+    },
+  });
+
+  // Hook AI pour gérer l’envoi/réception de messages
   const { messages, input, setInput, handleInputChange, handleSubmit } = useChat({
     api: "/api/chat",
-    body: {chatId}
+    body: { chatId, selectedModel },
+    initialMessages: data || [],
   });
-  return (
-    <div className='relative min-h-full bg-zinc-900 flex divide-y divide-zinc-700 flex-col justify-between gap-2'>
-        <div className= 'flex-1 text-black bg-zinc-800 justify-between flex flex-col'>
-            <Messages messages={messages}/>
-        </div>
-        
-        {/*<form onSubmit={handleSubmit}> 
-            <input className='text-black' value={input} onChange={handleInputChange} type="text"/>
-            <button type='submit'>Submit</button>
-        </form>*/}
 
-        <ChatInput 
-            input={input}
-            handleInputChange={handleInputChange}
-            handleSubmit={handleSubmit} 
-            setInput={setInput}
+  return (
+    <div className='h-full w-full flex flex-col'>
+      <div className='h-[80%] overflow-auto border-b border-zinc-700'>
+        <Messages messages={messages} />
+      </div>
+
+      <div className='flex-1'>
+        <ChatInput
+          input={input}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit}
+          selectedModel={selectedModel}
+          onModelChange={(newModel: string | undefined) => setSelectedModel(newModel)}
         />
+      </div>
     </div>
   );
 }

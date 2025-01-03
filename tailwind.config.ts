@@ -77,7 +77,7 @@ export default {
 		},
   	}
   },
-  plugins: [require("tailwindcss-animate"), addVariablesForColors],
+  plugins: [require("tailwindcss-animate"), addVariablesForColors, nextui()],
 } satisfies Config;
 
 function addVariablesForColors({ addBase, theme }: any) {

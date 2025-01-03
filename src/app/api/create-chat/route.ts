@@ -1,5 +1,6 @@
 import { db } from "@/app/lib/db";
 import { chats } from "@/app/lib/db/schema";
+import { generatePdfThumbnail } from "@/app/lib/pdf";
 import { loadS3IntoPinecone } from "@/app/lib/pinecone";
 import { getS3Url } from "@/app/lib/s3";
 import { auth } from "@clerk/nextjs/server";
@@ -14,14 +15,18 @@ export async function POST(req: Request, res: Response){
     try {
         const body = await req.json()
         const{file_key, file_name} = body
-        console.log("file_key :", file_key)
-        console.log("file_name :", file_name)
+
         await loadS3IntoPinecone(file_key)
+
+        const thumbnailKey = await generatePdfThumbnail(file_key);
+        console.log("pdf url :", getS3Url(file_key))
+
         const chat_id = await db.insert(chats).values({
             fileKey: file_key,
             pdfName: file_name,
             pdfUrl: getS3Url(file_key),
             userId: userId,
+            thumbnailUrl: thumbnailKey ? getS3Url(thumbnailKey) : null,
         })
         .returning({
             insertedId: chats.id,
