@@ -23,42 +23,47 @@ import GeminiLogo2 from "../../../assets/gemini-logo2.png";
 import { useState } from 'react';
 import ChatInput from '../ChatInput';
 
-type Props = {chatId: number};
+type Props = { chatId: number };
 
-export default function Chat({chatId}: Props) {
-
+export default function Chat({ chatId }: Props) {
   const [selectedModel, setSelectedModel] = useState<string | undefined>(undefined);
+
+  // Chargement initial (messages)
   const { data, isLoading } = useQuery({
-      queryKey: ["chat", chatId],
-      queryFn: async () => {
-        const response = await axios.post<Message[]>("/api/get-messages", {
-          chatId,
-          selectedModel,
-        });
-        return response.data;
-      },
-    });
-  
+    queryKey: ["chat", chatId],
+    queryFn: async () => {
+      const response = await axios.post<Message[]>("/api/get-messages", {
+        chatId,
+        selectedModel,
+      });
+      return response.data;
+    },
+  });
+
+  // Hook AI pour gérer l’envoi/réception de messages
   const { messages, input, setInput, handleInputChange, handleSubmit } = useChat({
     api: "/api/chat",
-    body: {chatId, selectedModel},
+    body: { chatId, selectedModel },
     initialMessages: data || [],
   });
 
   return (
-    <div className='h-full flex divide-y divide-zinc-700 flex-col justify-between'>
-        <div className= ''>
-            <Messages messages={messages}/>
-        </div>
+    <div className='h-full w-full flex flex-col'>
+      {/* 50% du conteneur pour l’affichage des messages */}
+      <div className='h-[80%] overflow-auto border-b border-zinc-700'>
+        <Messages messages={messages} />
+      </div>
 
+      {/* 50% du conteneur pour l’input et la sélection du modèle */}
+      <div className='flex-1'>
         <ChatInput
-            input={input}
-            handleInputChange={handleInputChange}
-            handleSubmit={handleSubmit} 
-            selectedModel={selectedModel}
-            onModelChange={(newModel: string | undefined)  => setSelectedModel(newModel)}
+          input={input}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit}
+          selectedModel={selectedModel}
+          onModelChange={(newModel: string | undefined) => setSelectedModel(newModel)}
         />
- 
+      </div>
     </div>
   );
 }

@@ -41,7 +41,8 @@ const ChatInput = ({input, handleInputChange, handleSubmit, selectedModel, onMod
         "Quelle est la conclusion ?",
       ];
   return (
-    <div className='h-full flex flex-col justify-center items-center'>
+    <div className='flex flex-col h-full w-full justify-center items-center '>
+        
         <Select onValueChange={(value) => onModelChange(value)} value={selectedModel}>
           <SelectTrigger className="w-[300px]">
             <SelectValue placeholder="Modèle"/>

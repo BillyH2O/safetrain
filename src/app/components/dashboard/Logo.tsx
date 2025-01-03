@@ -3,6 +3,8 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import SafetrainLogo from "../../../assets/safetrain-logo.png";
+import Image from "next/image";
 
 const Logo = () => {
   return (
@@ -10,7 +12,16 @@ const Logo = () => {
       href="#"
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
-      <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
+      <div className="h-7 w-7 flex-shrink-0">
+        <Image
+          src={SafetrainLogo}
+          alt="SafeTrain Logo"
+          className="rounded-lg"
+          layout="responsive"
+          width={28} // Adjust as needed
+          height={28} // Adjust as needed
+        />
+      </div>
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

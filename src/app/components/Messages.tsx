@@ -9,7 +9,7 @@ interface MessagesProps {
 
 export default function Messages({messages}: MessagesProps) {
   return (
-    <div className='flex max-h-[calc(100vh-3.5rem-7rem)] flex-1 flex-col overflow-y-auto'>
+    <div className='flex flex-col'>
         {messages.length ? messages.map((message, i) => (
             <Message key={i} content={message.content} isUserMessage={message.role === "user"}/>
         )) : (
