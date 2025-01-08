@@ -18,6 +18,7 @@ import GeminiLogo2 from "../../assets/gemini-logo2.png";
 import { useState } from 'react';
 import { ChatRequestOptions } from 'ai';
 import { PlaceholdersAndVanishInput } from './ui/placeholders-and-vanish_input';
+import Terminal from './Terminal';
 
 type ChatInputProps = {
     input: string,
@@ -30,8 +31,6 @@ type ChatInputProps = {
 }
 
 const ChatInput = ({input, handleInputChange, handleSubmit, selectedModel, onModelChange}: ChatInputProps) => {
-    
-    
 
     const placeholders = [
         "Quels sont les objectifs du document ?",
@@ -42,7 +41,7 @@ const ChatInput = ({input, handleInputChange, handleSubmit, selectedModel, onMod
       ];
   return (
     <div className='flex flex-col h-full w-full justify-center items-center '>
-        
+        <Terminal/>
         <Select onValueChange={(value) => onModelChange(value)} value={selectedModel}>
           <SelectTrigger className="w-[300px]">
             <SelectValue placeholder="Modèle"/>
