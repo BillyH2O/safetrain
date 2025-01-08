@@ -54,11 +54,11 @@ const Terminal = (props: Props) => {
                         onChange={(value) => setTopK(value as number)}
                         className="max-w-md"
                         color='warning'
-                        defaultValue={0.4}
+                        defaultValue={40}
                         label="topK"
-                        maxValue={1}
+                        maxValue={100}
                         minValue={0}
-                        step={0.01}
+                        step={1}
                         />
                         
                         <Slider
@@ -66,15 +66,15 @@ const Terminal = (props: Props) => {
                         onChange={(value) => setMaxSteps(value as number)}
                         className="max-w-md"
                         color='warning'
-                        isDisabled
-                        defaultValue={0.4}
+                        //isDisabled
+                        defaultValue={50}
                         label="maxSteps"
-                        maxValue={1}
+                        maxValue={200}
                         minValue={0}
-                        step={0.01}
+                        step={1}
                         />
                     </div>
-                    
+
                     <div className='flex flex-col gap-3'>
                         <Input label="stopSequences"  value={stopSequences} onChange={(e) => setStopSequences(e.target.value)} />
                         <Textarea className="w-full" label="Prompt" placeholder="Entrez votre prompt" value={prompt} onChange={(e) => setPrompt(e.target.value)}/>

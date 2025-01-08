@@ -128,7 +128,7 @@ export async function POST(req: Request) {
     temperature: temperature,
     topK: topK,
     topP: topP,
-    //maxSteps: maxSteps,
+    maxSteps: maxSteps,
     stopSequences: stopSequences,
     onFinish: async ({ text }) => {
         try {
