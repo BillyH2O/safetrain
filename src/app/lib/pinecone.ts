@@ -83,3 +83,22 @@ async function prepareDocument(page: PDFPage) {
   ]);
   return docs;
 }
+
+export async function deleteNamespace(fileKey: string){
+  const pineconeIndex = await pc.index("safetrain");
+
+  const stats_before = await pineconeIndex.describeIndexStats();
+  const totalBefore = stats_before.totalRecordCount ?? 0; 
+
+  await pineconeIndex.namespace(convertToAscii(fileKey)).deleteAll();
+
+  const stats_after = await pineconeIndex.describeIndexStats();
+  const totalAfter = stats_after.totalRecordCount ?? 0;
+  
+  if(totalBefore > totalAfter){
+    console.log(`Le namespace ${fileKey} a été supprimé.`)
+  }
+  else{
+    console.error(`Echec de la suppression du namespace ${fileKey}.`)
+  }
+}
