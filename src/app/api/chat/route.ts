@@ -49,9 +49,24 @@ function getModelFromKey(selectedModelKey: string) {
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const { messages, chatId, selectedModel} = await req.json();
-  console.log("chatId : ", chatId);
-  console.log("selectedModel : ", selectedModel);
+  const { messages, chatId, config} = await req.json();
+  
+  // verif
+  console.log("chatId :", chatId);
+  console.log("config :", config); 
+
+  if (!config || typeof config !== 'object') {
+    return NextResponse.json({ error: "Missing or invalid settings" }, { status: 400 });
+  }
+
+  const { selectedModel, temperature, topP, topK, maxSteps, stopSequences, prompt} = config;
+  console.log("selectedModel :", selectedModel);
+  console.log("temperature :", temperature);
+  console.log("topP :", topP);
+  console.log("topK :", topK);
+  console.log("maxSteps :", maxSteps);
+  console.log("stopSequences :", stopSequences);
+  console.log("prompt :", prompt);
 
   const _chats = await db.select().from(chats).where(eq(chats.id, chatId));
   if (_chats.length != 1) {
@@ -83,7 +98,7 @@ export async function POST(req: Request) {
     `,
   };
 
-  const prompt = `AI assistant is a brand new, powerful, human-like artificial intelligence.
+  const initial_prompt = `AI assistant is a brand new, powerful, human-like artificial intelligence.
   The traits of AI include expert knowledge, helpfulness, cleverness, and articulateness.
   AI is a well-behaved and well-mannered individual.
   AI is always friendly, kind, and inspiring, and he is eager to provide vivid and thoughtful responses to the user.
@@ -97,6 +112,9 @@ export async function POST(req: Request) {
     ${context}
   END OF CONTEXT BLOCK`;
 
+  const prompt_final = initial_prompt + " " + prompt ;
+  console.log("prompt_final :", prompt_final);
+
   let assistantResponse = "";
 
   const result = streamText({
@@ -104,9 +122,14 @@ export async function POST(req: Request) {
       //  prompt,
         //...messages.filter((message: Message) => message.role === "user"),
       //],
-      model: modelInstance,
-    system: prompt,
+    model: modelInstance,
+    system: prompt_final,
     prompt: lastMessage.content,
+    temperature: temperature,
+    topK: topK,
+    topP: topP,
+    //maxSteps: maxSteps,
+    stopSequences: stopSequences,
     onFinish: async ({ text }) => {
         try {
           await db.insert(_messages).values({

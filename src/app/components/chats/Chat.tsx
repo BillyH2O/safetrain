@@ -22,11 +22,13 @@ import GeminiLogo from "../../../assets/gemini-logo.png";
 import GeminiLogo2 from "../../../assets/gemini-logo2.png";
 import { useState } from 'react';
 import ChatInput from '../ChatInput';
+import { useChatSettings } from '../context/ChatContext';
 
 type Props = { chatId: number };
 
 export default function Chat({ chatId }: Props) {
   const [selectedModel, setSelectedModel] = useState<string | undefined>(undefined);
+  const { temperature, setTemperature, topP, setTopP, topK, setTopK, maxSteps, setMaxSteps, stopSequences, setStopSequences, prompt, setPrompt} = useChatSettings(); 
 
   // Chargement initial (messages)
   const { data, isLoading } = useQuery({
@@ -34,7 +36,6 @@ export default function Chat({ chatId }: Props) {
     queryFn: async () => {
       const response = await axios.post<Message[]>("/api/get-messages", {
         chatId,
-        selectedModel,
       });
       return response.data;
     },
@@ -43,7 +44,18 @@ export default function Chat({ chatId }: Props) {
   // Hook AI pour gérer l’envoi/réception de messages
   const { messages, input, setInput, handleInputChange, handleSubmit } = useChat({
     api: "/api/chat",
-    body: { chatId, selectedModel },
+    body: { 
+      chatId, 
+      config: {
+        selectedModel,
+        temperature,
+        topP,
+        topK,
+        maxSteps,
+        stopSequences,
+        prompt
+      }
+    },
     initialMessages: data || [],
   });
 
