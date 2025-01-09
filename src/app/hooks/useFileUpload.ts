@@ -19,16 +19,6 @@ export const useFileUpload = (onChange?: (files: File[]) => void) => {
     },
   });
 
-  const handleFileChange = (newFiles: File[]) => {
-    setFiles((prevFiles) => {
-      const updatedFiles = [...prevFiles, ...newFiles];
-      if (onChange) {
-        setTimeout(() => onChange(updatedFiles), 0);
-      }
-      return updatedFiles;
-    });
-  };
-
   const handleDrop = async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
 

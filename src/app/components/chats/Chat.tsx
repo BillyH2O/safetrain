@@ -4,32 +4,16 @@ import { Message, useChat } from 'ai/react';
 import Messages from '../Messages';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { PlaceholdersAndVanishInput } from '../ui/placeholders-and-vanish_input';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import Image from 'next/image';
-import OpenAiLogo from "../../../assets/openai-logo.png";
-import OpenAiLogo2 from "../../../assets/openai-logo2.png";
-import GrokLogo from "../../../assets/grok-logo.png";
-import GeminiLogo from "../../../assets/gemini-logo.png";
-import GeminiLogo2 from "../../../assets/gemini-logo2.png";
 import { useState } from 'react';
 import ChatInput from '../ChatInput';
 import { useChatSettings } from '../context/ChatContext';
 
-type Props = { chatId: number };
+type Props = { chatId?: number };
 
 export default function Chat({ chatId }: Props) {
   const [selectedModel, setSelectedModel] = useState<string | undefined>(undefined);
   const { temperature, setTemperature, topP, setTopP, topK, setTopK, maxSteps, setMaxSteps, stopSequences, setStopSequences, prompt, setPrompt} = useChatSettings(); 
-
+  const isPlayground = !chatId
   // Chargement initial (messages)
   const { data, isLoading } = useQuery({
     queryKey: ["chat", chatId],
@@ -39,13 +23,14 @@ export default function Chat({ chatId }: Props) {
       });
       return response.data;
     },
+    enabled: !!chatId,
   });
 
   // Hook AI pour gérer l’envoi/réception de messages
   const { messages, input, setInput, handleInputChange, handleSubmit } = useChat({
-    api: "/api/chat",
+    api: chatId ? '/api/chat' : '/api/playground',
     body: { 
-      chatId, 
+      ...(chatId ? { chatId } : {}), 
       config: {
         selectedModel,
         temperature,
@@ -72,6 +57,7 @@ export default function Chat({ chatId }: Props) {
           handleSubmit={handleSubmit}
           selectedModel={selectedModel}
           onModelChange={(newModel: string | undefined) => setSelectedModel(newModel)}
+          isPlayground={isPlayground}
         />
       </div>
     </div>

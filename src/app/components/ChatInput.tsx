@@ -8,7 +8,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/app/components/ui/select";
 import Image from 'next/image';
 import OpenAiLogo from "../../assets/openai-logo.png";
 import OpenAiLogo2 from "../../assets/openai-logo2.png";
@@ -26,11 +26,12 @@ type ChatInputProps = {
     handleSubmit: (event?: {
         preventDefault?: () => void;
     }, chatRequestOptions?: ChatRequestOptions) => void,
-    selectedModel: string | undefined;
-    onModelChange: (model: string) => void;
+    selectedModel: string | undefined,
+    onModelChange: (model: string) => void,
+    isPlayground: boolean
 }
 
-const ChatInput = ({input, handleInputChange, handleSubmit, selectedModel, onModelChange}: ChatInputProps) => {
+const ChatInput = ({input, handleInputChange, handleSubmit, selectedModel, onModelChange, isPlayground}: ChatInputProps) => {
 
     const placeholders = [
         "Quels sont les objectifs du document ?",
@@ -41,7 +42,7 @@ const ChatInput = ({input, handleInputChange, handleSubmit, selectedModel, onMod
       ];
   return (
     <div className='flex flex-col h-full w-full justify-center items-center '>
-        <Terminal/>
+        <div className='flex gap-2 justify-center items-center'>
         <Select onValueChange={(value) => onModelChange(value)} value={selectedModel}>
           <SelectTrigger className="w-[300px]">
             <SelectValue placeholder="Modèle"/>
@@ -60,6 +61,8 @@ const ChatInput = ({input, handleInputChange, handleSubmit, selectedModel, onMod
             </SelectGroup>
           </SelectContent>
         </Select>
+        {!isPlayground && <Terminal/>}
+        </div>
      
         <PlaceholdersAndVanishInput
           input={input}

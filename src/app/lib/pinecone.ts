@@ -29,7 +29,7 @@ export async function loadS3IntoPinecone(fileKey: string) {
   const documents = await Promise.all(pages.map(prepareDocument));
 
   // 3. vectorise and embed individual documents
-  const vectors = await Promise.all(documents.flat().map(embedDocument));
+  const vectors = await Promise.all(documents.flat().map(document => embedDocument(document, fileKey)));
 
   // 4. upload to pinecone
   const pineconeIndex = await pc.index("safetrain");
@@ -41,7 +41,7 @@ export async function loadS3IntoPinecone(fileKey: string) {
   return documents[0];
 }
 
-async function embedDocument(doc: Document) {
+async function embedDocument(doc: Document, fileKey: string) {
   try {
     const embeddings = await getEmbeddings(doc.pageContent);
 
@@ -54,6 +54,8 @@ async function embedDocument(doc: Document) {
       metadata: {
         text: doc.metadata.text,
         pageNumber: doc.metadata.pageNumber,
+        fileName: fileKey,
+        
       },
     } as PineconeRecord;
   } catch (error) {
@@ -86,12 +88,9 @@ async function prepareDocument(page: PDFPage) {
 
 export async function deleteNamespace(fileKey: string){
   const pineconeIndex = await pc.index("safetrain");
-
   const stats_before = await pineconeIndex.describeIndexStats();
   const totalBefore = stats_before.totalRecordCount ?? 0; 
-
   await pineconeIndex.namespace(convertToAscii(fileKey)).deleteAll();
-
   const stats_after = await pineconeIndex.describeIndexStats();
   const totalAfter = stats_after.totalRecordCount ?? 0;
   
