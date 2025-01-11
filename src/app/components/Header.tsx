@@ -34,7 +34,6 @@ const Header = (props: Props) => {
                         userButtonAvatarBox: {
                             width: "48px",
                             height: "48px",
-                            // Optionnel : cibler le survol, le focus, etc.
                             "& img": {
                             width: "100%",
                             height: "100%",

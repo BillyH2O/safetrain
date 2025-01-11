@@ -18,7 +18,7 @@ type Props = {
 
 export default function ChatList({chats, chatId}: Props) {
   return (
-    <div className='flex flex-col gap-5 bg-neutral-900 items-center p-4 h-full overflow-y-scroll overflow-x-hidden'> 
+    <div className='flex flex-col gap-5 bg-neutral-900 items-center p-6 h-full overflow-y-scroll overflow-x-hidden'> 
         <Link key={chatId} href={"/dashboard"} className="flex justify-center text-center mb-3">
             <HoverBorderGradient
                 containerClassName="rounded-full"

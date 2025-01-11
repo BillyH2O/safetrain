@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
@@ -12,6 +12,7 @@ import PDFViewer from '@/app/components/PDFViewer';
 import { Switch } from '@nextui-org/react';
 import { FileText, Text } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { useChatSettings } from '@/app/components/context/ChatContext';
 
 type ChatType = {
   userId: string;
@@ -24,11 +25,19 @@ type ChatType = {
 
 export default function ChatPage() {
   const [isEnabled, setIsEnabled] = useState(true);
+  const { chatId, setChatId } = useChatSettings();
 
   // Récupérer et vérifier le paramètre
   const params = useParams();
-  const chatId = Array.isArray(params.chatId) ? params.chatId[0] : params.chatId;
-  const chatIdNumber = parseInt(chatId ?? '0', 10);
+  const newChatId = Array.isArray(params.chatId) ? params.chatId[0] : params.chatId;
+  const chatIdNumber = parseInt(newChatId ?? '0', 10);
+
+  useEffect(() => {
+    console.log('newChatId:', newChatId, 'chatIdNumber:', chatIdNumber);
+    setChatId(chatIdNumber);
+    console.log('Provider chatId:', chatId);
+  }, [chatIdNumber, setChatId]);
+
 
   // Récupération des données via React Query
   const { data: chats = [], isLoading } = useQuery<ChatType[]>({
@@ -69,7 +78,7 @@ export default function ChatPage() {
           startContent={<Text />}
           className="absolute right-10 top-10"
         />
-        <Chat chatId={chatIdNumber} />
+        <Chat chatId={chatIdNumber}/>
       </div>
 
       {isEnabled && (

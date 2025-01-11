@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
@@ -14,6 +14,7 @@ import { FileText, Text } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
 import Terminal from '@/app/components/Terminal';
 import { ConfigTerminal } from '@/app/components/ConfigTerminal';
+import { useChatSettings } from '@/app/components/context/ChatContext';
 
 type ChatType = {
   userId: string;
@@ -26,6 +27,11 @@ type ChatType = {
 
 export default function ChatPage() {
   const [isEnabled, setIsEnabled] = useState(true);
+  const { chatId, setChatId } = useChatSettings();
+  
+  React.useEffect(() => {
+    setChatId(null);
+  }, [setChatId]);
 
   const handleSwitchChange = () => setIsEnabled((prev) => !prev);
 
@@ -36,7 +42,7 @@ export default function ChatPage() {
         <Chat />
       </div>
       
-      <div className='h-full flex-1 p-10 border-l border-zinc-700 bg-neutral-950'>
+      <div className='w-[20%] h-full flex-1 border-l border-zinc-700 bg-neutral-950'>
       <ConfigTerminal isPlayground={true}/>
       </div>
     </div>

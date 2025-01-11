@@ -1,4 +1,3 @@
-// /app/api/get-chats/route.ts
 import { db } from "@/app/lib/db";
 import { chats } from "@/app/lib/db/schema";
 import { auth } from "@clerk/nextjs/server";

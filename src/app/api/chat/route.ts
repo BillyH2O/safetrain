@@ -14,6 +14,8 @@ export async function POST(req: Request) {
   const { messages, chatId, config} = await req.json();
 
   if (!config || typeof config !== 'object') {
+    console.log("config : ", config)
+    console.log("Missing or invalid settings")
     return NextResponse.json({ error: "Missing or invalid settings" }, { status: 400 });
   }
 

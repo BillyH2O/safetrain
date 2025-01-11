@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 import { uploadToS3 } from "../lib/s3";
 import { useRouter } from "next/navigation";
 
-
 export const useFileUpload = (onChange?: (files: File[]) => void) => {
   const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);

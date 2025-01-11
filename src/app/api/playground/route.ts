@@ -31,18 +31,16 @@ export async function POST(req: Request) {
   const prompt_final = initial_prompt + " " + prompt ;
   console.log("prompt_final :", prompt_final);
 
-  let assistantResponse = "";
-
   const result = streamText({
     model: modelInstance,
     system: prompt_final,
     prompt: lastMessage.content,
-    //temperature: temperature,
-    //topK: topK,
-    //topP: topP,
-    //maxSteps: maxSteps,
-    //stopSequences: stopSequences,
-    });
+    temperature: temperature,
+    topK: topK,
+    topP: topP,
+    maxSteps: maxSteps,
+    stopSequences: stopSequences,
+  });
 
   return result.toDataStreamResponse();
 }
