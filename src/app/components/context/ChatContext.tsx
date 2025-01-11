@@ -27,6 +27,9 @@ type ChatContextType = {
   setStopSequences: (value: string) => void;
   prompt: string;
   setPrompt: (value: string) => void;
+  chunkingStrategy: string;
+  setChunkingStrategy: (value: string) => void;
+
   resetConfig: () => void;
   idConfigSelected: number | null; 
   setIdConfigSelected: (value: number | null) => void;
@@ -65,9 +68,9 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
   const [topK, setTopK] = useState<number>(0.4);
   const [maxSteps, setMaxSteps] = useState<number>(1);
   const [stopSequences, setStopSequences] = useState<string>("");
+  const [chunkingStrategy, setChunkingStrategy] = useState<string>("");
   const [prompt, setPrompt] = useState<string>("");
   const [idConfigSelected, setIdConfigSelected] = useState<number | null>(null);
-
   const resetConfig = () => { 
     setName("")
     setTemperature(0.5);
@@ -76,6 +79,7 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
     setMaxSteps(50);
     setStopSequences("");
     setPrompt("");
+    setChunkingStrategy("");
     setIdConfigSelected(null);
   }
 
@@ -99,6 +103,7 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
       ...(chatId ? { chatId } : {}),
       config: {
         selectedModel,
+        chunkingStrategy,
         temperature,
         topP,
         topK,
@@ -142,6 +147,8 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
         setStopSequences,
         prompt,
         setPrompt,
+        chunkingStrategy, 
+        setChunkingStrategy,
         resetConfig,
         idConfigSelected, 
         setIdConfigSelected,

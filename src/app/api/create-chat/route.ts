@@ -16,7 +16,10 @@ export async function POST(req: Request, res: Response){
         const body = await req.json()
         const{file_key, file_name} = body
 
-        await loadS3IntoPinecone(file_key)
+        await Promise.all([
+            loadS3IntoPinecone(file_key, "standard"),
+            loadS3IntoPinecone(file_key, "late_chunking")
+          ]);          
 
         const thumbnailKey = await generatePdfThumbnail(file_key);
         console.log("pdf url :", getS3Url(file_key))

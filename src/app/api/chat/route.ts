@@ -1,4 +1,4 @@
-import { getContext } from '@/app/lib/context';
+import { getContext, getContextLateChunking } from '@/app/lib/context';
 import { db } from '@/app/lib/db';
 import { chats, messages as _messages } from '@/app/lib/db/schema';
 import { convertToCoreMessages, Message, streamText } from 'ai';
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Missing or invalid settings" }, { status: 400 });
   }
 
-  const { selectedModel, temperature, topP, topK, maxSteps, stopSequences, prompt} = config;
+  const { selectedModel, chunkingStrategy, temperature, topP, topK, maxSteps, stopSequences, prompt} = config;
   console.log("chatId :", chatId);
   console.log("config :", config); 
 
@@ -30,15 +30,25 @@ export async function POST(req: Request) {
 
   const fileKey = _chats[0].fileKey;
   const lastMessage = messages[messages.length - 1];
-  const context = await getContext(lastMessage.content, fileKey);
+
+  let context;
+  switch (chunkingStrategy) {
+    case 'standard':
+      context = await getContext(lastMessage.content, fileKey);
+      break;
+    case 'late chunking':
+      context = await getContextLateChunking(lastMessage.content, fileKey);
+      break;
+    default:
+      context = await getContext(lastMessage.content, fileKey);
+      break;
+  }
   console.log("[CONTEXT]", context)
 
   const modelInstance = getModelFromKey(selectedModel);
   
   const initial_prompt = generatePrompt("initialPrompt", context)
   const prompt_final = initial_prompt + " " + prompt ;
-  console.log("prompt_final :", prompt_final);
-
   let assistantResponse = "";
 
   const result = streamText({

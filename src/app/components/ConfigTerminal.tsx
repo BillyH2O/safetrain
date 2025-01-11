@@ -6,6 +6,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { PromptSelector } from './PromptSelector';
 import TerminalDoc from './TerminalDoc';
+import { ChunkingSelector } from './ChunkingSelector';
 
 type Props = {
     isPlayground: boolean
@@ -114,14 +115,18 @@ export const ConfigTerminal = ({isPlayground}: Props) => {
         </div>
 
         <div className='flex flex-1 flex-col justify-center gap-4 overflow-hidden'>
-            <Input
-                isRequired
-                className="emax-w-non"
-                value={name} 
-                onChange={(e) => setName(e.target.value)} 
-                label="Nom"
-                isDisabled={!isPlayground}
-            />
+            <div className='flex gap-3 justify-between items-center'>
+                <Input
+                    isRequired
+                    className="max-w-none w-1/2"
+                    value={name} 
+                    onChange={(e) => setName(e.target.value)} 
+                    label="Nom"
+                    isDisabled={!isPlayground}
+                    size='sm'
+                />
+                <ChunkingSelector/>
+            </div>
             <Slider
                 value={temperature}
                 onChange={(value) => setTemperature(value as number)}

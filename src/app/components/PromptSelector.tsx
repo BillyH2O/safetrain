@@ -50,12 +50,13 @@ export function PromptSelector({name}: Props) {
         setIdConfigSelected(selectedId);  
         console.log(`Config sélectionnée : ${selectedId !== null ? selectedId : "Aucune"}`);
       }}>
-      <SelectTrigger className="w-full">
+      <SelectTrigger className="w-full truncate">
       <span>{name || "Selectionnez une config"}</span>
       </SelectTrigger>
 
       <SelectContent>
-        <SelectGroup>    
+        <SelectGroup>   
+        <SelectLabel>template</SelectLabel> 
         {data?.map((config: Config) => (
             <SelectItem key={config.id} value={config.id.toString()}>{config.name}</SelectItem>
         ))}
