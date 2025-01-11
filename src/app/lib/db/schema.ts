@@ -33,6 +33,8 @@ export const messages = pgTable('messages' , {
 export const configs = pgTable('configs' , {
   id: serial('id').primaryKey(),
   name: text('name').notNull().unique(),
+  chunkingStrategy: text('chunking_strategy').notNull().default('ma_valeur_par_defaut'),
+  rerankingModel: text('reranking_model').notNull().default('null'),
   temperature: real('temperature').notNull(),
   topP: real('topP').notNull(),
   topK: real('topK').notNull(),

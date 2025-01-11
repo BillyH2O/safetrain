@@ -56,33 +56,6 @@ export async function loadS3IntoPinecone(fileKey: string, chunkingMethod: string
   return documents[0];
 }
 
-/*
-export async function loadS3IntoPineconeForLateChunking(fileKey: string) {
-  const file_name = await downloadFromS3(fileKey);
-  if (!file_name) {
-    throw new Error("could not download from s3");
-  }
-  console.log("loading pdf into memory" + file_name);
-  const loader = new PDFLoader(file_name);
-  const pages = (await loader.load()) as PDFPage[];
-
-  // 2. split and segment the pdf
-
-  const documents = await Promise.all(pages.map(prepareDocumentForLateChunking));
-
-  // 3. vectorise and embed individual documents
-  const vectors = await Promise.all(documents.flat().map(document => embedDocument(document, fileKey)));
-
-  // 4. upload to pinecone
-  const pineconeIndex = await pc.index("safetrain");
-  const namespace = pineconeIndex.namespace(`${convertToAscii(fileKey)}_late_chunking`);
-
-  console.log("inserting vectors into pinecone ForLateChunking");
-  await namespace.upsert(vectors);
-
-  return documents[0];
-}*/
-
 async function embedDocument(doc: Document, fileKey: string) {
   try {
     const embeddings = await getEmbeddings(doc.pageContent);

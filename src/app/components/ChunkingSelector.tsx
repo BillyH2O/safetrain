@@ -14,24 +14,8 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useChatSettings } from "./context/ChatContext";
 
-type Config = {
-    id: number;
-    name: string;
-    temperature: number;
-    topP: number;
-    topK: number;
-    maxSteps: number;
-    stopSequences: string;
-    prompt: string;
-    createdAt: string;
-    userId: string;
-  };
-
-  type Props = {
-
-  }
+type Props = {}
   
-
 export function ChunkingSelector({}:Props) {
 
     const {chunkingStrategy, setChunkingStrategy} = useChatSettings(); 

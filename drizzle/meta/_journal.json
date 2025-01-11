@@ -29,6 +29,34 @@
       "when": 1736455793981,
       "tag": "0003_abnormal_earthquake",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1736622402140,
+      "tag": "0004_icy_marauders",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1736622450524,
+      "tag": "0005_nasty_fabian_cortez",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1736623133188,
+      "tag": "0006_cool_tyger_tiger",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1736623278033,
+      "tag": "0007_worthless_magus",
+      "breakpoints": true
     }
   ]
 }

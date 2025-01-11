@@ -7,13 +7,14 @@ import toast from 'react-hot-toast';
 import { PromptSelector } from './PromptSelector';
 import TerminalDoc from './TerminalDoc';
 import { ChunkingSelector } from './ChunkingSelector';
+import { RerankingSelector } from './RerankingSelector';
 
 type Props = {
     isPlayground: boolean
 }
 
 export const ConfigTerminal = ({isPlayground}: Props) => {
-  const { name, setName, temperature, setTemperature, topP, setTopP, topK, setTopK, maxSteps, setMaxSteps, stopSequences, setStopSequences, prompt, setPrompt, resetConfig, idConfigSelected, setIdConfigSelected} = useChatSettings(); 
+  const { name, setName, chunkingStrategy, rerankingModel, temperature, setTemperature, topP, setTopP, topK, setTopK, maxSteps, setMaxSteps, stopSequences, setStopSequences, prompt, setPrompt, resetConfig, idConfigSelected, setIdConfigSelected} = useChatSettings(); 
   
   const queryClient = useQueryClient();
 
@@ -57,7 +58,7 @@ export const ConfigTerminal = ({isPlayground}: Props) => {
     
 
   const { mutate } = useMutation({
-    mutationFn: async (config: { temperature: number; topP: number; topK: number; maxSteps: number; stopSequences: string; prompt: string }) => {
+    mutationFn: async (config: { chunkingStrategy: string, rerankingModel: string, temperature: number; topP: number; topK: number; maxSteps: number; stopSequences: string; prompt: string }) => {
       const response = await axios.post("/api/create-config", {config});
       return response.data;
     },       
@@ -72,6 +73,8 @@ export const ConfigTerminal = ({isPlayground}: Props) => {
 
   const handleSave = () => { 
     const config = {
+        chunkingStrategy, 
+        rerankingModel,
         name,
         temperature,
         topP,
@@ -116,15 +119,7 @@ export const ConfigTerminal = ({isPlayground}: Props) => {
 
         <div className='flex flex-1 flex-col justify-center gap-4 overflow-hidden'>
             <div className='flex gap-3 justify-between items-center'>
-                <Input
-                    isRequired
-                    className="max-w-none w-1/2"
-                    value={name} 
-                    onChange={(e) => setName(e.target.value)} 
-                    label="Nom"
-                    isDisabled={!isPlayground}
-                    size='sm'
-                />
+                <RerankingSelector/>
                 <ChunkingSelector/>
             </div>
             <Slider
@@ -179,12 +174,26 @@ export const ConfigTerminal = ({isPlayground}: Props) => {
                 isDisabled={!isPlayground}
             />
 
-            <Input label="stopSequences"  
-                value={stopSequences} 
-                onChange={(e) => setStopSequences(e.target.value)} 
-                isDisabled={!isPlayground}
-            />
             <Textarea className="w-full" maxRows={3} isClearable label="Prompt" placeholder="Entrez votre prompt" value={prompt} onChange={(e) => setPrompt(e.target.value)} isDisabled={!isPlayground}/>
+            <div className='flex gap-3 justify-between items-center'>
+                <Input
+                    isRequired
+                    className="max-w-none w-1/2"
+                    value={name} 
+                    onChange={(e) => setName(e.target.value)} 
+                    label="Nom"
+                    isDisabled={!isPlayground}
+                    size='sm'
+                />
+                <Input 
+                    className="max-w-none w-1/2" 
+                    value={stopSequences} 
+                    onChange={(e) => setStopSequences(e.target.value)} 
+                    label="stopSequences" 
+                    isDisabled={!isPlayground}
+                    size='sm'
+                />
+            </div>
         </div>
 
         {isPlayground ? (

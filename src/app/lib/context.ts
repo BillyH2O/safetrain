@@ -1,15 +1,21 @@
 import { Pinecone } from "@pinecone-database/pinecone";
-import { convertToAscii } from "./utils";
+import { convertToAscii, cosineSimilarity } from "./utils";
 import { getEmbeddings } from "./embedding";
 import { db } from "./db";
 import { chats } from "./db/schema";
 import { Document, RecursiveCharacterTextSplitter } from "@pinecone-database/doc-splitter";
 import { ScoredVector } from "@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch/db_data";
+import { applyReranking, reRankWithGPT, reRankWithHuggingFace } from "./reranking";
 
-type Metadata = {
+export type Metadata = {
   text: string;
   pageNumber?: number;
   [key: string]: any;
+};
+
+export type RerankedDoc = {
+  text: string;
+  newScore: number;
 };
 
 export async function getMatchesFromEmbeddings(
@@ -21,6 +27,8 @@ export async function getMatchesFromEmbeddings(
     const client = new Pinecone({
       apiKey: process.env.PINECONE_API_KEY!,
     });
+
+    console.log("CHUNKING METHOD : ", chunkingMethod)
 
     const index = await client.index("safetrain");
 
@@ -57,55 +65,81 @@ export async function getMatchesFromEmbeddings(
   }
 }
 
-export async function getContext(query: string, fileKey: string) {
+
+
+export async function getContext(query: string, fileKey: string, rerankingStrategy: string) {
   const chunkingMethod = "standard";
-
+  console.log("reranking STRAT : ", rerankingStrategy);
   const queryEmbeddings = await getEmbeddings(query);
-
   const matches = await getMatchesFromEmbeddings(queryEmbeddings, fileKey, chunkingMethod);
-
   console.log("[MATCHES] : ", matches)
-
-  const qualifyingDocs = matches.filter(
-    (match) => match.score && match.score > 0.7
-  );
-
-  type Metadata = {
-    text: string;
-    pageNumber: number;
-  };
-
-  let docs = qualifyingDocs.map((match) => (match.metadata as Metadata).text);
-  // 5 vectors
-  return docs.join("\n").substring(0, 3000);
+  const filteredResults = matches.filter((match) => match.score && match.score > 0.7);
+  const qualifyingDocs = filteredResults.map((match) => ({
+    text: (match.metadata as Metadata).text,
+    score: match.score ?? 0,
+  }));
+  const finalDocs = await applyReranking(query, qualifyingDocs, rerankingStrategy);
+  const topDocs = finalDocs.slice(0, 5).map((doc) => doc.text);
+  return topDocs.join("\n").substring(0, 3000);
 }
 
 
-export async function getAllContext(query: string, chunkingMethod: string) {
-  
-  console.log("HUNCKING METHODE ALL : ", chunkingMethod)
+
+export async function getContextLateChunking(query: string, fileKey: string, topK = 10, rerankingStrategy: string): Promise<string> {
+  const chunkingMethod = "late_chunking"
+  const queryEmbeddings = await getEmbeddings(query);
+  const matches = await getMatchesFromEmbeddings(queryEmbeddings, fileKey, chunkingMethod);
+  if (!matches || matches.length === 0) {
+    console.log("[INFO]: Aucun match trouvé pour cette requête.");
+    return "";
+  }
+  // Pour chaque match (gros chunk), on va redécouper localement + scorer
+  const topMatches = matches.slice(0, topK);
+  const refinedPassagesArrays = await Promise.all(
+    topMatches.map((match) => prepareLateChunk(match, queryEmbeddings))
+  );
+  const allRefinedPassages = refinedPassagesArrays.flat();
+  const filteredResults = allRefinedPassages.filter((p) => p.score > 0.7);
+  const finalDocs = await applyReranking(query, filteredResults, rerankingStrategy);
+  const topDocs = finalDocs.slice(0, 5).map((p) => p.text); // (topN)
+  return topDocs.join("\n").substring(0, 3000);
+
+  //console.log("[MATCHES LATE CHUNKING] : ", matches)
+  //console.log("[topMatches LATE CHUNKING] : ", topMatches)
+  //console.log("[topSubChunks LATE CHUNKING] : ", topSubChunks)
+  // On reconstitue le contexte final en limitant à 3000 caractères max
+}
+
+export async function getAllContext(query: string, chunkingMethod: string, rerankingStrategy: string) {
   const queryEmbeddings = await getEmbeddings(query);
   const fileKeys = await db.select({ fileKey: chats.fileKey }).from(chats);
   const matches = await Promise.all(
     fileKeys.map(({ fileKey }: { fileKey: string }) => getMatchesFromEmbeddings(queryEmbeddings, fileKey, chunkingMethod))
   )
-  const flattenMatches = matches.flat();
-  flattenMatches.sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
-  const filteredResults = flattenMatches.filter((match) =>  match.score !== undefined && match.score >= 0.75);
-  const topN = 5;
-  const topResults = filteredResults.slice(0, topN);
+  const allMatches  = matches.flat();
+  allMatches .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+  const filteredResults = allMatches .filter((match) =>  match.score !== undefined && match.score >= 0.75);
+  const qualifyingDocs = filteredResults.map((match) => ({
+    text: (match.metadata as Metadata).text,
+    score: match.score ?? 0,
+  }));
+  const finalDocs = await applyReranking(query, qualifyingDocs, rerankingStrategy);
+  
+  const topDocs  = finalDocs.slice(0, 5); // topN
 
   console.log("[INFO]: File keys to query:", fileKeys);
   //console.log("[MATCHES CONTENT]:", matches);
-  //console.log("[ALL MATCHES BEFORE FILTERING]:", flattenMatches);
+  //console.log("[ALL MATCHES BEFORE FILTERING]:", allMatches);
   //console.log("[FILTERED RESULTS]:", filteredResults);
-  console.log("[topResults]:", topResults);
+  console.log("[topResults]:", topDocs);
 
-  return topResults
-  .map((match) => {
-     const docName = match.metadata?.fileName ?? "UnnamedDoc";
-     const snippet = match.metadata?.text ?? "";
-     return `DOCUMENT: ${docName}\n${snippet}`;
+  return topDocs 
+  .map((doc) => {
+    const foundMatch = allMatches.find(
+      (m) => (m.metadata as Metadata)?.text === doc.text // on férifie que le match d’origine correspond à doc (un des documents du topDoc).
+    );
+    const docName = foundMatch?.metadata?.fileName ?? "UnnamedDoc";
+    return `DOCUMENT: ${docName}\n${doc.text}`;
   })
   .join("\n")
   .substring(0, 6000);
@@ -155,56 +189,4 @@ async function prepareLateChunk(match: ScoredVector, queryEmbeddings: number[]) 
   }
 
   return refinedPassages;
-}
-
-function cosineSimilarity(a: number[], b: number[]): number {
-  // a et b : vecteurs de même taille
-  let dot = 0.0;
-  let normA = 0.0;
-  let normB = 0.0;
-  for (let i = 0; i < a.length; i++) {
-    dot += a[i] * b[i];
-    normA += a[i] * a[i];
-    normB += b[i] * b[i];
-  }
-  return dot / (Math.sqrt(normA) * Math.sqrt(normB));
-}
-
-export async function getContextLateChunking(query: string, fileKey: string, topK = 10): Promise<string> {
-  const chunkingMethod = "late_chunking"
-  
-  // 1. Embeddings sur la query
-  const queryEmbeddings = await getEmbeddings(query);
-
-  // 2. Récupérer topK "gros" chunks depuis Pinecone
-  const matches = await getMatchesFromEmbeddings(queryEmbeddings, fileKey, chunkingMethod);
-  if (!matches || matches.length === 0) {
-    console.log("[INFO]: Aucun match trouvé pour cette requête.");
-    return "";
-  }
-  // 3. Pour chaque match (gros chunk), on va redécouper localement + scorer
-  const topMatches = matches.slice(0, topK);
-  const refinedPassagesArrays = await Promise.all(
-    topMatches.map((match) => prepareLateChunk(match, queryEmbeddings))
-  );
-    /* OU
-  let allRefinedPassages: Array<{ text: string; score: number }> = []; 
-  for (const match of matches) {
-  const refinedPassages = await prepareLateChunk(match, queryEmbeddings);
-  allRefinedPassages = allRefinedPassages.concat(refinedPassages);
-} */ 
-  const allRefinedPassages = refinedPassagesArrays.flat();
-
-  // Étape 4 : On trie par score décroissant
-  allRefinedPassages.sort((a, b) => b.score - a.score);
-
-  // Étape 5 : Sélection des meilleurs sous-chunks (topN)
-  const topSubChunks = allRefinedPassages.slice(0, 5).map((p) => p.text);
-
-  console.log("[MATCHES LATE CHUNKING] : ", matches)
-  console.log("[topMatches LATE CHUNKING] : ", topMatches)
-  console.log("[topSubChunks LATE CHUNKING] : ", topSubChunks)
-  // On reconstitue le contexte final en limitant à 3000 caractères max
-  const finalContext = topSubChunks.join("\n\n");
-  return finalContext.substring(0, 3000);
 }
