@@ -34,7 +34,7 @@ export const PDFList = () => {
     </div>
     <div className="mt-10 flex gap-16 flex-wrap flex-1 overflow-y-auto">
       {chats.map((chat: any) => (
-        <PDF chat={chat} isEnabled={isEnabled}/>
+        <PDF key={chat.id} chat={chat} isEnabled={isEnabled}/>
         
       ))}
     </div>

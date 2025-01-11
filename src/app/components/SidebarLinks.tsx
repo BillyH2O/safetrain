@@ -8,6 +8,7 @@ import {
   IconSettings,
   IconUserBolt,
 } from "@tabler/icons-react";
+import { BrainCircuit } from "lucide-react";
 
 const SidebarLinks = () => {
   const links = [
@@ -16,6 +17,13 @@ const SidebarLinks = () => {
       href: "/dashboard",
       icon: (
         <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Playground",
+      href: "/dashboard/playground",
+      icon: (
+        <BrainCircuit className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {

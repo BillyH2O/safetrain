@@ -8,6 +8,27 @@
       "when": 1735741019494,
       "tag": "0000_wild_darkhawk",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1736451261219,
+      "tag": "0001_square_ego",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1736452939357,
+      "tag": "0002_broken_adam_destine",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1736455793981,
+      "tag": "0003_abnormal_earthquake",
+      "breakpoints": true
     }
   ]
 }

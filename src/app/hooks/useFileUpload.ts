@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 import { uploadToS3 } from "../lib/s3";
 import { useRouter } from "next/navigation";
 
-
 export const useFileUpload = (onChange?: (files: File[]) => void) => {
   const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -18,16 +17,6 @@ export const useFileUpload = (onChange?: (files: File[]) => void) => {
       return response.data;
     },
   });
-
-  const handleFileChange = (newFiles: File[]) => {
-    setFiles((prevFiles) => {
-      const updatedFiles = [...prevFiles, ...newFiles];
-      if (onChange) {
-        setTimeout(() => onChange(updatedFiles), 0);
-      }
-      return updatedFiles;
-    });
-  };
 
   const handleDrop = async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
