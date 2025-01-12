@@ -5,6 +5,9 @@ import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import md5 from "md5";
 import { getEmbeddings } from "./embedding";
 import { convertToAscii } from "./utils";
+import { uploadBufferToS3 } from "./s3-buffer";
+import winkBM25 from "wink-bm25-text-search";
+
 
 const pc = new Pinecone({ apiKey: process.env.PINECONE_API_KEY! });
 
@@ -15,7 +18,7 @@ type PDFPage = {
     }
 }
 
-export async function loadS3IntoPinecone(fileKey: string, chunkingMethod: string) {
+export async function loadS3IntoPinecone(fileKey: string, chunkingMethod: string, isHybridResearch: boolean = false) {
   let chunkSize: number, chunkOverlap: number, namespaceSuffix: string;
   if (chunkingMethod === "late_chunking") {
     // Par exemple, plus gros chunks pour la méthode Late Chunking
@@ -28,7 +31,7 @@ export async function loadS3IntoPinecone(fileKey: string, chunkingMethod: string
     chunkOverlap = 20;
     namespaceSuffix = "standard";
   } 
-  
+  const bm25 = winkBM25();
   console.log("downloading s3 into file system");
   const file_name = await downloadFromS3(fileKey);
   if (!file_name) {
@@ -39,14 +42,21 @@ export async function loadS3IntoPinecone(fileKey: string, chunkingMethod: string
   const pages = (await loader.load()) as PDFPage[];
   console.log("Nombre de pages chargés :", pages.flat().length);
 
-  // 2. split and segment the pdf
+  // 2. split & segmenter le pdf
   const documents = await Promise.all(pages.map(page => prepareDocument(page, chunkSize, chunkOverlap)));
-  console.log("Nombre de documents découpés :", documents.flat().length);
+  const flattenedDocs = documents.flat();
   
-  // 3. vectorise and embed individual documents
-  const vectors = await Promise.all(documents.flat().map(document => embedDocument(document, fileKey)));
+  console.log("Nombre de documents découpés :", flattenedDocs.length);
+  
+  // 3. vectorisation d'un doc
+  const vectors = await Promise.all(flattenedDocs.map(document => embedDocument(document, fileKey)));
   console.log("Nombre de vecteurs générés :", vectors.length);
-  // 4. upload to pinecone
+  
+  if (isHybridResearch) {
+    console.log("isHybridResearch : ", isHybridResearch)
+    await handleBM25Index(fileKey, namespaceSuffix, flattenedDocs);
+  }
+  // 4. upload pinecone
   const pineconeIndex = await pc.index("safetrain");
   const namespace = pineconeIndex.namespace(`${convertToAscii(fileKey)}_${namespaceSuffix}`);
 
@@ -117,7 +127,7 @@ export async function deleteNamespace(fileKey: string){
   }
 }
 
-async function prepareDocumentForLateChunking(page: PDFPage) {
+/*async function prepareDocumentForLateChunking(page: PDFPage) {
   let { pageContent, metadata } = page;
   pageContent = pageContent.replace(/\n/g, "");
   // split the docs
@@ -135,6 +145,29 @@ async function prepareDocumentForLateChunking(page: PDFPage) {
     }),
   ]);
   return docs;
+}*/
+
+
+async function handleBM25Index(fileKey: string, namespaceSuffix: string, documents: Document[]) {
+  try {
+    const engine = new BM25();
+    // addDocumentsToBM25
+    console.log("Adding documents to BM25 index...");
+    for (const doc of documents) {
+      try {
+        engine.addDocument(doc.pageContent);
+      } catch (docError) {
+        console.error("Erreur lors de l'ajout du document à l'index BM25 :", docError);
+      }
+    }
+
+    console.log("Saving BM25 index to S3...");
+    const bm25IndexBuffer = Buffer.from(JSON.stringify(engine.getIndex()));
+    console.log("JSON.stringify(engine.getIndex()) : ", JSON.stringify(engine.getIndex()));
+    await uploadBufferToS3(bm25IndexBuffer, `${fileKey}_${namespaceSuffix}_bm25.json`);
+    console.log("BM25 index saved to S3");
+  } catch (error) {
+    console.error("Erreur lors de la gestion de l'index BM25 :", error);
+    throw error;
+  }
 }
-
-

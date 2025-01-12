@@ -42,7 +42,6 @@ export async function reRankWithGPT(query: string, doc: string): Promise<number>
 }
 
 export async function reRankWithHuggingFace(query: string, doc: string): Promise<number> {
-  // Construire le prompt similaire à celui fourni pour GPT
   const prompt = `
     Vous êtes un assistant utile qui évalue la pertinence d’un document par rapport à une requête.
     Votre réponse doit être un simple flottant entre 0 et 1, avec 0 = non pertinent, 1 = très pertinent.
@@ -53,36 +52,58 @@ export async function reRankWithHuggingFace(query: string, doc: string): Promise
     Veuillez renvoyer uniquement le flottant (0 à 1).
   `;
 
-  const modelId = "google/flan-t5-small"; // Choisissez le modèle adapté
+  const modelId = "google/flan-t5-small";
   const url = `https://api-inference.huggingface.co/models/${modelId}`;
+  const maxRetries = 10; // Nombre maximum de tentatives
+  const retryDelay = 3000; // Délai entre les tentatives (en millisecondes)
 
-  // Appel à l'API Inference de Hugging Face
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      inputs: prompt,
-      parameters: { max_new_tokens: 5, temperature: 0 },
-    }),
-  });
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          inputs: prompt,
+          parameters: { max_new_tokens: 5, temperature: 0 },
+        }),
+      });
 
-  const json = await response.json();
+      if (response.ok) {
+        const json = await response.json();
 
-  // Selon le modèle et le endpoint, la réponse est généralement un tableau
-  // du type [ { generated_text: "0.75" } ]
-  let score = 0;
-  if (Array.isArray(json) && json.length > 0) {
-    const resultText = json[0].generated_text?.trim();
-    score = parseFloat(resultText || "0");
-    if (isNaN(score)) {
-      score = 0;
+        if (Array.isArray(json) && json.length > 0 && json[0].generated_text) {
+          const resultText = json[0].generated_text.trim();
+          const score = parseFloat(resultText);
+          if (!isNaN(score) && score >= 0 && score <= 1) {
+            return score;
+          }
+        }
+
+        console.error("Réponse inattendue depuis l'API:", json);
+        return 0;
+      } else if (response.status === 503) {
+        const json = await response.json();
+        const estimatedTime = json.estimated_time || retryDelay / 1000;
+        console.log(`Modèle en cours de chargement. Tentative ${attempt} sur ${maxRetries}. Réessai dans ${estimatedTime} secondes...`);
+        await new Promise(resolve => setTimeout(resolve, estimatedTime * 1000));
+      } else {
+        console.error(`Erreur API Hugging Face: ${response.status} - ${await response.text()}`);
+        return 0;
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'appel à l'API Hugging Face:", error);
+      return 0;
     }
   }
-  return score;
+
+  console.error("Le modèle n'a pas pu être chargé après plusieurs tentatives.");
+  return 0;
 }
+
+
 
 
 export async function reranking(query: string, qualifyingDocs: any[],rerankingStrategie: string): Promise<RerankedDoc[]> {
@@ -98,6 +119,7 @@ export async function reranking(query: string, qualifyingDocs: any[],rerankingSt
             break;
           case "Huggingface":
             newScore = await reRankWithHuggingFace(query, text);
+            console.log("newScore Huggingface : ", newScore);
             break;
           default:
             console.log("[RERANKING] : Aucun modèle n'a été sélectionné")

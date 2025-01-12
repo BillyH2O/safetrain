@@ -57,6 +57,13 @@
       "when": 1736623278033,
       "tag": "0007_worthless_magus",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1736634005303,
+      "tag": "0008_big_mister_sinister",
+      "breakpoints": true
     }
   ]
 }

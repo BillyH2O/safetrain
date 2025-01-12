@@ -1,4 +1,4 @@
-import { integer, pgTable, varchar, serial, text, timestamp, pgEnum, real } from "drizzle-orm/pg-core";
+import { integer, pgTable, varchar, serial, text, timestamp, pgEnum, real, boolean } from "drizzle-orm/pg-core";
 import { FileKey } from "lucide-react";
 
 export const userSystemEnum = pgEnum('user_system_enum', ['system', 'user']) // def d'un type enum
@@ -35,6 +35,7 @@ export const configs = pgTable('configs' , {
   name: text('name').notNull().unique(),
   chunkingStrategy: text('chunking_strategy').notNull().default('ma_valeur_par_defaut'),
   rerankingModel: text('reranking_model').notNull().default('null'),
+  hybridSearch: boolean('hybrid_search').notNull().default(false), 
   temperature: real('temperature').notNull(),
   topP: real('topP').notNull(),
   topK: real('topK').notNull(),

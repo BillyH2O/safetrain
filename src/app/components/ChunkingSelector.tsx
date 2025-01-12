@@ -14,15 +14,17 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useChatSettings } from "./context/ChatContext";
 
-type Props = {}
+type Props = {
+  isPlayground:boolean
+}
   
-export function ChunkingSelector({}:Props) {
+export function ChunkingSelector({isPlayground}:Props) {
 
     const {chunkingStrategy, setChunkingStrategy} = useChatSettings(); 
 
   return (
     <Select onValueChange={(value) => setChunkingStrategy(value)} value={chunkingStrategy}>
-      <SelectTrigger className="w-1/2 truncate">
+      <SelectTrigger disabled={!isPlayground} className="truncate">
       <span>{chunkingStrategy || "chunking"}</span>
       </SelectTrigger>
 

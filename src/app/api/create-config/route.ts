@@ -30,6 +30,7 @@ export async function POST(req: Request, res: Response){
             name: config.name,
             chunkingStrategy: config.chunkingStrategy,
             rerankingModel: config.rerankingModel,
+            hybridSearch: config.isHybridSearch,
             temperature: config.temperature,
             topP: config.topP,
             topK: config.topK,

@@ -31,6 +31,8 @@ type ChatContextType = {
   setChunkingStrategy: (value: string) => void;
   rerankingModel: string;
   setRerankingModel: (value: string) => void;
+  isHybridSearch: boolean;
+  setHybridSearch: (value: boolean) => void;
 
   resetConfig: () => void;
   idConfigSelected: number | null; 
@@ -72,6 +74,7 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
   const [stopSequences, setStopSequences] = useState<string>("");
   const [chunkingStrategy, setChunkingStrategy] = useState<string>("standard");
   const [rerankingModel, setRerankingModel] = useState<string>("null");
+  const [isHybridSearch, setHybridSearch] = useState<boolean>(false);
   const [prompt, setPrompt] = useState<string>("");
   const [idConfigSelected, setIdConfigSelected] = useState<number | null>(null);
   const resetConfig = () => { 
@@ -109,6 +112,7 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
         selectedModel,
         chunkingStrategy,
         rerankingModel,
+        isHybridSearch,
         temperature,
         topP,
         topK,
@@ -156,6 +160,8 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
         setChunkingStrategy,
         rerankingModel,
         setRerankingModel,
+        isHybridSearch,
+        setHybridSearch,
         resetConfig,
         idConfigSelected, 
         setIdConfigSelected,

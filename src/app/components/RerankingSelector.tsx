@@ -14,31 +14,18 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useChatSettings } from "./context/ChatContext";
 
-type Config = {
-    id: number;
-    name: string;
-    temperature: number;
-    topP: number;
-    topK: number;
-    maxSteps: number;
-    stopSequences: string;
-    prompt: string;
-    createdAt: string;
-    userId: string;
-  };
-
-  type Props = {
-
-  }
+type Props = {
+  isPlayground:boolean
+}
   
 
-export function RerankingSelector({}:Props) {
+export function RerankingSelector({isPlayground}:Props) {
 
-    const {rerankingModel, setRerankingModel} = useChatSettings(); 
+  const {rerankingModel, setRerankingModel} = useChatSettings(); 
 
   return (
     <Select onValueChange={(value) => setRerankingModel(value)} value={rerankingModel}>
-      <SelectTrigger className="w-1/2 truncate">
+      <SelectTrigger className="truncate" disabled={!isPlayground}>
       <span>{rerankingModel !== "null" ? rerankingModel : "reranking"}</span>
       </SelectTrigger>
 
