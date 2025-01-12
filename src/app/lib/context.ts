@@ -5,17 +5,16 @@ import { db } from "./db";
 import { chats } from "./db/schema";
 import { Document, RecursiveCharacterTextSplitter } from "@pinecone-database/doc-splitter";
 import { ScoredVector } from "@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch/db_data";
-import { applyReranking, reRankWithGPT, reRankWithHuggingFace } from "./reranking";
+import { applyReranking, RerankedDoc, reRankWithGPT, reRankWithHuggingFace } from "./reranking";
+import { downloadFromS3 } from "./s3-server";
+import winkBM25 from "wink-bm25-text-search";
+import { applyHybridSearch, HybridDoc } from "./bm25";
 
 export type Metadata = {
   text: string;
   pageNumber?: number;
+  fileName?: string;
   [key: string]: any;
-};
-
-export type RerankedDoc = {
-  text: string;
-  newScore: number;
 };
 
 export async function getMatchesFromEmbeddings(
@@ -67,25 +66,33 @@ export async function getMatchesFromEmbeddings(
 
 
 
-export async function getContext(query: string, fileKey: string, rerankingStrategy: string) {
+export async function getContext(query: string, fileKey: string, rerankingStrategy: string, isHybridSearch: boolean) {
   const chunkingMethod = "standard";
   console.log("reranking STRAT : ", rerankingStrategy);
+  console.log("isHybridSearch STRAT : ", isHybridSearch);
+  
   const queryEmbeddings = await getEmbeddings(query);
   const matches = await getMatchesFromEmbeddings(queryEmbeddings, fileKey, chunkingMethod);
   console.log("[MATCHES] : ", matches)
+
   const filteredResults = matches.filter((match) => match.score && match.score > 0.7);
   const qualifyingDocs = filteredResults.map((match) => ({
     text: (match.metadata as Metadata).text,
     score: match.score ?? 0,
   }));
-  const finalDocs = await applyReranking(query, qualifyingDocs, rerankingStrategy);
+
+  // qualifyingDocs = Pinecone doc
+  const combined = await applyHybridSearch(qualifyingDocs, query, fileKey, chunkingMethod, isHybridSearch);
+  console.log("[COMBINED] : ", combined)
+
+  const finalDocs = await applyReranking(query, combined, rerankingStrategy);
   const topDocs = finalDocs.slice(0, 5).map((doc) => doc.text);
   return topDocs.join("\n").substring(0, 3000);
 }
 
 
 
-export async function getContextLateChunking(query: string, fileKey: string, topK = 10, rerankingStrategy: string): Promise<string> {
+export async function getContextLateChunking(query: string, fileKey: string, topK = 10, rerankingStrategy: string, isHybridSearch: boolean): Promise<string> {
   const chunkingMethod = "late_chunking"
   const queryEmbeddings = await getEmbeddings(query);
   const matches = await getMatchesFromEmbeddings(queryEmbeddings, fileKey, chunkingMethod);
@@ -100,7 +107,10 @@ export async function getContextLateChunking(query: string, fileKey: string, top
   );
   const allRefinedPassages = refinedPassagesArrays.flat();
   const filteredResults = allRefinedPassages.filter((p) => p.score > 0.7);
-  const finalDocs = await applyReranking(query, filteredResults, rerankingStrategy);
+
+  const combined = await applyHybridSearch(filteredResults, query, fileKey, chunkingMethod, isHybridSearch);
+
+  const finalDocs = await applyReranking(query, combined, rerankingStrategy);
   const topDocs = finalDocs.slice(0, 5).map((p) => p.text); // (topN)
   return topDocs.join("\n").substring(0, 3000);
 
@@ -110,7 +120,7 @@ export async function getContextLateChunking(query: string, fileKey: string, top
   // On reconstitue le contexte final en limitant à 3000 caractères max
 }
 
-export async function getAllContext(query: string, chunkingMethod: string, rerankingStrategy: string) {
+export async function getAllContextV0(query: string, chunkingMethod: string, rerankingStrategy: string) {
   const queryEmbeddings = await getEmbeddings(query);
   const fileKeys = await db.select({ fileKey: chats.fileKey }).from(chats);
   const matches = await Promise.all(
@@ -145,6 +155,53 @@ export async function getAllContext(query: string, chunkingMethod: string, reran
   .substring(0, 6000);
 }
 
+export async function getAllContext(query: string, chunkingMethod: string, rerankingStrategy: string, isHybridSearch: boolean): Promise<string> {
+  const queryEmbeddings = await getEmbeddings(query);
+  const fileKeys = await db.select({ fileKey: chats.fileKey }).from(chats);
+  console.log("[INFO]: File keys to query:", fileKeys);
+  const allDocs = await Promise.all(
+    fileKeys.map(async ({ fileKey }) => {
+      const matches = await getMatchesFromEmbeddings(queryEmbeddings, fileKey, chunkingMethod);
+
+      const pineconeDocs: HybridDoc[] = matches
+        .filter((m) => m.score && m.score >= 0.75)
+        .map((m) => ({
+          text: typeof (m.metadata as Metadata)?.text === "string"
+            ? (m.metadata as Metadata).text
+            : String((m.metadata as Metadata)?.text ?? ""),
+          score: m.score ?? 0,
+          fileName: typeof (m.metadata as Metadata)?.fileName === "string"
+            ? (m.metadata as Metadata).fileName
+            : fileKey,
+        }));
+
+      const combined = await applyHybridSearch(pineconeDocs,query,fileKey,chunkingMethod,isHybridSearch);
+
+      // On s'assure que each doc a un fileName
+      return combined.map((doc) => ({
+        ...doc,
+        fileName: doc.fileName ?? fileKey,
+      })) as HybridDoc[];
+    })
+  );
+
+  let mergedDocs: HybridDoc[] = allDocs.flat();
+  mergedDocs.sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+
+  const finalDocs: RerankedDoc[] = await applyReranking(query, mergedDocs, rerankingStrategy);
+  const topDocs = finalDocs.slice(0, 5);
+  console.log("[topResults]:", topDocs);
+
+  const assembled = topDocs
+    .map((doc) => {
+      // doc.fileName peut être undefined => fallback
+      const docName = doc.fileName ?? "UnnamedDoc";
+      return `DOCUMENT: ${docName}\n${doc.text}`;
+    })
+    .join("\n");
+
+  return assembled.substring(0, 6000);
+}
 
 async function splitTextForLateChunking(text: string): Promise<Document[]> {
   // Paramètres ajustables
@@ -190,3 +247,4 @@ async function prepareLateChunk(match: ScoredVector, queryEmbeddings: number[]) 
 
   return refinedPassages;
 }
+

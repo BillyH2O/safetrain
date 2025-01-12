@@ -4,9 +4,9 @@ import { downloadFromS3 } from "./s3-server";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import md5 from "md5";
 import { getEmbeddings } from "./embedding";
-import { convertToAscii } from "./utils";
-import { uploadBufferToS3 } from "./s3-buffer";
+import { convertToAscii, removeDiacritics } from "./utils";
 import winkBM25 from "wink-bm25-text-search";
+import { uploadBufferToS3 } from "./s3-buffer";
 
 
 const pc = new Pinecone({ apiKey: process.env.PINECONE_API_KEY! });
@@ -18,7 +18,7 @@ type PDFPage = {
     }
 }
 
-export async function loadS3IntoPinecone(fileKey: string, chunkingMethod: string, isHybridResearch: boolean = false) {
+export async function loadS3IntoPinecone(fileKey: string, chunkingMethod: string, isHybridResearch: boolean = true) {
   let chunkSize: number, chunkOverlap: number, namespaceSuffix: string;
   if (chunkingMethod === "late_chunking") {
     // Par exemple, plus gros chunks pour la méthode Late Chunking
@@ -31,7 +31,7 @@ export async function loadS3IntoPinecone(fileKey: string, chunkingMethod: string
     chunkOverlap = 20;
     namespaceSuffix = "standard";
   } 
-  const bm25 = winkBM25();
+  
   console.log("downloading s3 into file system");
   const file_name = await downloadFromS3(fileKey);
   if (!file_name) {
@@ -51,9 +51,9 @@ export async function loadS3IntoPinecone(fileKey: string, chunkingMethod: string
   // 3. vectorisation d'un doc
   const vectors = await Promise.all(flattenedDocs.map(document => embedDocument(document, fileKey)));
   console.log("Nombre de vecteurs générés :", vectors.length);
-  
-  if (isHybridResearch) {
-    console.log("isHybridResearch : ", isHybridResearch)
+
+  console.log("isHybridResearch : ", isHybridResearch)
+  if (isHybridResearch) {  
     await handleBM25Index(fileKey, namespaceSuffix, flattenedDocs);
   }
   // 4. upload pinecone
@@ -113,17 +113,93 @@ async function prepareDocument(page: PDFPage, chunkSize: number, chunkOverlap: n
 
 export async function deleteNamespace(fileKey: string){
   const pineconeIndex = await pc.index("safetrain");
+  const namespaces = [
+    `${convertToAscii(fileKey)}_standard`,
+    `${convertToAscii(fileKey)}_late_chunking`,
+  ];
+
   const stats_before = await pineconeIndex.describeIndexStats();
   const totalBefore = stats_before.totalRecordCount ?? 0; 
-  await pineconeIndex.namespace(convertToAscii(fileKey)).deleteAll();
+
+  for (const ns of namespaces) {
+    console.log(`Suppression du namespace "${ns}"...`);
+    await pineconeIndex.namespace(ns).deleteAll();
+  }
+
   const stats_after = await pineconeIndex.describeIndexStats();
   const totalAfter = stats_after.totalRecordCount ?? 0;
   
   if(totalBefore > totalAfter){
-    console.log(`Le namespace ${fileKey} a été supprimé.`)
+    console.log(`Les namespaces ${namespaces.join(" et ")} ont été supprimés.`);
   }
   else{
     console.error(`Echec de la suppression du namespace ${fileKey}.`)
+  }
+}
+
+export async function deletePineconeNamespaces(fileKey: string): Promise<void> {
+  try {
+    const pineconeIndex = await pc.index("safetrain");
+    
+    const namespaces = [
+      `${convertToAscii(fileKey)}_standard`,
+      `${convertToAscii(fileKey)}_late_chunking`,
+    ];
+    
+    for (const ns of namespaces) {
+      console.log(`Suppression du namespace "${ns}"...`);
+      try {
+        await pineconeIndex.namespace(ns).deleteAll();
+        console.log(`Namespace "${ns}" supprimé avec succès.`);
+      } catch (error: any) {
+        if (error.message.includes("not found")) {
+          console.warn(`Namespace "${ns}" non trouvé. Peut-être déjà supprimé.`);
+        } else {
+          console.error(`Erreur lors de la suppression du namespace "${ns}" :`, error);
+          throw error; // Propager l'erreur pour gérer dans la route API
+        }
+      }
+    }
+
+    console.log(`Les namespaces ${namespaces.join(" et ")} ont été traités.`);
+  } catch (error) {
+    console.error("Erreur lors de la suppression des namespaces Pinecone :", error);
+    throw error;
+  }
+}
+
+async function handleBM25Index(fileKey: string, namespaceSuffix: string, documents: Document[]) {
+  try {
+    const bm25 = winkBM25();
+    bm25.defineConfig({fldWeights: {body: 1}}); // structure donnée à winkBM25
+    bm25.definePrepTasks([
+      function (text: string): string[] {
+        // Nettoyage minimal : convertir en minuscules et splitter par espaces
+        const noAccents = removeDiacritics(text.toLowerCase());
+        return noAccents.split(/\s+/);
+      }
+    ]);
+    console.log("Adding documents to BM25 index...");
+
+    for (let i = 0; i < documents.length; i++) {
+      const doc = documents[i];
+      bm25.addDoc({ body: doc.pageContent }, i);
+    }
+    bm25.consolidate(); // Consolidation de l'index (obligatoire pour finaliser)
+    const exportedIndex = bm25.exportJSON(); // Exportation de l'index en JSON
+    console.log("[BM25 INDEX]: ", exportedIndex);
+    console.log("Saving BM25 index to S3...");
+    const indexBuffer = Buffer.from(JSON.stringify(exportedIndex));
+    console.log("JSON.stringify(engine.getIndex()) : ", JSON.stringify(exportedIndex));
+    await uploadBufferToS3(indexBuffer, `${fileKey}_${namespaceSuffix}_bm25.json`);
+    console.log("BM25 index saved to S3");
+    const docContents = documents.map(d => d.pageContent);
+    const docsBuffer = Buffer.from(JSON.stringify(docContents));
+    await uploadBufferToS3(docsBuffer, `${fileKey}_${namespaceSuffix}_bm25_docs.json`);
+    console.log("BM25 doc saved to S3");
+  } catch (error) {
+    console.error("Erreur lors de la gestion de l'index BM25 :", error);
+    throw error;
   }
 }
 
@@ -146,28 +222,3 @@ export async function deleteNamespace(fileKey: string){
   ]);
   return docs;
 }*/
-
-
-async function handleBM25Index(fileKey: string, namespaceSuffix: string, documents: Document[]) {
-  try {
-    const engine = new BM25();
-    // addDocumentsToBM25
-    console.log("Adding documents to BM25 index...");
-    for (const doc of documents) {
-      try {
-        engine.addDocument(doc.pageContent);
-      } catch (docError) {
-        console.error("Erreur lors de l'ajout du document à l'index BM25 :", docError);
-      }
-    }
-
-    console.log("Saving BM25 index to S3...");
-    const bm25IndexBuffer = Buffer.from(JSON.stringify(engine.getIndex()));
-    console.log("JSON.stringify(engine.getIndex()) : ", JSON.stringify(engine.getIndex()));
-    await uploadBufferToS3(bm25IndexBuffer, `${fileKey}_${namespaceSuffix}_bm25.json`);
-    console.log("BM25 index saved to S3");
-  } catch (error) {
-    console.error("Erreur lors de la gestion de l'index BM25 :", error);
-    throw error;
-  }
-}

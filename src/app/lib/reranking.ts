@@ -1,5 +1,11 @@
 import { OpenAIApi, Configuration } from "openai-edge";
-import { Metadata, RerankedDoc } from "./context";
+import { Metadata } from "./context";
+
+export type RerankedDoc = {
+  text: string;
+  newScore: number;
+  fileName?: string;
+};
 
 const config = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -110,6 +116,7 @@ export async function reranking(query: string, qualifyingDocs: any[],rerankingSt
     const rerankedDocs = await Promise.all(
       qualifyingDocs.map(async (match) => {
         const text = (match.metadata as Metadata).text;
+        const fileName = (match.metadata as Metadata)?.fileName;
         let newScore: number;
   
         switch (rerankingStrategie) {
@@ -126,7 +133,7 @@ export async function reranking(query: string, qualifyingDocs: any[],rerankingSt
             newScore = 0;
             break;
         }
-        return { text, newScore };
+        return { text, newScore, fileName };
       })
     );
     const finalDocs = rerankedDocs.sort((a, b) => b.newScore - a.newScore);
@@ -134,14 +141,14 @@ export async function reranking(query: string, qualifyingDocs: any[],rerankingSt
     return finalDocs
   }
 
-export async function applyReranking(query: string, qualifyingDocs: Array<{ text: string; score: number }>, rerankingStrategy: string): Promise<RerankedDoc[]> {
+export async function applyReranking(query: string, qualifyingDocs: Array<{ text: string; score: number; fileName?: string }>, rerankingStrategy: string): Promise<RerankedDoc[]> {
   if (rerankingStrategy != "null") {
     const docsForReranking = qualifyingDocs.map((p) => ({
-      metadata: { text: p.text },
+      metadata: { text: p.text, fileName: p.fileName},
     }));
     return await reranking(query, docsForReranking, rerankingStrategy);
   } else { // Pas de reranking => on se contente du score local cosinus
-    const finalDocs = qualifyingDocs.map((p) => ({text: p.text, newScore: p.score,}));
+    const finalDocs = qualifyingDocs.map((p) => ({text: p.text, newScore: p.score, fileName: p.fileName,}));
     return finalDocs.sort((a, b) => b.newScore - a.newScore); // Tri décroissant par newScore
   }
 }

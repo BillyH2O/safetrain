@@ -3,10 +3,6 @@ import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { IconUpload } from "@tabler/icons-react";
 import { useDropzone } from "react-dropzone";
-import { uploadToS3 } from "../../lib/s3";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios"
-import toast from "react-hot-toast";
 import { useFileUpload } from "@/app/hooks/useFileUpload";
 import { GridPattern } from "./GridPattern";
 import { Loader2 } from "lucide-react";

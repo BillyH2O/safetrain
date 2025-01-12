@@ -23,3 +23,16 @@ export function cosineSimilarity(a: number[], b: number[]): number {
   }
   return dot / (Math.sqrt(normA) * Math.sqrt(normB));
 }
+
+export function sanitizeText(input: string): string {
+  // Supprime tout caractère non-imprimable (ASCII < 32)
+  return input.replace(/[\u0000-\u001F]+/g, "");
+}
+
+export function removeDiacritics(text: string): string {
+  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+export function sigmoidNormalization(score: number, alpha = 1, beta = 0): number {
+  return 1 / (1 + Math.exp(-alpha * (score - beta)));
+}

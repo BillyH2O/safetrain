@@ -87,6 +87,7 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
     setPrompt("");
     setChunkingStrategy("standard");
     setRerankingModel("null");
+    setHybridSearch(false);
     setIdConfigSelected(null);
   }
 
