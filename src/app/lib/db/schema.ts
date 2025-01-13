@@ -15,6 +15,7 @@ export const chats = pgTable("chats", { // chats
   pdfName: text('pdf_name').notNull(),
   pdfUrl: text('pdf_url').notNull(),
   thumbnailUrl: text("thumbnailUrl"), 
+  embeddingModel: text("embedding_model").notNull().default("text-embedding-ada-002"),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   userId: varchar('user_id', {length:256}).notNull(),
   fileKey: text('file_key').notNull(),
@@ -27,7 +28,7 @@ export const messages = pgTable('messages' , {
   chatId: integer('chat_id').references(()=>chats.id).notNull(),
   content: text('content').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
-  role: userSystemEnum('role').notNull()
+  role: userSystemEnum('role').notNull(),
 })
 
 export const configs = pgTable('configs' , {
@@ -45,3 +46,10 @@ export const configs = pgTable('configs' , {
   userId: varchar('user_id', {length:256}).notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
 })
+
+export const parametres = pgTable("parametres", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id", { length: 256 }).notNull(),
+  embeddingModel: text("embedding_model").notNull().default("text-embedding-ada-002"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});

@@ -51,7 +51,7 @@ export function PromptSelector({name}: Props) {
         console.log(`Config sélectionnée : ${selectedId !== null ? selectedId : "Aucune"}`);
       }}>
       <SelectTrigger className="w-full truncate">
-      <span>{name || "Selectionnez une config"}</span>
+      <span>{name || "Selectionnez un agent autonome"}</span>
       </SelectTrigger>
 
       <SelectContent>

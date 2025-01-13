@@ -64,6 +64,34 @@
       "when": 1736634005303,
       "tag": "0008_big_mister_sinister",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1736701539508,
+      "tag": "0009_windy_blob",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1736713983752,
+      "tag": "0010_third_bastion",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1736715248193,
+      "tag": "0011_polite_roxanne_simpson",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1736715792440,
+      "tag": "0012_public_captain_flint",
+      "breakpoints": true
     }
   ]
 }

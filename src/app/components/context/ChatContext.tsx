@@ -1,7 +1,7 @@
 "use client";
 
 import { useChat } from 'ai/react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Message } from 'ai';
 import axios from 'axios';
 import React, { createContext, useContext, useEffect, useState } from 'react';
@@ -33,6 +33,9 @@ type ChatContextType = {
   setRerankingModel: (value: string) => void;
   isHybridSearch: boolean;
   setHybridSearch: (value: boolean) => void;
+
+  embeddingModel: string | undefined;
+  setEmbeddingModel: (value: string) => void;
 
   resetConfig: () => void;
   idConfigSelected: number | null; 
@@ -77,6 +80,10 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
   const [isHybridSearch, setHybridSearch] = useState<boolean>(false);
   const [prompt, setPrompt] = useState<string>("");
   const [idConfigSelected, setIdConfigSelected] = useState<number | null>(null);
+  const [embeddingModel, setEmbeddingModelState] = useState<string | undefined>(undefined);
+
+  const queryClient = useQueryClient();
+
   const resetConfig = () => { 
     setName("")
     setTemperature(0.5);
@@ -89,8 +96,39 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
     setRerankingModel("null");
     setHybridSearch(false);
     setIdConfigSelected(null);
+    //setEmbeddingModel("text-embedding-ada-002");
   }
 
+  // parametres
+  const fetchParametres = async () => {
+    try {
+      const response = await axios.get("/api/parametres");
+      console.log("Valeur initiale de l'embeddingModel :", response.data.embeddingModel);
+      setEmbeddingModelState(response.data.embeddingModel);
+    } catch (error) {
+      console.error("Erreur lors du fetch de /api/parametres :", error);
+    }
+  };
+
+  const updateEmbeddingModel = async (newEmbedding: string) => {
+    try {
+      console.log("Début de la mutation avec newEmbedding :", newEmbedding);
+      const response = await axios.post("/api/parametres", {embeddingModel: newEmbedding,});
+      console.log("Réponse de la mutation :", response.data);
+      fetchParametres();
+    } catch (error) {
+      console.error("Erreur lors de la mutation :", error);
+    }
+  };
+
+  const setEmbeddingModel = (value: string) => {updateEmbeddingModel(value);};
+
+  // Charger au montage
+  useEffect(() => {
+    fetchParametres();
+  }, []);
+
+  // chat
   const { data: initialMessages } = useQuery({
     queryKey: ['chat', chatId],
     queryFn: async () => {
@@ -120,6 +158,7 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
         maxSteps,
         stopSequences,
         prompt,
+        embeddingModel,
       },
     },
     initialMessages: initialMessages || [],
@@ -166,6 +205,8 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
         resetConfig,
         idConfigSelected, 
         setIdConfigSelected,
+        embeddingModel,
+        setEmbeddingModel,
 
         // -- Logique Chat
         messages,

@@ -17,12 +17,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Missing or invalid settings" }, { status: 400 });
   }
 
-  const { selectedModel, chunkingStrategy, rerankingModel, isHybridSearch, temperature, topP, topK, maxSteps, stopSequences, prompt} = config;
+  const { selectedModel, chunkingStrategy, rerankingModel, isHybridSearch, temperature, topP, topK, maxSteps, stopSequences, prompt, embeddingModel} = config;
   console.log("config :", config); 
 
 
   const lastMessage = messages[messages.length - 1];
-  const context = await getAllContext(lastMessage.content, chunkingStrategy, rerankingModel, isHybridSearch);
+  const context = await getAllContext(lastMessage.content, chunkingStrategy, rerankingModel, isHybridSearch, embeddingModel);
   console.log("[CONTEXT] : ", context)
 
   const modelInstance = getModelFromKey(selectedModel);

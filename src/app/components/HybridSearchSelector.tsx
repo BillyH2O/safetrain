@@ -11,7 +11,7 @@ const HybridSearchSelector = ({isPlayground}: Props) => {
 
   return (
     <Switch isSelected={isHybridSearch} onValueChange={setHybridSearch} color='secondary' isDisabled={!isPlayground}>
-      <div className='text-xs w-20'>Hybrid Search</div>
+      <div className='text-xs w-auto'>Hybrid Se</div>
     </Switch>
   );
 };

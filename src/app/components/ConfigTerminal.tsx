@@ -9,13 +9,14 @@ import TerminalDoc from './TerminalDoc';
 import { ChunkingSelector } from './ChunkingSelector';
 import { RerankingSelector } from './RerankingSelector';
 import HybridSearchSelector from './HybridSearchSelector';
+import { EmbeddingModelSelector } from './EmbeddingModelSelectorUpload';
 
 type Props = {
     isPlayground: boolean
 }
 
 export const ConfigTerminal = ({isPlayground}: Props) => {
-  const { name, setName, chunkingStrategy, setChunkingStrategy, rerankingModel, setRerankingModel ,isHybridSearch, setHybridSearch ,temperature, setTemperature, topP, setTopP, topK, setTopK, maxSteps, setMaxSteps, stopSequences, setStopSequences, prompt, setPrompt, resetConfig, idConfigSelected, setIdConfigSelected} = useChatSettings(); 
+  const { name, setName, chunkingStrategy, setChunkingStrategy, rerankingModel, setRerankingModel ,isHybridSearch, setHybridSearch ,temperature, setTemperature, topP, setTopP, topK, setTopK, maxSteps, setMaxSteps, stopSequences, setStopSequences, prompt, setPrompt, resetConfig, idConfigSelected, embeddingModel, setEmbeddingModel, setIdConfigSelected} = useChatSettings(); 
   
   const queryClient = useQueryClient();
 
@@ -118,18 +119,22 @@ export const ConfigTerminal = ({isPlayground}: Props) => {
         <div className='flex flex-col gap-3'>
             <div className='font-semibold text-lg text-white'>Terminal Safetrain IA</div>
             <div className='text-sm'>Modifier les paramètres de votre modèle très simplement dans le Playground Safetrain IA.</div> 
-            <div className='mt-10 flex gap-2'>
+            <div className='mt-5 flex gap-2'>
                 <PromptSelector name={name}/>
             </div>
         </div>
 
         <div className='flex flex-1 flex-col justify-center items-center gap-4 overflow-hidden w-full'>
+            <div className='w-full flex justify-between'>
+                <HybridSearchSelector isPlayground={isPlayground}/>
+                <EmbeddingModelSelector disabled={true} />
+            </div>
             
             <div className='flex gap-3 justify-between items-center w-full'>
                 <RerankingSelector isPlayground={isPlayground}/>
                 <ChunkingSelector isPlayground={isPlayground}/>
             </div>
-            <HybridSearchSelector isPlayground={isPlayground}/>
+            
             <Slider
                 value={temperature}
                 onChange={(value) => setTemperature(value as number)}

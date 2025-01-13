@@ -1,6 +1,6 @@
 import { Pinecone } from "@pinecone-database/pinecone";
 import { convertToAscii, cosineSimilarity } from "./utils";
-import { getEmbeddings } from "./embedding";
+import { getDefaultEmbeddings, getEmbeddings } from "./embedding";
 import { db } from "./db";
 import { chats } from "./db/schema";
 import { Document, RecursiveCharacterTextSplitter } from "@pinecone-database/doc-splitter";
@@ -66,12 +66,12 @@ export async function getMatchesFromEmbeddings(
 
 
 
-export async function getContext(query: string, fileKey: string, rerankingStrategy: string, isHybridSearch: boolean) {
+export async function getContext(query: string, fileKey: string, rerankingStrategy: string, isHybridSearch: boolean, embeddingModel: string) {
   const chunkingMethod = "standard";
   console.log("reranking STRAT : ", rerankingStrategy);
   console.log("isHybridSearch STRAT : ", isHybridSearch);
   
-  const queryEmbeddings = await getEmbeddings(query);
+  const queryEmbeddings = await getEmbeddings(query, embeddingModel);
   const matches = await getMatchesFromEmbeddings(queryEmbeddings, fileKey, chunkingMethod);
   console.log("[MATCHES] : ", matches)
 
@@ -92,9 +92,9 @@ export async function getContext(query: string, fileKey: string, rerankingStrate
 
 
 
-export async function getContextLateChunking(query: string, fileKey: string, topK = 10, rerankingStrategy: string, isHybridSearch: boolean): Promise<string> {
+export async function getContextLateChunking(query: string, fileKey: string, topK = 10, rerankingStrategy: string, isHybridSearch: boolean, embeddingModel: string): Promise<string> {
   const chunkingMethod = "late_chunking"
-  const queryEmbeddings = await getEmbeddings(query);
+  const queryEmbeddings = await getEmbeddings(query, embeddingModel);
   const matches = await getMatchesFromEmbeddings(queryEmbeddings, fileKey, chunkingMethod);
   if (!matches || matches.length === 0) {
     console.log("[INFO]: Aucun match trouvé pour cette requête.");
@@ -120,8 +120,8 @@ export async function getContextLateChunking(query: string, fileKey: string, top
   // On reconstitue le contexte final en limitant à 3000 caractères max
 }
 
-export async function getAllContextV0(query: string, chunkingMethod: string, rerankingStrategy: string) {
-  const queryEmbeddings = await getEmbeddings(query);
+export async function getAllContextV0(query: string, chunkingMethod: string, rerankingStrategy: string, embeddingModel: string) {
+  const queryEmbeddings = await getEmbeddings(query, embeddingModel);
   const fileKeys = await db.select({ fileKey: chats.fileKey }).from(chats);
   const matches = await Promise.all(
     fileKeys.map(({ fileKey }: { fileKey: string }) => getMatchesFromEmbeddings(queryEmbeddings, fileKey, chunkingMethod))
@@ -155,8 +155,9 @@ export async function getAllContextV0(query: string, chunkingMethod: string, rer
   .substring(0, 6000);
 }
 
-export async function getAllContext(query: string, chunkingMethod: string, rerankingStrategy: string, isHybridSearch: boolean): Promise<string> {
-  const queryEmbeddings = await getEmbeddings(query);
+export async function getAllContext(query: string, chunkingMethod: string, rerankingStrategy: string, isHybridSearch: boolean, embeddingModel: string): Promise<string> {
+  console.log("KHAZIX : ", embeddingModel);
+  const queryEmbeddings = await getEmbeddings(query, embeddingModel);
   const fileKeys = await db.select({ fileKey: chats.fileKey }).from(chats);
   console.log("[INFO]: File keys to query:", fileKeys);
   const allDocs = await Promise.all(
@@ -237,7 +238,7 @@ async function prepareLateChunk(match: ScoredVector, queryEmbeddings: number[]) 
 
   // 2. Calcule le score de similarité cosinus pour chaque sous-chunk
   for (const subDoc of subDocs) {
-    const subEmb = await getEmbeddings(subDoc.pageContent);
+    const subEmb = await getDefaultEmbeddings(subDoc.pageContent);
     const score = cosineSimilarity(queryEmbeddings, subEmb);
     refinedPassages.push({
       text: subDoc.pageContent,

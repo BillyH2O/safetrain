@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Missing or invalid settings" }, { status: 400 });
   }
 
-  const { selectedModel, chunkingStrategy, rerankingModel, isHybridSearch, temperature, topP, topK, maxSteps, stopSequences, prompt} = config;
+  const { selectedModel, chunkingStrategy, rerankingModel, isHybridSearch, temperature, topP, topK, maxSteps, stopSequences, prompt, embeddingModel} = config;
   console.log("chatId :", chatId);
   console.log("config :", config); 
 
@@ -34,13 +34,13 @@ export async function POST(req: Request) {
   let context;
   switch (chunkingStrategy) {
     case 'standard':
-      context = await getContext(lastMessage.content, fileKey, rerankingModel, isHybridSearch);
+      context = await getContext(lastMessage.content, fileKey, rerankingModel, isHybridSearch, embeddingModel);
       break;
     case 'late chunking':
-      context = await getContextLateChunking(lastMessage.content, fileKey, 10, rerankingModel, isHybridSearch);
+      context = await getContextLateChunking(lastMessage.content, fileKey, 10, rerankingModel, isHybridSearch, embeddingModel);
       break;
     default:
-      context = await getContext(lastMessage.content, fileKey, rerankingModel, isHybridSearch);
+      context = await getContext(lastMessage.content, fileKey, rerankingModel, isHybridSearch, embeddingModel);
       break;
   }
   console.log("[CONTEXT]", context)

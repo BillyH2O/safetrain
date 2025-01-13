@@ -18,7 +18,7 @@ type PDFPage = {
     }
 }
 
-export async function loadS3IntoPinecone(fileKey: string, chunkingMethod: string, isHybridResearch: boolean = true) {
+export async function loadS3IntoPinecone(fileKey: string, embeddingModel: string, chunkingMethod: string, isHybridResearch: boolean = true) {
   let chunkSize: number, chunkOverlap: number, namespaceSuffix: string;
   if (chunkingMethod === "late_chunking") {
     // Par exemple, plus gros chunks pour la méthode Late Chunking
@@ -49,7 +49,7 @@ export async function loadS3IntoPinecone(fileKey: string, chunkingMethod: string
   console.log("Nombre de documents découpés :", flattenedDocs.length);
   
   // 3. vectorisation d'un doc
-  const vectors = await Promise.all(flattenedDocs.map(document => embedDocument(document, fileKey)));
+  const vectors = await Promise.all(flattenedDocs.map(document => embedDocument(document, fileKey, embeddingModel)));
   console.log("Nombre de vecteurs générés :", vectors.length);
 
   console.log("isHybridResearch : ", isHybridResearch)
@@ -66,9 +66,9 @@ export async function loadS3IntoPinecone(fileKey: string, chunkingMethod: string
   return documents[0];
 }
 
-async function embedDocument(doc: Document, fileKey: string) {
+async function embedDocument(doc: Document, fileKey: string, embeddingModel: string) {
   try {
-    const embeddings = await getEmbeddings(doc.pageContent);
+    const embeddings = await getEmbeddings(doc.pageContent, embeddingModel);
 
     // Génère un hash unique basé sur le contenu du texte. Cela permet de donner un ID unique au vecteur, basé sur le texte lui-même (=> pas de doublon)
     const hash = md5(doc.pageContent); 
@@ -187,10 +187,10 @@ async function handleBM25Index(fileKey: string, namespaceSuffix: string, documen
     }
     bm25.consolidate(); // Consolidation de l'index (obligatoire pour finaliser)
     const exportedIndex = bm25.exportJSON(); // Exportation de l'index en JSON
-    console.log("[BM25 INDEX]: ", exportedIndex);
+    //console.log("[BM25 INDEX]: ", exportedIndex);
     console.log("Saving BM25 index to S3...");
     const indexBuffer = Buffer.from(JSON.stringify(exportedIndex));
-    console.log("JSON.stringify(engine.getIndex()) : ", JSON.stringify(exportedIndex));
+    //console.log("JSON.stringify(engine.getIndex()) : ", JSON.stringify(exportedIndex));
     await uploadBufferToS3(indexBuffer, `${fileKey}_${namespaceSuffix}_bm25.json`);
     console.log("BM25 index saved to S3");
     const docContents = documents.map(d => d.pageContent);
