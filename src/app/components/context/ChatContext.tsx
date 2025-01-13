@@ -34,6 +34,9 @@ type ChatContextType = {
   isHybridSearch: boolean;
   setHybridSearch: (value: boolean) => void;
 
+  isRAG: boolean;
+  setRAG: (value: boolean) => void;
+
   embeddingModel: string | undefined;
   setEmbeddingModel: (value: string) => void;
 
@@ -81,8 +84,7 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
   const [prompt, setPrompt] = useState<string>("");
   const [idConfigSelected, setIdConfigSelected] = useState<number | null>(null);
   const [embeddingModel, setEmbeddingModelState] = useState<string | undefined>(undefined);
-
-  const queryClient = useQueryClient();
+  const [isRAG, setRAG] = useState<boolean>(true);
 
   const resetConfig = () => { 
     setName("")
@@ -123,10 +125,9 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
 
   const setEmbeddingModel = (value: string) => {updateEmbeddingModel(value);};
 
-  // Charger au montage
   useEffect(() => {
     fetchParametres();
-  }, []);
+  }, []); // Charger au montage
 
   // chat
   const { data: initialMessages } = useQuery({
@@ -159,6 +160,7 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
         stopSequences,
         prompt,
         embeddingModel,
+        isRAG
       },
     },
     initialMessages: initialMessages || [],
@@ -207,6 +209,8 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
         setIdConfigSelected,
         embeddingModel,
         setEmbeddingModel,
+        isRAG,
+        setRAG,
 
         // -- Logique Chat
         messages,

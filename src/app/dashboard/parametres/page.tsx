@@ -12,7 +12,7 @@ export default function Page({}: Props) {
       <h1 className="text-4xl font-normal p-10 w-full">Paramètres</h1>
 
       <div className="h-full w-full flex flex-col items-center justify-center gap-14 p-8 ">
-      {/*<RagSwitch/>*/}
+      <RagSwitch/>
         <div className='flex flex-col items-center justify-center bg-zinc-950 border rounded-lg p-10 gap-10'>
           <div className="max-w-xl w-full p-6 shadow-md rounded-lg ">
             <h2 className="mb-4 text-xl font-semibold">

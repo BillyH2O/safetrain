@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Missing or invalid settings" }, { status: 400 });
   }
 
-  const { selectedModel, chunkingStrategy, rerankingModel, isHybridSearch, temperature, topP, topK, maxSteps, stopSequences, prompt, embeddingModel} = config;
+  const { isRAG, selectedModel, chunkingStrategy, rerankingModel, isHybridSearch, temperature, topP, topK, maxSteps, stopSequences, prompt, embeddingModel} = config;
   console.log("config :", config); 
 
 
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 
   const modelInstance = getModelFromKey(selectedModel);
   
-  const initial_prompt = generatePrompt("initialPrompt", context)
+  const initial_prompt = generatePrompt("initialPrompt", context, isRAG)
   const prompt_final = initial_prompt + " " + prompt ;
   console.log("prompt_final :", prompt_final);
 

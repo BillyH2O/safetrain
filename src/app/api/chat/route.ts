@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Missing or invalid settings" }, { status: 400 });
   }
 
-  const { selectedModel, chunkingStrategy, rerankingModel, isHybridSearch, temperature, topP, topK, maxSteps, stopSequences, prompt, embeddingModel} = config;
+  const { isRAG, selectedModel, chunkingStrategy, rerankingModel, isHybridSearch, temperature, topP, topK, maxSteps, stopSequences, prompt, embeddingModel} = config;
   console.log("chatId :", chatId);
   console.log("config :", config); 
 
