@@ -1,11 +1,11 @@
 import React from "react";
 import FileUploader from "./local-component/FileUploader";
-import { PDFList } from "./local-component/PDFList";
+import { PDFManager } from "./local-component/PDFManager";
 
 const DashboardPage = () => {
   return (
     <div className="h-full w-full"> 
-      <PDFList />
+      <PDFManager />
     </div>
   );
 };

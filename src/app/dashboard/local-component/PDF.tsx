@@ -44,17 +44,10 @@ const PDF = ({chat, isEnabled}: PdfProps) => {
       
       {isEnabled ? (
         <button onClick={onOpen} className="h-72">
-          <img
-            src={chat.thumbnailUrl || chat.pdfUrl}
-            alt={chat.pdfName}
-            className="h-full rounded-lg"
-          />
+          <img src={chat.thumbnailUrl || chat.pdfUrl} alt={chat.pdfName} className="h-full rounded-lg"/>
         </button>
       ) : (
-        <Button
-          onPress={onOpen}
-          className="bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-700 rounded-lg mt-2 flex justify-between items-center"
-        >
+        <Button onPress={onOpen}  className="bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-700 rounded-lg mt-2 flex justify-between items-center">
           {chat.pdfName}
         </Button>
       )}
@@ -64,17 +57,9 @@ const PDF = ({chat, isEnabled}: PdfProps) => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">{chat.pdfName}</ModalHeader>
-              <ModalBody>
-              <img
-                src={chat.thumbnailUrl || chat.pdfUrl}
-                alt={chat.pdfName}
-                className="object-cover rounded-lg"
-              />
-              </ModalBody>
+              <ModalBody> <img src={chat.thumbnailUrl || chat.pdfUrl} alt={chat.pdfName} className="object-cover rounded-lg"/></ModalBody>
               <ModalFooter>
-                <Button className='bg-red-700 border rounded-md' onPress={handleDelete}>
-                  Supprimer
-                </Button>
+                <Button className='bg-red-700 border rounded-md' onPress={handleDelete}>Supprimer</Button>
                 <Link href={`/dashboard/chat/${chat.id}`}>
                   <Button className='bg-orange-600 border rounded-md' radius="sm">Ouvrir</Button>
                 </Link>

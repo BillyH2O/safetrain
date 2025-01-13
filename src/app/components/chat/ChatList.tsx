@@ -2,7 +2,8 @@ import { cn } from '@/app/lib/utils';
 import { MessageSquare} from 'lucide-react';
 import Link from 'next/link';
 import React from 'react'
-import { NewChatButton } from './NewchatButton';
+import { NewChatButton } from './NewChatButton';
+
 
 type Props = {
     chats: {

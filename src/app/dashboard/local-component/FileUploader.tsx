@@ -5,12 +5,8 @@ import { FileUpload } from "./FileUpload";
 import {
   Modal,
   ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   Button,
   useDisclosure,
-  Switch,
 } from "@nextui-org/react";
 
 export const FileUploader = () => {
@@ -19,18 +15,12 @@ export const FileUploader = () => {
     console.log("files dashboard", newFiles);
   };
 
-  const [isEnabled, setIsEnabled] = useState(false);
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
-
-  const handleSwitchChange = () => {
-    setIsEnabled((prev) => !prev); // Inverse la valeur actuelle
-    console.log("isEnabled", isEnabled);
-  };
 
   return (
     <div className="relative"> 
       <div className="flex gap-5 items-center justify-end">
-      <Button className="dark:bg-black dark:border-neutral-800 rounded-lg " size="lg" onPress={onOpen}>Upload</Button>
+      <Button className="bg-orange-500 dark:border-neutral-800 rounded-lg " size="lg" onPress={onOpen}>Upload</Button>
       </div>
       <Modal backdrop="opaque" classNames={{
           backdrop: "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",

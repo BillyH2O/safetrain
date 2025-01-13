@@ -8,10 +8,7 @@ import {
   SelectItem,
   SelectLabel,
   SelectTrigger,
-  SelectValue,
 } from "../../ui/select"
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { useChatSettings } from "../../context/ChatContext";
 
 type Props = {
@@ -20,7 +17,7 @@ type Props = {
   
 export function ChunkingSelector({isPlayground}:Props) {
 
-    const {chunkingStrategy, setChunkingStrategy} = useChatSettings(); 
+  const {chunkingStrategy, setChunkingStrategy} = useChatSettings(); 
 
   return (
     <Select onValueChange={(value) => setChunkingStrategy(value)} value={chunkingStrategy}>

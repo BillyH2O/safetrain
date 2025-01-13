@@ -6,8 +6,7 @@ import md5 from "md5";
 import { getEmbeddings } from "./embedding";
 import { convertToAscii, removeDiacritics } from "./utils";
 import winkBM25 from "wink-bm25-text-search";
-import { uploadBufferToS3 } from "./s3-buffer";
-
+import { uploadBufferToS3 } from "./s3";
 
 const pc = new Pinecone({ apiKey: process.env.PINECONE_API_KEY! });
 

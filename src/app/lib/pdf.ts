@@ -2,8 +2,7 @@ import { execFile } from "child_process";
 import fs from "fs";
 import path from "path";
 import os from "os";
-import { getS3Url } from "./s3";
-import { uploadBufferToS3 } from "./s3-buffer";
+import { getS3Url, uploadBufferToS3 } from "./s3";
 
 export async function generatePdfThumbnail(pdfKey: string): Promise<string | null> {
   try {

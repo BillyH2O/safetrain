@@ -2,7 +2,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import Link from "next/link";
 import PDF from "./PDF";
 import { Switch } from "@nextui-org/react";
 import { useState } from "react";
@@ -11,7 +10,7 @@ import FileUploader from "./FileUploader";
 import { cn } from "@/app/lib/utils";
 import { Image, List } from "lucide-react";
 
-export const PDFList = () => {
+export const PDFManager = () => {
   const [isEnabled, setIsEnabled] = useState(true);
   
   const { data: chats = [], isLoading } = useQuery({
@@ -37,14 +36,7 @@ export const PDFList = () => {
       <div className="flex justify-between w-full">
         <h1 className="text-4xl font-normal">Mes PDF</h1>
         <div className="flex gap-5 items-center justify-center">
-            <Switch
-              isSelected={isEnabled}
-              color="warning"
-              aria-label="Automatic updates"
-              onChange={handleSwitchChange}
-              endContent={<List />}
-              startContent={<Image />}
-            />
+          <Switch isSelected={isEnabled} color="primary" aria-label="Automatic updates" onChange={handleSwitchChange} endContent={<List />} startContent={<Image />}/>
           <FileUploader />
         </div>
       </div>

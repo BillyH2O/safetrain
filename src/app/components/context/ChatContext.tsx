@@ -1,7 +1,7 @@
 "use client";
 
 import { useChat } from 'ai/react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Message } from 'ai';
 import axios from 'axios';
 import React, { createContext, useContext, useEffect, useState } from 'react';

@@ -8,7 +8,6 @@ import {
   SelectItem,
   SelectLabel,
   SelectTrigger,
-  SelectValue,
 } from "../../ui/select"
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";

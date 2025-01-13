@@ -13,10 +13,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simuler un chargement initial de 2 secondes
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 1000); // Simuler un chargement initial de 1 secondes
 
     return () => clearTimeout(timer);
   }, []);
@@ -31,9 +30,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         "rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 flex-1 mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden",
         "h-screen w-screen"
       )}
-    >
-      
-      
+    >      
       <div className="flex flex-col">
         
         <div><Header/></div>
@@ -41,17 +38,13 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         <div className="rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 flex-1 mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden *:* h-screen w-screen">
             <Sidebar open={open} setOpen={setOpen} animate={true}>
             <SidebarBody className="justify-between gap-10">
-              <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-                {/*<Logo />*/}
-                <SidebarLinks />
-              </div>
+              <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden"><SidebarLinks /></div>
             </SidebarBody>
           </Sidebar>
           
           <div className="flex flex-1 flex-col items-center
           bg-white dark:bg-neutral-900  overflow-hidden  
-            rounded-tl-2xl border border-neutral-200 dark:border-neutral-700">
-              
+            rounded-tl-2xl border border-neutral-200 dark:border-neutral-700"> 
             {children}
           </div>
 

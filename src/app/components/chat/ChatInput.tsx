@@ -1,9 +1,7 @@
 import React from 'react'
-import { PlaceholdersAndVanishInput } from '../ui/placeholdersAndVanishInput';
-import Terminal from '../terminal/Terminal';
-import { useChatSettings } from '../context/ChatContext';
 import { ModelSelector } from '../terminal/selector/ModelSelector';
 import { QueryInput } from './QueryInput';
+import { TerminalSheet } from '../terminal/TerminalSheet';
 
 type ChatInputProps = {
   isPlayground: boolean
@@ -15,7 +13,7 @@ const ChatInput = ({isPlayground}: ChatInputProps) => {
     <div className='flex flex-col h-full w-full justify-center items-center '>
         <div className='flex gap-2 justify-center items-center'>
           <ModelSelector/>
-          {!isPlayground && <Terminal/>} 
+          {!isPlayground && <TerminalSheet/>} 
         </div>
         
       <QueryInput/>

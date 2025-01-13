@@ -4,15 +4,12 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-
 import Chat from '@/app/components/chat/Chat';
 import ChatList from '@/app/components/chat/ChatList';
 import PDFViewer from '@/app/components/chat/PDFViewer';
-
-import { Switch } from '@nextui-org/react';
-import { FileText, Text } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
 import { useChatSettings } from '@/app/components/context/ChatContext';
+import { SwitchPDFMode } from '@/app/components/chat/SwitchPDFMode';
 
 type ChatType = {
   userId: string;
@@ -69,15 +66,7 @@ export default function ChatPage() {
           "w-full" : !isEnabled,
         }
         )}>
-        <Switch
-          isSelected={isEnabled}
-          onChange={handleSwitchChange}
-          color="warning"
-          endContent={<FileText />}
-          size="lg"
-          startContent={<Text />}
-          className="absolute right-10 top-10"
-        />
+        <SwitchPDFMode isEnabled={isEnabled} onToggle={handleSwitchChange} />
         <Chat chatId={chatIdNumber} variant='small'/>
       </div>
 

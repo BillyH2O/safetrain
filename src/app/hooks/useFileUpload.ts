@@ -1,11 +1,11 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { uploadToS3 } from "../lib/s3";
 import { useRouter } from "next/navigation";
 import { useChatSettings } from "../components/context/ChatContext";
-import { startUiTimer, stopUiTimer } from "../lib/uiTimer";
+import { startUiTimer, stopUiTimer } from "../lib/utils";
 
 export const useFileUpload = (onChange?: (files: File[]) => void) => {
   const [files, setFiles] = useState<File[]>([]);
@@ -16,6 +16,15 @@ export const useFileUpload = (onChange?: (files: File[]) => void) => {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   const uiIntervalRef = useRef<NodeJS.Timeout | null>(null); // référence pour stocker l'intervalle du timer UI
   
+  useEffect(() => {
+    return () => {
+      if (uiIntervalRef.current) {
+        stopUiTimer(uiIntervalRef.current);
+      }
+    };
+  }, []);
+
+  
   const handleStartUiTimer = () => {
     if (uiIntervalRef.current) {
       stopUiTimer(uiIntervalRef.current);
@@ -24,8 +33,11 @@ export const useFileUpload = (onChange?: (files: File[]) => void) => {
   };
 
   const handleStopUiTimer = () => {
-    stopUiTimer(uiIntervalRef.current);
-    uiIntervalRef.current = null;
+    if (uiIntervalRef.current) {
+      stopUiTimer(uiIntervalRef.current);
+      uiIntervalRef.current = null;
+    }
+    setCurrentStepIndex(0); 
   };
 
   const { mutate } = useMutation({
@@ -52,6 +64,7 @@ export const useFileUpload = (onChange?: (files: File[]) => void) => {
       if (!data?.file_key || !data?.file_name) {
         toast.error("L'objet data ne possède pas de clé ou de nom de fichier");
         setUploading(false);
+        handleStopUiTimer();
         return;
       }
 

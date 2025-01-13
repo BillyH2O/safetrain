@@ -2,7 +2,6 @@
 
 import React from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import SafetrainLogo from "../../../assets/safetrain-logo.png"
 import Image from "next/image";
 
