@@ -20,7 +20,7 @@ export function EmbeddingModelSelector({ disabled }: Props) {
   const { embeddingModel, setEmbeddingModel } = useChatSettings()
 
   React.useEffect(() => {
-    console.log("Nouvelle valeur de embedding Model :", embeddingModel)
+    console.log("nouvelle valeur de embedding Model selectionné :", embeddingModel)
   }, [embeddingModel])
 
   return (

@@ -1,13 +1,11 @@
 import React from 'react'
-import { Button, Input, Slider, Textarea } from '@nextui-org/react'
 import { useChatSettings } from '../context/ChatContext';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-import toast from 'react-hot-toast';
-import TerminalDoc from './TerminalDoc';
+import { useQueryClient } from '@tanstack/react-query';
 import { TerminalHeader } from './TerminalHeader';
 import { TerminalBody } from './TerminalBody';
 import { TerminalFooter } from './TerminalFooter';
+import { useConfigSelected } from '@/app/hooks/useConfigSelected';
+import { useCreateConfig } from '@/app/hooks/useCreateConfig';
 
 type Props = {
     isPlayground: boolean
@@ -18,16 +16,7 @@ export const Terminal = ({isPlayground}: Props) => {
   
   const queryClient = useQueryClient();
 
-    const { data: configData } = useQuery({
-        queryKey: ["config-selected", idConfigSelected ],
-        queryFn: async () => {
-            const response = await axios.get("/api/get-config", {
-            params: { idConfigSelected },
-            });
-            return response.data;
-        },
-        enabled: !!idConfigSelected, // sera répétée automatiquement par React Query à chaque fois que idConfigSelected change de valeur
-    });
+    const { data: configData } = useConfigSelected(idConfigSelected);
 
     // Met à jour le state à chaque fois qu'on obtient la configData
   React.useEffect(() => {
@@ -62,18 +51,11 @@ export const Terminal = ({isPlayground}: Props) => {
     setPrompt,
   ]);
     
-  const { mutate } = useMutation({
-    mutationFn: async (config: { chunkingStrategy: string, rerankingModel: string, temperature: number; topP: number; topK: number; maxSteps: number; stopSequences: string; prompt: string }) => {
-      const response = await axios.post("/api/create-config", {config});
-      return response.data;
-    },       
-  });
+  const { mutate } = useCreateConfig();
 
   const handleNew = () => {
     resetConfig();
-    queryClient.invalidateQueries({
-        queryKey: ["configs-selector"],
-      }); 
+    queryClient.invalidateQueries({queryKey: ["configs-selector"],}); 
   }
 
   const handleSave = () => { 
@@ -91,24 +73,7 @@ export const Terminal = ({isPlayground}: Props) => {
       };
 
     mutate(config, {
-    onSuccess: () => {
-        toast.success("La config a été créée");
-        queryClient.invalidateQueries({
-            queryKey: ["configs-selector"],
-          }); 
-        resetConfig();
-    },
-    onError: (error: any) => {
-        if (error?.response?.status === 400 && error?.response?.data?.error === "no_name"){
-            toast.error("Le nom est requis");
-        } 
-        if (error?.response?.status === 400 && error?.response?.data?.error === "duplicate_name") {
-            toast.error("Vous avez déjà une config avec ce nom.");
-        } 
-        else {
-            toast.error("Erreur lors de la création de la config");
-        }
-    },
+      onSuccess: () => {resetConfig();},
     });
    }
   

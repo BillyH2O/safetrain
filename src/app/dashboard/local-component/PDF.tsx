@@ -11,33 +11,33 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import { useDeleteChat } from '@/app/hooks/useDeleteChat';
 
 type PdfProps = {
   chat: any,
   isEnabled: boolean,
+  refetchChats: () => void,
 }
 
-const PDF = ({chat, isEnabled}: PdfProps) => {
+const PDF = ({chat, isEnabled, refetchChats}: PdfProps) => {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
-  const queryClient = useQueryClient();
-  const deleteChatMutation = useMutation({
-    mutationFn: async (id: number) => {
-      const response = await axios.delete(`/api/delete-chat/${id}`);
-      return response.data;
-    },
-    onSuccess: () => {
-      // Invalider le cache pour mettre à jour les données
-      queryClient.invalidateQueries({
-        queryKey: ["chats"],
-      });
-    },
+  
+  const { deleteChat, isLoading, error } = useDeleteChat(() => {
+    // Rafraîchir la liste des chats après suppression
+    refetchChats();
   });
 
   const handleDelete = () => {
-    deleteChatMutation.mutate(chat.id);
+    deleteChat(chat.id).catch((err) => {
+      console.error("Erreur lors de la suppression du chat :", err);
+    });
   };
+  /*
+  const queryClient = useQueryClient();
+  const deleteChatMutation = useDeleteChatTanstack()
+  const handleDelete = () => {
+    deleteChatMutation.mutate(chat.id);
+  };*/
 
   return (
     <div key={chat.id}>

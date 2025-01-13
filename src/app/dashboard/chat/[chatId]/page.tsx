@@ -10,6 +10,7 @@ import PDFViewer from '@/app/components/chat/PDFViewer';
 import { cn } from '@/app/lib/utils';
 import { useChatSettings } from '@/app/components/context/ChatContext';
 import { SwitchPDFMode } from '@/app/components/chat/SwitchPDFMode';
+import { useChats } from '@/app/hooks/useChats';
 
 type ChatType = {
   userId: string;
@@ -23,6 +24,7 @@ type ChatType = {
 export default function ChatPage() {
   const [isEnabled, setIsEnabled] = useState(true);
   const { chatId, setChatId } = useChatSettings();
+  const { chats, isLoading, getChatById } = useChats();
 
   // Récupérer et vérifier le paramètre
   const params = useParams();
@@ -35,17 +37,7 @@ export default function ChatPage() {
     console.log('Provider chatId:', chatId);
   }, [chatIdNumber, setChatId]);
 
-
-  // Récupération des données via React Query
-  const { data: chats = [], isLoading } = useQuery<ChatType[]>({
-    queryKey: ['chats'],
-    queryFn: async () => {
-      const response = await axios.get('/api/get-chats');
-      return response.data;
-    },
-  });
-
-  const chat = chats.find((chat) => chat.id === chatIdNumber);
+  const chat = getChatById(chatIdNumber);
 
   const handleSwitchChange = () => setIsEnabled((prev) => !prev);
 

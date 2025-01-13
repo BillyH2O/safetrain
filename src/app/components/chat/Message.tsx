@@ -16,8 +16,7 @@ export const Message = ({ content, isUserMessage }: MessageProps) => {
     >
       <div className="p-6">
         <div className="mx-auto flex items-start gap-2.5">
-          <div
-            className={cn(
+          <div className={cn(
               "size-10 shrink-0 aspect-square rounded-full border border-zinc-700 bg-zinc-900 flex justify-center items-center",
               {
                 "bg-blue-950 border-blue-700 text-zinc-200": isUserMessage,

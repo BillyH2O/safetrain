@@ -23,6 +23,7 @@ export async function reRankWithGPT(query: string, doc: string): Promise<number>
     Veuillez renvoyer uniquement le flottant (0 à 1).
   `;
 
+  // Appel en mode "chat" (ChatGPT style)
   const response = await openai.createChatCompletion({
     model: "gpt-3.5-turbo", // ou autre
     messages: [
@@ -58,7 +59,7 @@ export async function reRankWithHuggingFace(query: string, doc: string): Promise
   const modelId = "google/flan-t5-small";
   const url = `https://api-inference.huggingface.co/models/${modelId}`;
   const maxRetries = 10; // Nombre maximum de tentatives
-  const retryDelay = 3000; // Délai entre les tentatives 
+  const retryDelay = 3000; // Délai entre les tentatives (en millisecondes)
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {

@@ -9,9 +9,8 @@ import {
   SelectLabel,
   SelectTrigger,
 } from "../../ui/select"
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { useChatSettings } from "../../context/ChatContext";
+import { useConfigs } from "@/app/hooks/useConfigs";
 
 type Config = {
     id: number;
@@ -34,14 +33,7 @@ type Config = {
 export function PromptSelector({name}: Props) {
 
     const {setIdConfigSelected} = useChatSettings(); 
-    
-    const { data } = useQuery({
-        queryKey: ["configs-selector"],
-        queryFn: async () => {
-          const response = await axios.get("/api/get-configs");
-          return response.data;
-        },
-    });
+    const { configs, isLoading, error } = useConfigs();
 
   return (
     <Select onValueChange={(value) => {
@@ -56,7 +48,7 @@ export function PromptSelector({name}: Props) {
       <SelectContent>
         <SelectGroup>   
         <SelectLabel>template</SelectLabel> 
-        {data?.map((config: Config) => (
+        {configs?.map((config: Config) => (
             <SelectItem key={config.id} value={config.id.toString()}>{config.name}</SelectItem>
         ))}
         </SelectGroup>

@@ -1,7 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import PDF from "./PDF";
 import { Switch } from "@nextui-org/react";
 import { useState } from "react";
@@ -9,17 +7,12 @@ import { DefaultPDFMessage } from "./DefaultMessagePDF";
 import FileUploader from "./FileUploader";
 import { cn } from "@/app/lib/utils";
 import { Image, List } from "lucide-react";
+import { usePDFListTanstack } from "@/app/hooks/usePDFListTanstack";
 
 export const PDFManager = () => {
   const [isEnabled, setIsEnabled] = useState(true);
-  
-  const { data: chats = [], isLoading } = useQuery({
-    queryKey: ["chats"],
-    queryFn: async () => {
-      const response = await axios.get("/api/get-chats");
-      return response.data;
-    },
-  });
+
+  const { chats, isLoading, refetch} = usePDFListTanstack();
 
   const handleSwitchChange = () => {
     setIsEnabled((prev) => !prev);
@@ -47,7 +40,7 @@ export const PDFManager = () => {
         )}
       >
         {chats.map((chat: any) => (
-          <PDF key={chat.id} chat={chat} isEnabled={isEnabled} />
+          <PDF key={chat.id} chat={chat} isEnabled={isEnabled} refetchChats={refetch}/>
         ))}
       </div>
     </div>
