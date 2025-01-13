@@ -6,6 +6,7 @@ import { useDropzone } from "react-dropzone";
 import { useFileUpload } from "@/app/hooks/useFileUpload";
 import { GridPattern } from "./GridPattern";
 import { Loader2 } from "lucide-react";
+import { MultiStepLoader as Loader } from "../ui/multi-step-loader";
 
 const mainVariant = {
   initial: {
@@ -28,6 +29,19 @@ const secondaryVariant = {
   },
 };
 
+const loadingStates = [
+  // Partie S3
+  { text: "Génération de la miniature..." },
+  { text: "Upload AWS S3..." },
+  // Partie Pinecone
+  { text: "Chunking..." },
+  { text: "Génération index BM25..." },
+  { text: "Vectorisation du document..." },
+  { text: "Upload sur Pinecone..." },
+  { text: "Finalisation..." },
+];
+
+
 export const FileUpload = ({
   onChange,
 }: {
@@ -39,7 +53,7 @@ export const FileUpload = ({
     fileInputRef.current?.click();
   };
 
-  const { files, uploading, handleDrop } = useFileUpload(onChange);
+  const { files, uploading, handleDrop, currentStepIndex } = useFileUpload(onChange);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
         'application/pdf': ['.pdf'],
@@ -74,8 +88,16 @@ export const FileUpload = ({
 
           {uploading ? (
             <div className="mt-10 flex flex-col justify-center items-center gap-6">
-              <Loader2 className="h-10 w-10 text-sky-400 animate-spin"/>
-              <p className="text-sm text-slate-200"> Envoie au serveur ...</p>
+              {/*<Loader2 className="h-10 w-10 text-sky-400 animate-spin"/>*/}
+              <Loader
+                loadingStates={loadingStates}
+                loading={uploading}
+                duration={100}
+                currentStepIndex={currentStepIndex}
+              />
+              <p className="text-sm text-slate-200">
+                {loadingStates[currentStepIndex]?.text}
+              </p>
             </div>
           ) : (
           <div className="relative w-full mt-10 max-w-xl mx-auto">
@@ -98,7 +120,7 @@ export const FileUpload = ({
                     animate={{ opacity: 1 }}
                     className="text-neutral-600 flex flex-col items-center"
                   >
-                    Drop it
+                    Droppez le
                     <IconUpload className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
                   </motion.p>
                 ) : (

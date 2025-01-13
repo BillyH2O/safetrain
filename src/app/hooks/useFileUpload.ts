@@ -1,21 +1,35 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { uploadToS3 } from "../lib/s3";
 import { useRouter } from "next/navigation";
 import { useChatSettings } from "../components/context/ChatContext";
-
+import { startUiTimer, stopUiTimer } from "../lib/uiTimer";
 
 export const useFileUpload = (onChange?: (files: File[]) => void) => {
   const [files, setFiles] = useState<File[]>([]);
-  const [uploading, setUploading] = useState(false);
   const { embeddingModel } = useChatSettings();
   const router = useRouter()
   const queryClient = useQueryClient();
+  const [uploading, setUploading] = useState(false);
+  const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
+  const uiIntervalRef = useRef<NodeJS.Timeout | null>(null); // référence pour stocker l'intervalle du timer UI
   
+  const handleStartUiTimer = () => {
+    if (uiIntervalRef.current) {
+      stopUiTimer(uiIntervalRef.current);
+    }
+    uiIntervalRef.current = startUiTimer(setCurrentStepIndex, 7, 1000);
+  };
+
+  const handleStopUiTimer = () => {
+    stopUiTimer(uiIntervalRef.current);
+    uiIntervalRef.current = null;
+  };
+
   const { mutate } = useMutation({
-    mutationFn: async ({ file_key, file_name, embeddingModel }: { file_key: string; file_name: string; embeddingModel: string;}) => {
+    mutationFn: async ({ file_key, file_name, embeddingModel }: { file_key: string; file_name: string; embeddingModel: string | undefined}) => {
       const response = await axios.post("/api/create-chat", { file_key, file_name, embeddingModel});
       return response.data;
     },
@@ -31,11 +45,13 @@ export const useFileUpload = (onChange?: (files: File[]) => void) => {
 
     try {
       setUploading(true);
+      handleStartUiTimer();
 
       const data = await uploadToS3(file);
 
       if (!data?.file_key || !data?.file_name) {
         toast.error("L'objet data ne possède pas de clé ou de nom de fichier");
+        setUploading(false);
         return;
       }
 
@@ -49,15 +65,20 @@ export const useFileUpload = (onChange?: (files: File[]) => void) => {
             queryKey: ["chats"],
           });
           console.log("chat_id :", chat_id);
-          toast.success("le chat a été crée");
+          toast.success("le chat a été crée");          
           setUploading(false);
+          handleStopUiTimer();
         },
         onError: () => {
           toast.error("Erreur lors de la création du chat");
+          setUploading(false);
+          handleStopUiTimer();
         },
       });
     } catch (error) {
       console.error(error);
+      setUploading(false);
+      handleStopUiTimer();
     } 
   };
 
@@ -65,5 +86,6 @@ export const useFileUpload = (onChange?: (files: File[]) => void) => {
     files,
     uploading,
     handleDrop,
+    currentStepIndex,
   };
 };

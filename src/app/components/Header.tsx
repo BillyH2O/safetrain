@@ -5,7 +5,7 @@ import Image from 'next/image';
 import CYtechLogo from "../../assets/cy-logo.png";
 import TokenLogo from "../../assets/token-logo.png";
 import GemmeLogo from "../../assets/gemme-logo.png";
-import Logo from './Logo';
+import Logo from './ui/Logo';
 
 type Props = {}
 
