@@ -6,7 +6,7 @@ import { Button } from './ui/button'
 import { ButtonFeature } from './ButtonFeature'
 import { ListButtonFeature } from './ListButtonFeature'
 import { useChatSettings } from './context/ChatContext'
-import { DefaultMessage } from './DefaultMessage'
+import { DefaultMessage } from './DefaultMessageChat'
 
 interface MessagesProps {
   variant?: "large" | "small";

@@ -4,11 +4,7 @@ import { PDFList } from "../components/uploader/PDFList";
 
 const DashboardPage = () => {
   return (
-    <div className="h-full w-full p-10">
-      <div>
-        <FileUploader />
-      </div>
-      
+    <div className="h-full w-full"> 
       <PDFList />
     </div>
   );

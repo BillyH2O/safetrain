@@ -13,7 +13,7 @@ import {
   Switch,
 } from "@nextui-org/react";
 
-const MainUploader = () => {
+export const FileUploader = () => {
   const handleFileUpload = (newFiles: File[]) => {
     // Gérer la logique de l'upload
     console.log("files dashboard", newFiles);
@@ -32,8 +32,6 @@ const MainUploader = () => {
       <div className="flex gap-5 items-center justify-end">
       <Button className="dark:bg-black dark:border-neutral-800 rounded-lg " size="lg" onPress={onOpen}>Upload</Button>
       </div>
-      <div className="mb-4">
-      </div>
       <Modal backdrop="opaque" classNames={{
           backdrop: "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",
         }} isOpen={isOpen} onOpenChange={onOpenChange} size="4xl" placement="center">
@@ -51,7 +49,7 @@ const MainUploader = () => {
   );
 };
 
-export default MainUploader;
+export default FileUploader;
 
 
 
