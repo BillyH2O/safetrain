@@ -14,9 +14,13 @@ export async function POST(req: Request, res: Response){
     }
     try {
         const body = await req.json()
-        const{file_key, file_name} = body
+        const{file_key, file_name, embeddingModel} = body
+        console.log("body :", body)
 
-        await loadS3IntoPinecone(file_key)
+        await Promise.all([
+            loadS3IntoPinecone(file_key, embeddingModel, "standard"),
+            loadS3IntoPinecone(file_key, embeddingModel, "late_chunking")
+          ]);          
 
         const thumbnailKey = await generatePdfThumbnail(file_key);
         console.log("pdf url :", getS3Url(file_key))
@@ -27,6 +31,7 @@ export async function POST(req: Request, res: Response){
             pdfUrl: getS3Url(file_key),
             userId: userId,
             thumbnailUrl: thumbnailKey ? getS3Url(thumbnailKey) : null,
+            embeddingModel: embeddingModel,
         })
         .returning({
             insertedId: chats.id,

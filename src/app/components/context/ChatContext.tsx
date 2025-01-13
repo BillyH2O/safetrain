@@ -1,7 +1,7 @@
 "use client";
 
 import { useChat } from 'ai/react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Message } from 'ai';
 import axios from 'axios';
 import React, { createContext, useContext, useEffect, useState } from 'react';
@@ -27,6 +27,19 @@ type ChatContextType = {
   setStopSequences: (value: string) => void;
   prompt: string;
   setPrompt: (value: string) => void;
+  chunkingStrategy: string;
+  setChunkingStrategy: (value: string) => void;
+  rerankingModel: string;
+  setRerankingModel: (value: string) => void;
+  isHybridSearch: boolean;
+  setHybridSearch: (value: boolean) => void;
+
+  isRAG: boolean;
+  setRAG: (value: boolean) => void;
+
+  embeddingModel: string | undefined;
+  setEmbeddingModel: (value: string) => void;
+
   resetConfig: () => void;
   idConfigSelected: number | null; 
   setIdConfigSelected: (value: number | null) => void;
@@ -65,8 +78,13 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
   const [topK, setTopK] = useState<number>(0.4);
   const [maxSteps, setMaxSteps] = useState<number>(1);
   const [stopSequences, setStopSequences] = useState<string>("");
+  const [chunkingStrategy, setChunkingStrategy] = useState<string>("standard");
+  const [rerankingModel, setRerankingModel] = useState<string>("null");
+  const [isHybridSearch, setHybridSearch] = useState<boolean>(false);
   const [prompt, setPrompt] = useState<string>("");
   const [idConfigSelected, setIdConfigSelected] = useState<number | null>(null);
+  const [embeddingModel, setEmbeddingModelState] = useState<string | undefined>(undefined);
+  const [isRAG, setRAG] = useState<boolean>(true);
 
   const resetConfig = () => { 
     setName("")
@@ -76,9 +94,42 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
     setMaxSteps(50);
     setStopSequences("");
     setPrompt("");
+    setChunkingStrategy("standard");
+    setRerankingModel("null");
+    setHybridSearch(false);
     setIdConfigSelected(null);
+    //setEmbeddingModel("text-embedding-ada-002");
   }
 
+  // parametres
+  const fetchParametres = async () => {
+    try {
+      const response = await axios.get("/api/parametres");
+      console.log("Valeur initiale de l'embeddingModel :", response.data.embeddingModel);
+      setEmbeddingModelState(response.data.embeddingModel);
+    } catch (error) {
+      console.error("Erreur lors du fetch de /api/parametres :", error);
+    }
+  };
+
+  const updateEmbeddingModel = async (newEmbedding: string) => {
+    try {
+      console.log("Début de la mutation avec newEmbedding :", newEmbedding);
+      const response = await axios.post("/api/parametres", {embeddingModel: newEmbedding,});
+      console.log("Réponse de la mutation :", response.data);
+      fetchParametres();
+    } catch (error) {
+      console.error("Erreur lors de la mutation :", error);
+    }
+  };
+
+  const setEmbeddingModel = (value: string) => {updateEmbeddingModel(value);};
+
+  useEffect(() => {
+    fetchParametres();
+  }, []); // Charger au montage
+
+  // chat
   const { data: initialMessages } = useQuery({
     queryKey: ['chat', chatId],
     queryFn: async () => {
@@ -99,12 +150,17 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
       ...(chatId ? { chatId } : {}),
       config: {
         selectedModel,
+        chunkingStrategy,
+        rerankingModel,
+        isHybridSearch,
         temperature,
         topP,
         topK,
         maxSteps,
         stopSequences,
         prompt,
+        embeddingModel,
+        isRAG
       },
     },
     initialMessages: initialMessages || [],
@@ -142,9 +198,19 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
         setStopSequences,
         prompt,
         setPrompt,
+        chunkingStrategy, 
+        setChunkingStrategy,
+        rerankingModel,
+        setRerankingModel,
+        isHybridSearch,
+        setHybridSearch,
         resetConfig,
         idConfigSelected, 
         setIdConfigSelected,
+        embeddingModel,
+        setEmbeddingModel,
+        isRAG,
+        setRAG,
 
         // -- Logique Chat
         messages,

@@ -16,8 +16,13 @@ export async function uploadBufferToS3(
 ): Promise<{ file_key: string; file_name: string }> {
   try {
     // Générer une clé unique
-    const file_key = `uploads/${Date.now()}-${randomUUID()}-${fileName.replace(" ", "-")}`;
+    const isThumbnail = fileName.toLowerCase().endsWith(".png");
 
+    // Générer la clé en fonction du type de fichier
+    const file_key = isThumbnail
+      ? "uploads/" + Date.now().toString() + fileName.replace(" ", "-")
+      : fileName.replace(" ", "-");
+    
     const params = {
       Bucket: process.env.NEXT_PUBLIC_S3_BUCKET_NAME!,
       Key: file_key,

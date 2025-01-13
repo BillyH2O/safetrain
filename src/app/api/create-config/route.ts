@@ -28,6 +28,9 @@ export async function POST(req: Request, res: Response){
 
         const config_id = await db.insert(configs).values({
             name: config.name,
+            chunkingStrategy: config.chunkingStrategy,
+            rerankingModel: config.rerankingModel,
+            hybridSearch: config.isHybridSearch,
             temperature: config.temperature,
             topP: config.topP,
             topK: config.topK,

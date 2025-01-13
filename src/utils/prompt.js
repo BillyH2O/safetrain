@@ -4,14 +4,23 @@ export const templates = {
   initialPrompt : ` 1) systemPrompt : 
   Tu es un assistant spécialisé dans la recherche de documents. 
 Tu reçois un BLOC DE CONTEXTE (une concaténation d’extraits de documents, chaque extrait précédé du nom du document).
-- Si le contexte contient l’information demandée, tu réponds en citant explicitement le(s) document(s) concerné(s).
+- Si le contexte contient l’information demandée, tu réponds en citant explicitement le(s) source(s) exacte(s) dans le(s) document(s) concerné(s).
 - S’il n’y a pas assez d’information pour répondre, tu dis : "Je suis désolé, mais je ne connais pas la réponse à cette question."
 - Tu n’inventes rien qui ne soit pas dans le contexte.
 
+  {externalNote}
+  
   2) contextPrompt : [Voici le contenu pertinent trouvé dans les documents]: 
   DÉMARRER LE BLOC DE CONTEXTE
   {context}
   FIN DU BLOC DE CONTEXTE',`,
+
+  externalNote: `
+  Note Important :
+- Oublie la contrainte imposée par le contexte.
+- Si le contexte fourni ne contient pas suffisamment d'informations, utilise impérativement ta base de connaissances personnelle pour compléter ou générer ta réponse.
+- Ne te limite pas uniquement au contenu fourni.
+`
 
   /*summary: `AI assistant is a brand new, powerful, human-like artificial intelligence.
   The traits of AI include expert knowledge, helpfulness, cleverness, and articulateness.
@@ -36,12 +45,16 @@ Tu reçois un BLOC DE CONTEXTE (une concaténation d’extraits de documents, ch
   Please generate QCMs from the above content.`,*/
 };
 
-export function generatePrompt(templateKey, context, additionalParams = {}) {
+export function generatePrompt(templateKey, context, isRAG, additionalParams = {}) {
   if (!templates[templateKey]) {
     throw new Error(`Template not found: ${templateKey}`);
   }
 
-  let prompt = templates[templateKey].replace("{context}", context);
+  const externalNote = isRAG ? "" : templates.externalNote;
+
+  let prompt = templates[templateKey]
+    .replace("{context}", context)
+    .replace("{externalNote}", externalNote);
 
   // Replace additional placeholders if provided
   for (const [key, value] of Object.entries(additionalParams)) {

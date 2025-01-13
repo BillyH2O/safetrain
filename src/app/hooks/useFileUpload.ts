@@ -4,16 +4,19 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { uploadToS3 } from "../lib/s3";
 import { useRouter } from "next/navigation";
+import { useChatSettings } from "../components/context/ChatContext";
+
 
 export const useFileUpload = (onChange?: (files: File[]) => void) => {
   const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
+  const { embeddingModel } = useChatSettings();
   const router = useRouter()
   const queryClient = useQueryClient();
-
+  
   const { mutate } = useMutation({
-    mutationFn: async ({ file_key, file_name }: { file_key: string; file_name: string }) => {
-      const response = await axios.post("/api/create-chat", { file_key, file_name });
+    mutationFn: async ({ file_key, file_name, embeddingModel }: { file_key: string; file_name: string; embeddingModel: string;}) => {
+      const response = await axios.post("/api/create-chat", { file_key, file_name, embeddingModel});
       return response.data;
     },
   });
@@ -36,7 +39,11 @@ export const useFileUpload = (onChange?: (files: File[]) => void) => {
         return;
       }
 
-      mutate(data, {
+      mutate({
+        file_key: data.file_key,
+        file_name: data.file_name,
+        embeddingModel: embeddingModel, 
+      }, {
         onSuccess: ({chat_id}) => {
           queryClient.invalidateQueries({
             queryKey: ["chats"],

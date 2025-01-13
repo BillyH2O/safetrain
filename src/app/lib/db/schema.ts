@@ -1,4 +1,4 @@
-import { integer, pgTable, varchar, serial, text, timestamp, pgEnum, real } from "drizzle-orm/pg-core";
+import { integer, pgTable, varchar, serial, text, timestamp, pgEnum, real, boolean } from "drizzle-orm/pg-core";
 import { FileKey } from "lucide-react";
 
 export const userSystemEnum = pgEnum('user_system_enum', ['system', 'user']) // def d'un type enum
@@ -15,6 +15,7 @@ export const chats = pgTable("chats", { // chats
   pdfName: text('pdf_name').notNull(),
   pdfUrl: text('pdf_url').notNull(),
   thumbnailUrl: text("thumbnailUrl"), 
+  embeddingModel: text("embedding_model").notNull().default("text-embedding-ada-002"),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   userId: varchar('user_id', {length:256}).notNull(),
   fileKey: text('file_key').notNull(),
@@ -27,12 +28,15 @@ export const messages = pgTable('messages' , {
   chatId: integer('chat_id').references(()=>chats.id).notNull(),
   content: text('content').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
-  role: userSystemEnum('role').notNull()
+  role: userSystemEnum('role').notNull(),
 })
 
 export const configs = pgTable('configs' , {
   id: serial('id').primaryKey(),
   name: text('name').notNull().unique(),
+  chunkingStrategy: text('chunking_strategy').notNull().default('ma_valeur_par_defaut'),
+  rerankingModel: text('reranking_model').notNull().default('null'),
+  hybridSearch: boolean('hybrid_search').notNull().default(false), 
   temperature: real('temperature').notNull(),
   topP: real('topP').notNull(),
   topK: real('topK').notNull(),
@@ -42,3 +46,10 @@ export const configs = pgTable('configs' , {
   userId: varchar('user_id', {length:256}).notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
 })
+
+export const parametres = pgTable("parametres", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id", { length: 256 }).notNull(),
+  embeddingModel: text("embedding_model").notNull().default("text-embedding-ada-002"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
