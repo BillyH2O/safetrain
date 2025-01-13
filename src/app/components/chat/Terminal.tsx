@@ -7,8 +7,8 @@ import {
     SheetTitle,
     SheetTrigger,
   } from "@/app/components/ui/sheet"  
-  import { Button } from "@/app/components/ui/button"
-import { ConfigTerminal } from './ConfigTerminal'
+  import { Button } from "@/app/components/ui/button/Button"
+import { ConfigTerminal } from '../terminal/ConfigTerminal'
 
 type Props = {}
 

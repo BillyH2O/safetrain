@@ -6,7 +6,7 @@ import Link from "next/link";
 import PDF from "./PDF";
 import { Switch } from "@nextui-org/react";
 import { useState } from "react";
-import { DefaultPDFMessage } from "../DefaultMessagePDF";
+import { DefaultPDFMessage } from "./DefaultMessagePDF";
 import FileUploader from "./FileUploader";
 import { cn } from "@/app/lib/utils";
 import { Image, List } from "lucide-react";

@@ -9,10 +9,10 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "./ui/select"
+} from "../../ui/select"
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useChatSettings } from "./context/ChatContext";
+import { useChatSettings } from "../../context/ChatContext";
 
 type Props = {
   isPlayground:boolean

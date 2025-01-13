@@ -1,6 +1,6 @@
 import { Switch } from '@nextui-org/react';
 import React from 'react';
-import { useChatSettings } from './context/ChatContext';
+import { useChatSettings } from '../../context/ChatContext';
 
 type Props = {
     isPlayground:boolean

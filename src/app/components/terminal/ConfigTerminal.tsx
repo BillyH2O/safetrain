@@ -1,15 +1,15 @@
 import React from 'react'
 import { Button, Input, Slider, Textarea } from '@nextui-org/react'
-import { useChatSettings } from './context/ChatContext';
+import { useChatSettings } from '../context/ChatContext';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { PromptSelector } from './PromptSelector';
+import { PromptSelector } from './selector/PromptSelector';
+import { ChunkingSelector } from './selector/ChunkingSelector';
+import { RerankingSelector } from './selector/RerankingSelector';
+import HybridSearchSelector from './selector/HybridSearchSelector';
+import { EmbeddingModelSelector } from './selector/EmbeddingModelSelector';
 import TerminalDoc from './TerminalDoc';
-import { ChunkingSelector } from './ChunkingSelector';
-import { RerankingSelector } from './RerankingSelector';
-import HybridSearchSelector from './HybridSearchSelector';
-import { EmbeddingModelSelector } from './EmbeddingModelSelectorUpload';
 
 type Props = {
     isPlayground: boolean

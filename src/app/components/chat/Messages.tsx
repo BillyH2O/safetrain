@@ -2,10 +2,10 @@ import React from 'react'
 import { type Message as TMessage } from 'ai/react'
 import { Message } from './Message'
 import { MessageSquare } from 'lucide-react'
-import { Button } from './ui/button'
-import { ButtonFeature } from './ButtonFeature'
+import { Button } from '../ui/button/Button'
+import { ButtonFeature } from '../ui/button/ButtonFeature'
 import { ListButtonFeature } from './ListButtonFeature'
-import { useChatSettings } from './context/ChatContext'
+import { useChatSettings } from '../context/ChatContext'
 import { DefaultMessage } from './DefaultMessageChat'
 
 interface MessagesProps {

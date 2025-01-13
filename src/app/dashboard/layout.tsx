@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Sidebar, SidebarBody } from "../components/dashboard/sidebar";
 import { cn } from "../lib/utils";
-import SidebarLinks from "../components/dashboard/SidebarLinks";
-import DashboardLoader from "../components/dashboard/DashboardLoader";
+import DashboardLoader from "../components/layout/DashboardLoader";
 
-import Header from "../components/Header";
+import Header from "../components/layout/Header";
+import { Sidebar, SidebarBody } from "../components/layout/sidebar";
+import SidebarLinks from "../components/layout/SidebarLinks";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);

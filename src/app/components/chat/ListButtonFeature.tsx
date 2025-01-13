@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { ButtonFeature } from './ButtonFeature';
+import { ButtonFeature } from '../ui/button/ButtonFeature';
 import { Book, ChartSpline, LetterText, Pyramid, Radiation, Sigma } from 'lucide-react';
 import { useChat } from 'ai/react';
-import { useChatSettings } from './context/ChatContext';
-import { DeleteButton } from './ui/DeleteButton';
+import { useChatSettings } from '../context/ChatContext';
+import { DeleteButton } from '../ui/button/DeleteButton';
 
 type ListButtonFeatureProps = {
   variant?: "large" | "small";

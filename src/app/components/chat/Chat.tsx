@@ -1,7 +1,7 @@
 'use client';
 
-import Messages from '../Messages';
-import ChatInput from '../ChatInput';
+import Messages from './Messages';
+import ChatInput from './ChatInput';
 import { useChatSettings } from '../context/ChatContext';
 
 type Props = { 

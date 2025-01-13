@@ -1,8 +1,8 @@
 import { Switch } from '@nextui-org/react'
 import { Globe, GlobeLock } from 'lucide-react'
 import React from 'react'
-import { cn } from '../lib/utils'
-import { useChatSettings } from './context/ChatContext'
+import { cn } from '../../../lib/utils'
+import { useChatSettings } from '../../context/ChatContext'
 
 type Props = {}
 

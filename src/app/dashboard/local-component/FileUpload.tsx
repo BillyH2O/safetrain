@@ -6,7 +6,7 @@ import { useDropzone } from "react-dropzone";
 import { useFileUpload } from "@/app/hooks/useFileUpload";
 import { GridPattern } from "./GridPattern";
 import { Loader2 } from "lucide-react";
-import { MultiStepLoader as Loader } from "../ui/multi-step-loader";
+import { MultiStepLoader as Loader } from "./multi-step-loader";
 
 const mainVariant = {
   initial: {

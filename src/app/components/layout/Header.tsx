@@ -2,10 +2,10 @@ import React from 'react'
 import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { Bell } from 'lucide-react'
 import Image from 'next/image';
-import CYtechLogo from "../../assets/cy-logo.png";
-import TokenLogo from "../../assets/token-logo.png";
-import GemmeLogo from "../../assets/gemme-logo.png";
-import Logo from './ui/Logo';
+import CYtechLogo from "../../../assets/cy-logo.png";
+import TokenLogo from "../../../assets/token-logo.png";
+import GemmeLogo from "../../../assets/gemme-logo.png";
+import Logo from '../ui/Logo';
 
 type Props = {}
 

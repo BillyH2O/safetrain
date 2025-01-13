@@ -1,8 +1,8 @@
 import { cn } from '@/app/lib/utils';
-import { MessageSquare, PlusCircle } from 'lucide-react';
+import { MessageSquare} from 'lucide-react';
 import Link from 'next/link';
 import React from 'react'
-import { HoverBorderGradient } from '../ui/hover-border-gradient';
+import { NewChatButton } from './NewchatButton';
 
 type Props = {
     chats: {
@@ -19,15 +19,7 @@ type Props = {
 export default function ChatList({chats, chatId}: Props) {
   return (
     <div className='flex flex-col gap-5 bg-neutral-900 items-center p-6 h-full overflow-y-scroll overflow-x-hidden'> 
-        <Link key={chatId} href={"/dashboard"} className="flex justify-center text-center mb-3">
-            <HoverBorderGradient
-                containerClassName="rounded-full"
-                as="button"
-                className="dark:bg-neutral-900 bg-white text-black dark:text-white flex items-center space-x-2">
-                <span>Nouveau Chat</span>
-                <PlusCircle className='mr-2 w-4 h-4'/>
-            </HoverBorderGradient>
-        </Link>
+        <NewChatButton chatId={chatId}/>
         
         {chats.map((chat) => (
         <Link key={chat.id} 

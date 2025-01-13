@@ -5,9 +5,9 @@ import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
-import Chat from '@/app/components/chats/Chat';
-import ChatList from '@/app/components/chats/ChatList';
-import PDFViewer from '@/app/components/PDFViewer';
+import Chat from '@/app/components/chat/Chat';
+import ChatList from '@/app/components/chat/ChatList';
+import PDFViewer from '@/app/components/chat/PDFViewer';
 
 import { Switch } from '@nextui-org/react';
 import { FileText, Text } from 'lucide-react';

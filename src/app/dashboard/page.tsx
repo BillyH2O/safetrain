@@ -1,6 +1,6 @@
 import React from "react";
-import FileUploader from "../components/uploader/FileUploader";
-import { PDFList } from "../components/uploader/PDFList";
+import FileUploader from "./local-component/FileUploader";
+import { PDFList } from "./local-component/PDFList";
 
 const DashboardPage = () => {
   return (

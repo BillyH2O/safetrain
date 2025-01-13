@@ -1,5 +1,5 @@
 import React from 'react';
-import Logo from './ui/Logo';
+import Logo from '../ui/Logo';
 import { ListButtonFeature } from './ListButtonFeature';
 import { cn } from '@/app/lib/utils';
 

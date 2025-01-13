@@ -1,7 +1,7 @@
 "use client"
 
-import { EmbeddingModelSelector } from '@/app/components/EmbeddingModelSelectorUpload'
-import { RagSwitch } from '@/app/components/RagSwitch'
+import { EmbeddingModelSelector } from '@/app/components/terminal/selector/EmbeddingModelSelector'
+import { RagSwitch } from '@/app/components/terminal/selector/RagSwitch'
 import React from 'react'
 
 type Props = {}
