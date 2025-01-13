@@ -2,9 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { Sidebar, SidebarBody } from "../components/dashboard/sidebar";
-import Logo from "../components/dashboard/Logo";
 import { cn } from "../lib/utils";
-import SidebarLinks from "../components/SidebarLinks";
+import SidebarLinks from "../components/dashboard/SidebarLinks";
 import DashboardLoader from "../components/dashboard/DashboardLoader";
 
 import Header from "../components/Header";

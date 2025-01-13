@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { SidebarLink } from "./dashboard/sidebar";
+import { SidebarLink } from "./sidebar";
 import {
   IconArrowLeft,
   IconBrandTabler,

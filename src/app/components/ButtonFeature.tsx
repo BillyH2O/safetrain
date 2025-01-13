@@ -5,14 +5,16 @@ type Props = {
     config_id: number,
     label: string;
     icon?: ReactNode;
+    size: "icon" | "default" | "sm" | "lg" | null | undefined;
     onButtonClick: (config_id: number, label: string) => void; 
 }
 
-export const ButtonFeature = ({config_id, label, icon, onButtonClick}: Props) => {
+export const ButtonFeature = ({config_id, label, icon, size, onButtonClick}: Props) => {
   return (
     <Button 
       variant="outline" 
-      className='p-7 flex gap-3'
+      className='flex gap-3'
+      size={size}
       onClick={() => onButtonClick(config_id, label)} 
     >
       {label}

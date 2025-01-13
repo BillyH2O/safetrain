@@ -39,7 +39,7 @@ export default function ChatPage() {
     <div className="h-full w-full flex justify-center items-center">
 
       <div className="w-[80%] h-full relative ">
-        <Chat />
+        <Chat variant='large'/>
       </div>
       
       <div className='w-[20%] h-full flex-1 border-l border-zinc-700 bg-neutral-950'>

@@ -78,7 +78,7 @@ export default function ChatPage() {
           startContent={<Text />}
           className="absolute right-10 top-10"
         />
-        <Chat chatId={chatIdNumber}/>
+        <Chat chatId={chatIdNumber} variant='small'/>
       </div>
 
       {isEnabled && (
