@@ -14,7 +14,7 @@ export const SwitchPDFMode = ({ isEnabled, onToggle }: SwitchPdfModeProps) => {
         <Switch
             isSelected={isEnabled}
             onChange={onToggle}
-            color="warning"
+            color="primary"
             endContent={<FileText />}
             size="lg"
             startContent={<Text />}

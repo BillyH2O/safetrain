@@ -59,9 +59,9 @@ const PDF = ({chat, isEnabled, refetchChats}: PdfProps) => {
               <ModalHeader className="flex flex-col gap-1">{chat.pdfName}</ModalHeader>
               <ModalBody> <img src={chat.thumbnailUrl || chat.pdfUrl} alt={chat.pdfName} className="object-cover rounded-lg"/></ModalBody>
               <ModalFooter>
-                <Button className='bg-red-700 border rounded-md text-foreground' onPress={handleDelete}>Supprimer</Button>
+                <Button className='bg-red-700 border rounded-md text-border' onPress={handleDelete}>Supprimer</Button>
                 <Link href={`/dashboard/chat/${chat.id}`}>
-                  <Button className='bg-orange-600 border rounded-md text-foreground' radius="sm">Ouvrir</Button>
+                  <Button className='bg-orange-600 border rounded-md text-border' radius="sm">Ouvrir</Button>
                 </Link>
               </ModalFooter>
             </>

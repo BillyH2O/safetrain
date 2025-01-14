@@ -8,6 +8,7 @@ import FileUploader from "./FileUploader";
 import { cn } from "@/app/lib/utils";
 import { Image, List } from "lucide-react";
 import { usePDFListTanstack } from "@/app/hooks/usePDFListTanstack";
+import { LoadingPage } from "@/app/components/ui/LoadingPage";
 
 export const PDFManager = () => {
   const [isEnabled, setIsEnabled] = useState(true);
@@ -19,7 +20,7 @@ export const PDFManager = () => {
   };
   
   if (isLoading) {
-    return <p>Chargement des données...</p>;
+    return <LoadingPage/>
   }
 
   return chats.length === 0 ? (

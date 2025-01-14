@@ -69,7 +69,7 @@ const ThemeSwitch = (props: SwitchProps) => {
             class: [
               "w-8 h-8",
               "flex items-center justify-center",
-              "rounded-lg secondary hover:bg-default-200",
+              "rounded-lg secondary hover:bg-border",
             ],
           })}
         >

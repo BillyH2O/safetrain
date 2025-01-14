@@ -40,7 +40,7 @@ export const TerminalBody = ({isPlayground, name, setName, temperature, setTempe
             value={temperature}
             onChange={(value) => setTemperature(value as number)}
             className="max-w-md"
-            color='warning'
+            color='primary'
             defaultValue={0.4}
             label="Temperature"
             maxValue={1}
@@ -53,7 +53,7 @@ export const TerminalBody = ({isPlayground, name, setName, temperature, setTempe
             value={topP}
             onChange={(value) => setTopP(value as number)}
             className="max-w-md"
-            color='warning'
+            color='primary'
             defaultValue={0.4}
             label="topP"
             maxValue={1}
@@ -66,7 +66,7 @@ export const TerminalBody = ({isPlayground, name, setName, temperature, setTempe
             value={topK}
             onChange={(value) => setTopK(value as number)}
             className="max-w-md"
-            color='warning'
+            color='primary'
             defaultValue={40}
             label="topK"
             maxValue={100}
@@ -79,7 +79,7 @@ export const TerminalBody = ({isPlayground, name, setName, temperature, setTempe
             value={maxSteps}
             onChange={(value) => setMaxSteps(value as number)}
             className="max-w-md"
-            color='warning'
+            color='primary'
             defaultValue={50}
             label="maxSteps"
             maxValue={200}

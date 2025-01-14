@@ -11,6 +11,8 @@ import { cn } from '@/app/lib/utils';
 import { useChatSettings } from '@/app/components/context/ChatContext';
 import { SwitchPDFMode } from '@/app/components/chat/SwitchPDFMode';
 import { useChats } from '@/app/hooks/useChats';
+import { Loader2 } from 'lucide-react';
+import { LoadingPage } from '@/app/components/ui/LoadingPage';
 
 type ChatType = {
   userId: string;
@@ -42,7 +44,7 @@ export default function ChatPage() {
   const handleSwitchChange = () => setIsEnabled((prev) => !prev);
 
   if (isLoading) {
-    return <div>Chargement...</div>;
+    return <LoadingPage/>
   }
 
   return (

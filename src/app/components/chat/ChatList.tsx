@@ -25,8 +25,8 @@ export default function ChatList({chats, chatId}: Props) {
         {chats.map((chat) => (
         <Link key={chat.id} 
             href={`/dashboard/chat/${chat.id}`} 
-            className={cn('flex justify-between items-center gap-4 text-white truncate border dark:border-zinc-500 w-full p-3 rounded-lg', {
-                        'bg-orange-500 hover:bg-orange-600 text-foreground' : chat.id === chatId,
+            className={cn('flex justify-between items-center gap-4 text-white truncate border border-border w-full p-3 rounded-lg', {
+                        'bg-primary hover:bg-orange-600 text-foreground' : chat.id === chatId,
                         'bg-neutral-900 hover:bg-neutral-950' : chat.id !== chatId,
         })}>
             {chat.pdfName}

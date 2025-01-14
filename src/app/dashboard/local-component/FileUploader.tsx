@@ -20,7 +20,7 @@ export const FileUploader = () => {
   return (
     <div className="relative"> 
       <div className="flex gap-5 items-center justify-end">
-      <Button className="bg-orange-500 dark:border-neutral-800 rounded-lg " size="lg" onPress={onOpen}>Upload</Button>
+      <Button className="bg-primary text-white rounded-lg " size="lg" onPress={onOpen}>Upload</Button>
       </div>
       <Modal backdrop="opaque" classNames={{
           backdrop: "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",

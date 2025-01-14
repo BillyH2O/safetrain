@@ -15,7 +15,7 @@ export const RagSwitch = (props: Props) => {
   return (
     <Switch
       isSelected={isRAG} onValueChange={setRAG}
-      color='warning'
+      color='primary'
       classNames={{
         base: cn(
           "inline-flex flex-row-reverse w-full max-w-md bg-content1 items-center",
