@@ -10,13 +10,14 @@ type ChatInputProps = {
 const ChatInput = ({isPlayground}: ChatInputProps) => {
  
   return (
-    <div className='flex flex-col h-full w-full justify-center items-center '>
+    <div className='flex flex-col h-full w-full justify-center items-center gap-3'>
+        <QueryInput/>
         <div className='flex gap-2 justify-center items-center'>
           <ModelSelector/>
           {!isPlayground && <TerminalSheet/>} 
         </div>
         
-      <QueryInput/>
+      
       </div>  
   )
 }

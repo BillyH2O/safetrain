@@ -4,13 +4,15 @@ import Image from 'next/image';
 import TokenLogo from "../../../assets/token-logo.png";
 import GemmeLogo from "../../../assets/gemme-logo.png";
 import { UserButton } from '@clerk/nextjs';
+import ThemeSwitch from '../ui/button/ThemeSwitch';
 
 type Props = {}
 
 export const RightHeader = (props: Props) => {
   return (
     <div className='flex justify-center items-center gap-10'>
-        <Image src={TokenLogo} alt="logo open ai" height={35}/>
+        <ThemeSwitch/>
+        <Image src={TokenLogo} alt="logo token" height={35}/>
         <Bell color='grey' />
         <UserButton
             appearance={{

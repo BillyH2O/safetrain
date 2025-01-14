@@ -13,7 +13,7 @@ export default function Chat({ chatId, variant}: Props) {
 
   return (
     <div className='h-full w-full flex flex-col'>
-      <div className='h-[80%] overflow-auto border-b border-zinc-700'>
+      <div className='h-[80%] overflow-auto border-b border-border'>
         <Messages variant={variant}/>
       </div>
       <div className='flex-1'>

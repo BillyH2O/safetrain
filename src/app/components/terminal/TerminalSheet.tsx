@@ -20,7 +20,7 @@ export const TerminalSheet = (props: Props) => {
         </SheetTrigger>
         <SheetContent>
             <SheetHeader className='h-full'>
-            <SheetTitle className="sr-only">Configuration du Terminal</SheetTitle>
+            <SheetTitle className="m-auto">Configuration du Terminal</SheetTitle>
             <SheetDescription className='h-full'>
                 <Terminal isPlayground={false}/>
             </SheetDescription>

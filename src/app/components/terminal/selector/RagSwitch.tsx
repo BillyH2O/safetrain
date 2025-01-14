@@ -20,7 +20,7 @@ export const RagSwitch = (props: Props) => {
         base: cn(
           "inline-flex flex-row-reverse w-full max-w-md bg-content1 items-center",
           "justify-between cursor-pointer rounded-lg gap-2 p-5 border-2 border-transparent",
-          " bg-zinc-950",
+          "bg-secondary border border-border",
         ),
         wrapper: "p-0 h-4 overflow-visible",
         thumb: cn(
@@ -34,7 +34,7 @@ export const RagSwitch = (props: Props) => {
     >
       <div className="flex flex-col gap-1">
         <p className="text-medium">{switchTitle}</p>
-        <p className="text-tiny text-default-400">
+        <p className="text-tiny ">
             Lorsque cette option est activée, l'agent consulte des sources externes à sa base de connaissance pour enrichir ses réponses.
         </p>
       </div>

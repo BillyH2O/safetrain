@@ -28,7 +28,7 @@ export default function ChatPage() {
         <Chat variant='large'/>
       </div>
       
-      <div className='w-[20%] h-full flex-1 border-l border-zinc-700 bg-neutral-950'>
+      <div className='w-[20%] h-full flex-1 border-l border-border'>
       <Terminal isPlayground={true}/>
       </div>
     </div>

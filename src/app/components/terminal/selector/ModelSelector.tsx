@@ -13,7 +13,7 @@ export const ModelSelector = (props: Props) => {
 
   return (
     <Select onValueChange={(value) => setSelectedModel(value)} value={selectedModel}>
-      <SelectTrigger className="w-auto">
+      <SelectTrigger className="w-auto active:border-border">
         <SelectValue placeholder="Modèle" />
       </SelectTrigger>
       <SelectContent>
@@ -21,7 +21,7 @@ export const ModelSelector = (props: Props) => {
           <SelectLabel>Modèle</SelectLabel>
           {modelOptions.map(({ value, label, logo, width, height }) => (
             <SelectItem key={value} value={value}>
-              <div className="flex gap-3">
+              <div className="flex gap-2 items-center justify-center">
                 {label}
                 <Image src={logo} alt={`logo ${label}`} width={width} height={height} />
               </div>

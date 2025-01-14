@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" className="dark">
+      <html lang="en" className="">
         <body className={cn(aleo.className,  "min-h-screen antialiased")}>
           <Providers>
           <main className="h-screen text-foreground bg-background">{children}</main>

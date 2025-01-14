@@ -88,7 +88,7 @@ export const TerminalBody = ({isPlayground, name, setName, temperature, setTempe
             isDisabled={!isPlayground}
         />
 
-        <Textarea className="w-full" maxRows={3} isClearable label="Prompt" placeholder="Entrez votre prompt" value={prompt} onChange={(e) => setPrompt(e.target.value)} isDisabled={!isPlayground}/>
+        <Textarea className="w-full" maxRows={3} isClearable label="Prompt" placeholder="Entrez votre prompt" value={prompt} variant='faded' onChange={(e) => setPrompt(e.target.value)} isDisabled={!isPlayground}/>
         <div className='flex gap-3 justify-between items-center'>
             <Input
                 isRequired
@@ -98,6 +98,7 @@ export const TerminalBody = ({isPlayground, name, setName, temperature, setTempe
                 label="Nom"
                 isDisabled={!isPlayground}
                 size='sm'
+                variant='faded'
             />
             <Input 
                 className="max-w-none w-1/2" 
@@ -106,6 +107,7 @@ export const TerminalBody = ({isPlayground, name, setName, temperature, setTempe
                 label="stopSequences" 
                 isDisabled={!isPlayground}
                 size='sm'
+                variant='faded'
             />
         </div>
     </div>

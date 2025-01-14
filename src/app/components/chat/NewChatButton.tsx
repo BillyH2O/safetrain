@@ -13,7 +13,7 @@ export const NewChatButton = ({chatId}: Props) => {
         <HoverBorderGradient
             containerClassName="rounded-full"
             as="button"
-            className="dark:bg-neutral-900 bg-white text-black dark:text-white flex items-center space-x-2">
+            className="bg-background text-foreground flex items-center space-x-2">
             <span>Nouveau Chat</span>
             <PlusCircle className='mr-2 w-4 h-4'/>
         </HoverBorderGradient>

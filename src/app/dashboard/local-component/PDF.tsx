@@ -47,21 +47,21 @@ const PDF = ({chat, isEnabled, refetchChats}: PdfProps) => {
           <img src={chat.thumbnailUrl || chat.pdfUrl} alt={chat.pdfName} className="h-full rounded-lg"/>
         </button>
       ) : (
-        <Button onPress={onOpen}  className="bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-700 rounded-lg mt-2 flex justify-between items-center">
+        <Button onPress={onOpen}  className="bg-secondary border border-border rounded-lg mt-2 flex justify-between items-center">
           {chat.pdfName}
         </Button>
       )}
 
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent className='bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-700 p-4 rounded-lg mt-2 flex justify-between items-center'>
+        <ModalContent className='bg-secondary border-borde text-foreground p-4 rounded-lg mt-2 flex justify-between items-center border border-border'>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">{chat.pdfName}</ModalHeader>
               <ModalBody> <img src={chat.thumbnailUrl || chat.pdfUrl} alt={chat.pdfName} className="object-cover rounded-lg"/></ModalBody>
               <ModalFooter>
-                <Button className='bg-red-700 border rounded-md' onPress={handleDelete}>Supprimer</Button>
+                <Button className='bg-red-700 border rounded-md text-foreground' onPress={handleDelete}>Supprimer</Button>
                 <Link href={`/dashboard/chat/${chat.id}`}>
-                  <Button className='bg-orange-600 border rounded-md' radius="sm">Ouvrir</Button>
+                  <Button className='bg-orange-600 border rounded-md text-foreground' radius="sm">Ouvrir</Button>
                 </Link>
               </ModalFooter>
             </>

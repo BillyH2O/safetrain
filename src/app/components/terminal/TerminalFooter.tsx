@@ -14,7 +14,7 @@ export const TerminalFooter = ({ isPlayground, handleNew, handleSave }: Terminal
         {isPlayground ? (
             <div className='flex gap-5 items-center justify-center'>
                 {isPlayground && <TerminalDoc label={"Doc"}/>}
-                <Button color="secondary" variant="flat" onPress={handleNew}>Nouveau</Button>
+                <Button color="danger" variant="flat" onPress={handleNew}>Nouveau</Button>
                 <Button color="success" variant="flat" onPress={handleSave}>Sauvegarder</Button>
             </div>
         ) : (

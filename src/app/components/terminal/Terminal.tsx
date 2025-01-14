@@ -78,7 +78,7 @@ export const Terminal = ({isPlayground}: Props) => {
    }
   
   return (
-    <div className='flex flex-col h-full overflow-hidden p-6'>
+    <div className='flex flex-col h-full overflow-hidden p-6 bg-muted'>
         <TerminalHeader name={name}/>
 
         <TerminalBody isPlayground={isPlayground} name={name} setName={setName} temperature={temperature} setTemperature={setTemperature}
