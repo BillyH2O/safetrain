@@ -8,7 +8,7 @@ import {
   IconSettings,
   IconUserBolt,
 } from "@tabler/icons-react";
-import { BrainCircuit } from "lucide-react";
+import { BrainCircuit, Compass } from "lucide-react";
 
 const SidebarLinks = () => {
   const links = [
@@ -41,8 +41,15 @@ const SidebarLinks = () => {
       ),
     },
     {
+      label: "Réference",
+      href: "/dashboard/reference",
+      icon: (
+        <Compass className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
       label: "Logout",
-      href: "#",
+      href: "#/sign-out",
       icon: (
         <IconArrowLeft className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
