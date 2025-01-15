@@ -1,10 +1,11 @@
 "use client";
 
 import { useChat } from 'ai/react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Message } from 'ai';
-import axios from 'axios';
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useParametres } from '@/app/hooks/useParametres';
+import { useChatMessages } from '@/app/hooks/useChatMessages';
+//import { useParametresTanstack } from '@/app/hooks/useParametresTanstack';
 
 type ChatContextType = {
   // -- chatId
@@ -83,7 +84,6 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
   const [isHybridSearch, setHybridSearch] = useState<boolean>(false);
   const [prompt, setPrompt] = useState<string>("");
   const [idConfigSelected, setIdConfigSelected] = useState<number | null>(null);
-  const [embeddingModel, setEmbeddingModelState] = useState<string | undefined>(undefined);
   const [isRAG, setRAG] = useState<boolean>(true);
 
   const resetConfig = () => { 
@@ -101,47 +101,9 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
     //setEmbeddingModel("text-embedding-ada-002");
   }
 
-  // parametres
-  const fetchParametres = async () => {
-    try {
-      const response = await axios.get("/api/parametres");
-      console.log("Valeur initiale de l'embeddingModel :", response.data.embeddingModel);
-      setEmbeddingModelState(response.data.embeddingModel);
-    } catch (error) {
-      console.error("Erreur lors du fetch de /api/parametres :", error);
-    }
-  };
-
-  const updateEmbeddingModel = async (newEmbedding: string) => {
-    try {
-      console.log("Début de la mutation avec newEmbedding :", newEmbedding);
-      const response = await axios.post("/api/parametres", {embeddingModel: newEmbedding,});
-      console.log("Réponse de la mutation :", response.data);
-      fetchParametres();
-    } catch (error) {
-      console.error("Erreur lors de la mutation :", error);
-    }
-  };
-
-  const setEmbeddingModel = (value: string) => {updateEmbeddingModel(value);};
-
-  useEffect(() => {
-    fetchParametres();
-  }, []); // Charger au montage
-
-  // chat
-  const { data: initialMessages } = useQuery({
-    queryKey: ['chat', chatId],
-    queryFn: async () => {
-      const response = await axios.post<Message[]>('/api/get-messages', {
-        chatId,
-      });
-      return response.data;
-    },
-    enabled: chatId !== null && chatId > 0,
-  });
-
-  console.log('Provider chatId:', chatId);
+  const { embeddingModel, updateEmbeddingModel } = useParametres(); // Récupération des paramètres de l'application
+  //const { embeddingModel, updateEmbeddingModel } = useParametresTanstack();
+  const { data: initialMessages } = useChatMessages(chatId); // Récupération des messages du chat
   
   //
   const {messages, setMessages, input, setInput, handleInputChange, handleSubmit} = useChat({
@@ -208,7 +170,7 @@ export const ChatProvider = ({ children }: ChatProviderProps)  => {
         idConfigSelected, 
         setIdConfigSelected,
         embeddingModel,
-        setEmbeddingModel,
+        setEmbeddingModel: updateEmbeddingModel,
         isRAG,
         setRAG,
 

@@ -1,5 +1,6 @@
 import { type ClassValue, clsx} from "clsx";
 import { twMerge} from "tailwind-merge"
+import { Dispatch, SetStateAction } from "react"; 
 
 export function cn(...inputs: ClassValue[]){
     return twMerge(clsx(inputs));
@@ -36,3 +37,15 @@ export function removeDiacritics(text: string): string {
 export function sigmoidNormalization(score: number, alpha = 1, beta = 0): number {
   return 1 / (1 + Math.exp(-alpha * (score - beta)));
 }
+
+export const startUiTimer = (setStep: Dispatch<SetStateAction<number>>, maxStep: number, interval: number = 1000): NodeJS.Timeout => {
+  return setInterval(() => {
+    setStep((prev) => (prev < maxStep - 1 ? prev + 1 : prev));
+  }, interval);
+};
+
+export const stopUiTimer = (timerId: NodeJS.Timeout | null): void => {
+  if (timerId) {
+    clearInterval(timerId);
+  }
+};

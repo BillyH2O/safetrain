@@ -64,9 +64,7 @@ export async function getMatchesFromEmbeddings(
   }
 }
 
-
-
-export async function getContext(query: string, fileKey: string, rerankingStrategy: string, isHybridSearch: boolean, embeddingModel: string) {
+export async function getContext(query: string, fileKey: string, rerankingStrategy: string, isHybridSearch: boolean = true, embeddingModel: string) {
   const chunkingMethod = "standard";
   console.log("reranking STRAT : ", rerankingStrategy);
   console.log("isHybridSearch STRAT : ", isHybridSearch);
@@ -75,7 +73,7 @@ export async function getContext(query: string, fileKey: string, rerankingStrate
   const matches = await getMatchesFromEmbeddings(queryEmbeddings, fileKey, chunkingMethod);
   console.log("[MATCHES] : ", matches)
 
-  const filteredResults = matches.filter((match) => match.score && match.score > 0.7);
+  const filteredResults = matches.filter((match) => match.score && match.score > 0.5);
   const qualifyingDocs = filteredResults.map((match) => ({
     text: (match.metadata as Metadata).text,
     score: match.score ?? 0,
@@ -87,6 +85,7 @@ export async function getContext(query: string, fileKey: string, rerankingStrate
 
   const finalDocs = await applyReranking(query, combined, rerankingStrategy);
   const topDocs = finalDocs.slice(0, 5).map((doc) => doc.text);
+  console.log("[topDocs] : ", topDocs)
   return topDocs.join("\n").substring(0, 3000);
 }
 

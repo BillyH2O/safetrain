@@ -2,11 +2,12 @@
 
 import { motion } from "framer-motion";
 import React from "react";
-import { AuroraBackground } from "../../src/app/components/ui/aurora-background";
+import { AuroraBackground } from "./components/ui/background/aurora-background";
 import { LogIn, LogInIcon } from "lucide-react";
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
-import AuthButton from "./components/AuthButton";
+import AuthButton from "./components/ui/button/AuthButton";
+import Logo from "./components/ui/Logo";
  function Home() {
   return (
     <>

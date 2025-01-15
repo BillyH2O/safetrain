@@ -47,8 +47,9 @@ export async function POST(req: Request) {
 
   const modelInstance = getModelFromKey(selectedModel);
   
-  const initial_prompt = generatePrompt("initialPrompt", context)
+  const initial_prompt = generatePrompt("initialPrompt", context, isRAG)
   const prompt_final = initial_prompt + " " + prompt ;
+  console.log("prompt_final :", prompt_final);
   let assistantResponse = "";
 
   const result = streamText({

@@ -4,15 +4,15 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-
-import Chat from '@/app/components/chats/Chat';
-import ChatList from '@/app/components/chats/ChatList';
-import PDFViewer from '@/app/components/PDFViewer';
-
-import { Switch } from '@nextui-org/react';
-import { FileText, Text } from 'lucide-react';
+import Chat from '@/app/components/chat/Chat';
+import ChatList from '@/app/components/chat/ChatList';
+import PDFViewer from '@/app/components/chat/PDFViewer';
 import { cn } from '@/app/lib/utils';
 import { useChatSettings } from '@/app/components/context/ChatContext';
+import { SwitchPDFMode } from '@/app/components/chat/SwitchPDFMode';
+import { useChats } from '@/app/hooks/useChats';
+import { Loader2 } from 'lucide-react';
+import { LoadingPage } from '@/app/components/ui/LoadingPage';
 
 type ChatType = {
   userId: string;
@@ -26,6 +26,7 @@ type ChatType = {
 export default function ChatPage() {
   const [isEnabled, setIsEnabled] = useState(true);
   const { chatId, setChatId } = useChatSettings();
+  const { chats, isLoading, getChatById } = useChats();
 
   // Récupérer et vérifier le paramètre
   const params = useParams();
@@ -38,22 +39,12 @@ export default function ChatPage() {
     console.log('Provider chatId:', chatId);
   }, [chatIdNumber, setChatId]);
 
-
-  // Récupération des données via React Query
-  const { data: chats = [], isLoading } = useQuery<ChatType[]>({
-    queryKey: ['chats'],
-    queryFn: async () => {
-      const response = await axios.get('/api/get-chats');
-      return response.data;
-    },
-  });
-
-  const chat = chats.find((chat) => chat.id === chatIdNumber);
+  const chat = getChatById(chatIdNumber);
 
   const handleSwitchChange = () => setIsEnabled((prev) => !prev);
 
   if (isLoading) {
-    return <div>Chargement...</div>;
+    return <LoadingPage/>
   }
 
   return (
@@ -69,16 +60,8 @@ export default function ChatPage() {
           "w-full" : !isEnabled,
         }
         )}>
-        <Switch
-          isSelected={isEnabled}
-          onChange={handleSwitchChange}
-          color="warning"
-          endContent={<FileText />}
-          size="lg"
-          startContent={<Text />}
-          className="absolute right-10 top-10"
-        />
-        <Chat chatId={chatIdNumber}/>
+        <SwitchPDFMode isEnabled={isEnabled} onToggle={handleSwitchChange} />
+        <Chat chatId={chatIdNumber} variant='small'/>
       </div>
 
       {isEnabled && (

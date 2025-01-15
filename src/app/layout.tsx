@@ -4,7 +4,7 @@ import "./globals.css";
 import { cn } from "./lib/utils";
 import { Inter } from "next/font/google";
 import { Aleo } from 'next/font/google';
-import Providers from "./components/Providers";
+import Providers from "./components/layout/Providers";
 import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import {Toaster} from 'react-hot-toast'
 
@@ -28,7 +28,10 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" className="dark">
+      <html>
+        <head>
+          <link rel="icon" type="image/x-icon" href="/safetrain-logo.png" />
+        </head>
         <body className={cn(aleo.className,  "min-h-screen antialiased")}>
           <Providers>
           <main className="h-screen text-foreground bg-background">{children}</main>

@@ -22,7 +22,6 @@ export async function getDefaultEmbeddings(text: string) {
 }
 
 export async function getEmbeddings(text: string, model: string) {
-  console.log("[LEAGUE OF LEGEND MODEL] : ", model)
   switch (model) {
     case "text-embedding-ada-002":
     case "text-embedding-3-small":

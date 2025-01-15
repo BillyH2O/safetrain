@@ -12,8 +12,6 @@ const config = new Configuration({
 });
 const openai = new OpenAIApi(config);
 
-// On fait un prompt du type : "Score the relevance of the following document
-// to the query on a scale from 0 to 1. Query: '...' Document: '...' "
 export async function reRankWithGPT(query: string, doc: string): Promise<number> {
   const systemPrompt = `
     Vous êtes un assistant utile qui évalue la pertinence d’un document par rapport à une requête.
