@@ -1,8 +1,6 @@
 import { getAllContext} from '@/app/lib/context';
-import { db } from '@/app/lib/db';
-import { chats, messages as _messages } from '@/app/lib/db/schema';
-import { convertToCoreMessages, Message, streamText } from 'ai';
-import { eq } from 'drizzle-orm';
+import { messages as _messages } from '@/app/lib/db/schema';
+import { streamText } from 'ai';
 import { NextResponse } from 'next/server';
 import { getModelFromKey } from '../../../utils/modelSelector'
 import { generatePrompt } from '../../../utils/prompt'

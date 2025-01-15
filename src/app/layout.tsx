@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "./lib/utils";
 import { Inter } from "next/font/google";
 import { Aleo } from 'next/font/google';
 import Providers from "./components/layout/Providers";
-import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
 import {Toaster} from 'react-hot-toast'
 
 

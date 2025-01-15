@@ -1,7 +1,7 @@
 import { getContext, getContextLateChunking } from '@/app/lib/context';
 import { db } from '@/app/lib/db';
 import { chats, messages as _messages } from '@/app/lib/db/schema';
-import { convertToCoreMessages, Message, streamText } from 'ai';
+import { streamText } from 'ai';
 import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 import { getModelFromKey } from '../../../utils/modelSelector'

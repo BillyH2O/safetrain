@@ -2,7 +2,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/app/lib/utils";
-import FileUploader from "../../../dashboard/local-component/FileUploader";
 
 export const BackgroundBeams = React.memo(
   ({ className }: { className?: string }) => {
