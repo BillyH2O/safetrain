@@ -1,8 +1,8 @@
 import React from 'react';
-import {Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue} from "@/app/components/ui/select";
 import Image from 'next/image';
 import { useChatSettings } from '../../context/ChatContext';
 import { modelOptions } from '../../../../data/model'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectLabel, SelectItem } from './select';
 
 type Props = {}
 

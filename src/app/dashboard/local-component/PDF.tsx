@@ -44,7 +44,7 @@ const PDF = ({chat, isEnabled, refetchChats}: PdfProps) => {
       
       {isEnabled ? (
         <button onClick={onOpen} className="h-72">
-          <img src={chat.thumbnailUrl || chat.pdfUrl} alt={chat.pdfName} className="h-full rounded-lg"/>
+          <img src={chat.thumbnailUrl || chat.pdfUrl} alt={chat.pdfName} className="h-full rounded-lg border border-border border-small drop-shadow-lg"/>
         </button>
       ) : (
         <Button onPress={onOpen}  className="bg-secondary border border-border rounded-lg mt-2 flex justify-between items-center">
@@ -59,9 +59,9 @@ const PDF = ({chat, isEnabled, refetchChats}: PdfProps) => {
               <ModalHeader className="flex flex-col gap-1">{chat.pdfName}</ModalHeader>
               <ModalBody> <img src={chat.thumbnailUrl || chat.pdfUrl} alt={chat.pdfName} className="object-cover rounded-lg"/></ModalBody>
               <ModalFooter>
-                <Button className='bg-red-700 border rounded-md text-border' onPress={handleDelete}>Supprimer</Button>
+                <Button className='bg-red-700 border rounded-md text-white dark:text-foreground' onPress={handleDelete}>Supprimer</Button>
                 <Link href={`/dashboard/chat/${chat.id}`}>
-                  <Button className='bg-orange-600 border rounded-md text-border' radius="sm">Ouvrir</Button>
+                  <Button className='bg-orange-600 border rounded-md text-white dark:text-foreground' radius="sm">Ouvrir</Button>
                 </Link>
               </ModalFooter>
             </>

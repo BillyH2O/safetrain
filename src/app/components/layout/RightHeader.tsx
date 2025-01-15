@@ -13,8 +13,9 @@ export const RightHeader = (props: Props) => {
     <div className='flex justify-center items-center gap-10'>
         <ThemeSwitch/>
         <Image src={TokenLogo} alt="logo token" height={35}/>
-        <Bell color='grey' />
+        <Bell/>
         <UserButton
+            afterSignOutUrl="/"
             appearance={{
                 elements: {
                 userButtonAvatarBox: {width: "48px", height: "48px", "& img": {width: "100%", height: "100%",},},

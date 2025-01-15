@@ -8,8 +8,8 @@ type Props = {}
 export const LeftHeader = (props: Props) => {
   return (
     <div className='flex justify-center items-center gap-10'>
-        <div className='flex justify-center items-center gap-2'>
-            <Logo isClickable={true}/>
+        <div className='flex justify-center items-center gap-5'>
+            <Logo isClickable={true} size='ls'/>
             <div className="font-medium text-black dark:text-white whitespace-pre antialiased text-xl font-mono">SafeTrain IA</div>
         </div>
         <Image src={CYtechLogo} alt="logo open ai" height={35}/>

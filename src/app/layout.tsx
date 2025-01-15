@@ -28,7 +28,10 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" className="">
+      <html>
+        <head>
+          <link rel="icon" type="image/x-icon" href="/safetrain-logo.png" />
+        </head>
         <body className={cn(aleo.className,  "min-h-screen antialiased")}>
           <Providers>
           <main className="h-screen text-foreground bg-background">{children}</main>

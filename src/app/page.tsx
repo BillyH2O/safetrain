@@ -7,6 +7,7 @@ import { LogIn, LogInIcon } from "lucide-react";
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import AuthButton from "./components/ui/button/AuthButton";
+import Logo from "./components/ui/Logo";
  function Home() {
   return (
     <>

@@ -1,25 +1,15 @@
 import React from 'react'
-import { SignInButton, SignedIn, SignedOut} from '@clerk/nextjs'
+import { SignInButton, SignOutButton, SignedIn, SignedOut} from '@clerk/nextjs'
 import { LeftHeader } from './LeftHeader';
 import { RightHeader } from './RightHeader';
 
-
-type Props = {}
-
-const Header = (props: Props) => {
+export default function Header() {
   return (
-    <div className="h-12 py-10 px-4">
-        <SignedOut>
-            <SignInButton />
-        </SignedOut>
-        <SignedIn>
-        <div className='flex items-center justify-between h-full'>
-            <LeftHeader/>
-            <RightHeader/>
-            </div>
-        </SignedIn>
-        </div>
+    <header className="h-12 py-10 px-4">
+      <div className="flex items-center justify-between h-full">
+      <LeftHeader/>
+      <RightHeader/>
+      </div>
+    </header>
   )
 }
-
-export default Header

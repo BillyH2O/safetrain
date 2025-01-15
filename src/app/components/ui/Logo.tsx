@@ -7,13 +7,15 @@ import Image from "next/image";
 
 type LogoProps = {
   isClickable: boolean;
-  size?: "sm" | "ls" | "xl";
+  size?: "xs" | "sm" | "ls" | "xl" | "xxl";
 };
 
 const sizeMap = {
+  xs: { width: 25},
   sm: { width: 35},
   ls: { width: 40},
   xl: { width: 60},
+  xxl: {width: 100}
 };
 
 const Logo = ({ isClickable, size = "sm" }: LogoProps) => {
@@ -25,7 +27,7 @@ const Logo = ({ isClickable, size = "sm" }: LogoProps) => {
         isClickable ? "cursor-pointer" : ""
       }`}
     >
-      <div className="flex-shrink-0 mr-3" style={{ width }}>
+      <div className="flex-shrink-0" style={{ width }}>
         <Image
           src={SafetrainLogo}
           alt="SafeTrain Logo"

@@ -9,6 +9,7 @@ import { cn } from "@/app/lib/utils";
 import { Image, List } from "lucide-react";
 import { usePDFListTanstack } from "@/app/hooks/usePDFListTanstack";
 import { LoadingPage } from "@/app/components/ui/LoadingPage";
+import { usePDFList } from "@/app/hooks/usePDFList";
 
 export const PDFManager = () => {
   const [isEnabled, setIsEnabled] = useState(true);

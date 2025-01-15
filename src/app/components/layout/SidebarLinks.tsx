@@ -11,7 +11,7 @@ import {
 import { BrainCircuit, Compass } from "lucide-react";
 
 const SidebarLinks = () => {
-  const links = [
+  const topLinks = [
     {
       label: "Dashboard",
       href: "/dashboard",
@@ -33,6 +33,9 @@ const SidebarLinks = () => {
         <IconUserBolt className="foreground h-5 w-5 flex-shrink-0" />
       ),
     },
+  ];
+
+  const bottomLinks = [
     {
       label: "Paramètres",
       href: "/dashboard/parametres",
@@ -57,10 +60,18 @@ const SidebarLinks = () => {
   ];
 
   return (
-    <div className="mt-8 flex flex-col items-center gap-10 text-foreground">
-      {links.map((link, idx) => (
-        <SidebarLink key={idx} link={link} />
-      ))}
+    <div className="mt-8 flex h-[70%] flex-col items-center text-foreground">
+      <div className="flex flex-col gap-10">
+        {topLinks.map((link, idx) => (
+          <SidebarLink key={idx} link={link} />
+        ))}
+      </div>
+
+      <div className="mt-auto flex flex-col gap-5 border-t border-foreground pt-5">
+        {bottomLinks.map((link, idx) => (
+          <SidebarLink key={idx} link={link} />
+        ))}
+      </div>
     </div>
   );
 };
