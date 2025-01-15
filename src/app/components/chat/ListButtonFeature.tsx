@@ -29,7 +29,7 @@ export const ListButtonFeature = ({ variant }: ListButtonFeatureProps) => {
       // Peut-être attendre la fin d'une requête pour récupérer configData ensuite, on lance handleSubmit()
       handleSubmit();
     }
-  }, [idConfigSelected]);
+  }, [idConfigSelected, handleSubmit]);
 
   const buttonSize = variant === "large" ? "lg" : "sm";
 

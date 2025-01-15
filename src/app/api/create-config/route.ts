@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
 import { NextResponse } from "next/server"; 
 
-export async function POST(req: Request, res: Response){
+export async function POST(req: Request){
     const { userId } = await auth();
     console.log("userId : ", userId)
     if (!userId) {

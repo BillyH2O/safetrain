@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import Chat from '@/app/components/chat/Chat';
 import ChatList from '@/app/components/chat/ChatList';
 import PDFViewer from '@/app/components/chat/PDFViewer';
@@ -11,7 +9,6 @@ import { cn } from '@/app/lib/utils';
 import { useChatSettings } from '@/app/components/context/ChatContext';
 import { SwitchPDFMode } from '@/app/components/chat/SwitchPDFMode';
 import { useChats } from '@/app/hooks/useChats';
-import { Loader2 } from 'lucide-react';
 import { LoadingPage } from '@/app/components/ui/LoadingPage';
 
 type ChatType = {

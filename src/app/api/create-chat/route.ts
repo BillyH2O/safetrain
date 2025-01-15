@@ -4,7 +4,6 @@ import { generatePdfThumbnail } from "@/app/lib/pdf";
 import { loadS3IntoPinecone } from "@/app/lib/pinecone";
 import { getS3Url } from "@/app/lib/s3";
 import { auth } from "@clerk/nextjs/server";
-import { FileKey } from "lucide-react";
 import { NextResponse } from "next/server"; 
 
 export async function POST(req: Request, res: Response){

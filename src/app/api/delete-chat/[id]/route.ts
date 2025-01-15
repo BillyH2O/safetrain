@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import {NextResponse} from "next/server";
 import { eq } from "drizzle-orm";
 import { db } from "@/app/lib/db";
 import { chats, messages } from "@/app/lib/db/schema";
@@ -8,7 +8,7 @@ import { auth } from "@clerk/nextjs/server";
 
 export const dynamic = "force-dynamic"; // <-- Indique qu'on force la route en mode dynamique
 
-export async function DELETE(req: NextRequest,{ params }: { params: { id: string } }) {
+export async function DELETE({ params }: { params: { id: string } }) {
   const { userId } = await auth();
 
   if (!userId) {

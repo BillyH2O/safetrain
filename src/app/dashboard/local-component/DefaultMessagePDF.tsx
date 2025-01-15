@@ -1,8 +1,6 @@
 import React from "react";
-import { cn } from "@/app/lib/utils";
 import { BackgroundBeams } from "../../components/ui/background/background-beams";
 import FileUploader from "./FileUploader";
-import { FileUpload } from "./FileUpload";
 
 
 type DefaultPDFMessageProps = {

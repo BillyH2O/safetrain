@@ -2,7 +2,6 @@ import React from 'react'
 import { Bell } from 'lucide-react'
 import Image from 'next/image';
 import TokenLogo from "../../../assets/token-logo.png";
-import GemmeLogo from "../../../assets/gemme-logo.png";
 import { UserButton } from '@clerk/nextjs';
 import ThemeSwitch from '../ui/button/ThemeSwitch';
 

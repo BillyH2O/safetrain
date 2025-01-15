@@ -12,7 +12,7 @@ type Props = {
 }
 
 export const Terminal = ({isPlayground}: Props) => {
-  const { name, setName, chunkingStrategy, setChunkingStrategy, rerankingModel, setRerankingModel ,isHybridSearch, setHybridSearch ,temperature, setTemperature, topP, setTopP, topK, setTopK, maxSteps, setMaxSteps, stopSequences, setStopSequences, prompt, setPrompt, resetConfig, idConfigSelected, embeddingModel, setEmbeddingModel, setIdConfigSelected} = useChatSettings(); 
+  const { name, setName, chunkingStrategy, setChunkingStrategy, rerankingModel, setRerankingModel ,isHybridSearch, setHybridSearch ,temperature, setTemperature, topP, setTopP, topK, setTopK, maxSteps, setMaxSteps, stopSequences, setStopSequences, prompt, setPrompt, resetConfig, idConfigSelected} = useChatSettings(); 
   
   const queryClient = useQueryClient();
 

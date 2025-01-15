@@ -2,9 +2,7 @@ import React from 'react'
 import { useChatSettings } from '../context/ChatContext';
 import { PlaceholdersAndVanishInput } from '../ui/placeholdersAndVanishInput';
 
-type Props = {}
-
-export const QueryInput = (props: Props) => {
+export const QueryInput = () => {
   const { input, handleInputChange, handleSubmit} = useChatSettings();
   const placeholders = [
     "Quels sont les objectifs du document ?",

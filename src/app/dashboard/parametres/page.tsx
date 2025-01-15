@@ -3,7 +3,6 @@
 import { RagSwitch } from '@/app/components/terminal/selector/RagSwitch'
 import React from 'react'
 import { EmbeddingModelManager } from './local-component/EmbeddingModelManager'
-import ThemeSwitch from '@/app/components/ui/button/ThemeSwitch'
 
 type Props = {}
 

@@ -5,9 +5,7 @@ import { db } from "./db";
 import { chats } from "./db/schema";
 import { Document, RecursiveCharacterTextSplitter } from "@pinecone-database/doc-splitter";
 import { ScoredVector } from "@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch/db_data";
-import { applyReranking, RerankedDoc, reRankWithGPT, reRankWithHuggingFace } from "./reranking";
-import { downloadFromS3 } from "./s3-server";
-import winkBM25 from "wink-bm25-text-search";
+import { applyReranking, RerankedDoc } from "./reranking";
 import { applyHybridSearch, HybridDoc } from "./bm25";
 
 export type Metadata = {
