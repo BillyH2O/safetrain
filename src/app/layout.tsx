@@ -1,14 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { cn } from "./lib/utils";
-import { Inter } from "next/font/google";
 import { Aleo } from 'next/font/google';
 import Providers from "./components/layout/Providers";
 import { ClerkProvider } from "@clerk/nextjs";
 import {Toaster} from 'react-hot-toast'
-
-
-const inter = Inter({ subsets: ["latin"] });
 
 const aleo = Aleo({
   subsets: ['latin'], // Pour inclure le support des caractères latins

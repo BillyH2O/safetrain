@@ -5,7 +5,6 @@ import { IconUpload } from "@tabler/icons-react";
 import { useDropzone } from "react-dropzone";
 import { useFileUpload } from "@/app/hooks/useFileUpload";
 import { GridPattern } from "./GridPattern";
-import { Loader2 } from "lucide-react";
 import { MultiStepLoader as Loader } from "./multi-step-loader";
 
 const mainVariant = {
@@ -53,7 +52,7 @@ export const FileUpload = ({
     fileInputRef.current?.click();
   };
 
-  const { files, uploading, handleDrop, currentStepIndex } = useFileUpload(onChange);
+  const { uploading, handleDrop, currentStepIndex } = useFileUpload(onChange);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
         'application/pdf': ['.pdf'],

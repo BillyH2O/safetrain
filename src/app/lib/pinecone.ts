@@ -94,8 +94,10 @@ export const truncateStringByBytes = (str: string, bytes: number) => {
 };
 
 async function prepareDocument(page: PDFPage, chunkSize: number, chunkOverlap: number) {
-  let { pageContent, metadata } = page;
+  let { pageContent } = page;
+  const metadata = page.metadata;
   pageContent = pageContent.replace(/\n/g, "");
+  
   // Split the docs
   const splitter = new RecursiveCharacterTextSplitter({ chunkSize, chunkOverlap });
   const docs = await splitter.splitDocuments([

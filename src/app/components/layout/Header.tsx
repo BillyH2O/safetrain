@@ -1,5 +1,4 @@
 import React from 'react'
-import { SignInButton, SignOutButton, SignedIn, SignedOut} from '@clerk/nextjs'
 import { LeftHeader } from './LeftHeader';
 import { RightHeader } from './RightHeader';
 

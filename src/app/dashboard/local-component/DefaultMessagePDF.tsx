@@ -2,16 +2,7 @@ import React from "react";
 import { BackgroundBeams } from "../../components/ui/background/background-beams";
 import FileUploader from "./FileUploader";
 
-
-type DefaultPDFMessageProps = {
-  variant?: "large" | "small";
-};
-
-export const DefaultPDFMessage = ({variant = "large"}: DefaultPDFMessageProps) => {
-  const titleClasses =
-    variant === "large"
-      ? "text-2xl w-[65%]"
-      : "text-2xl sm:text-3xl lg:text-4xl w-[70%]";
+export const DefaultPDFMessage = () => {
 
   return (
     <div className="h-full w-full rounded-md relative flex flex-col items-center justify-center antialiased">

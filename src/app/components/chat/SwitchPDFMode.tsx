@@ -7,8 +7,6 @@ type SwitchPdfModeProps = {
   onToggle: () => void;
 };
 
-type Props = {}
-
 export const SwitchPDFMode = ({ isEnabled, onToggle }: SwitchPdfModeProps) => {
     return (
         <Switch

@@ -3,9 +3,7 @@ import React from 'react'
 import { cn } from '../../../lib/utils'
 import { useChatSettings } from '../../context/ChatContext'
 
-type Props = {}
-
-export const RagSwitch = (props: Props) => {
+export const RagSwitch = () => {
   const { isRAG, setRAG } = useChatSettings();
   const switchTitle = isRAG
     ? "Désactiver le RAG"

@@ -1,5 +1,4 @@
 import { integer, pgTable, varchar, serial, text, timestamp, pgEnum, real, boolean } from "drizzle-orm/pg-core";
-import { FileKey } from "lucide-react";
 
 export const userSystemEnum = pgEnum('user_system_enum', ['system', 'user']) // def d'un type enum
 

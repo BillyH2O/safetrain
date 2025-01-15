@@ -1,5 +1,4 @@
 import { getAllContext} from '@/app/lib/context';
-import { messages as _messages } from '@/app/lib/db/schema';
 import { streamText } from 'ai';
 import { NextResponse } from 'next/server';
 import { getModelFromKey } from '../../../utils/modelSelector'

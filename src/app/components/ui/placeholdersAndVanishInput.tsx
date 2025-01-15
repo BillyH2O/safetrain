@@ -2,36 +2,72 @@
 
 import { cn } from "@/app/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  FormEvent,
+  ChangeEvent,
+  KeyboardEvent,
+} from "react";
+
+interface RawPixel {
+  x: number;
+  y: number;
+  color: [number, number, number, number];
+}
+
+interface Particle {
+  x: number;
+  y: number;
+  r: number;
+  color: string;
+}
+
+interface PlaceholdersAndVanishInputProps {
+  input: string;
+  placeholders: string[];
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
+}
 
 export function PlaceholdersAndVanishInput({
   input,
   placeholders,
   onChange,
   onSubmit,
-}: {
-  input: string;
-  placeholders: string[];
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-}) {
+}: PlaceholdersAndVanishInputProps) {
   const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
-
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const startAnimation = () => {
+
+  // Au lieu de let/var "any", on mémorise un tableau de Particles :
+  const newDataRef = useRef<Particle[]>([]);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const [value, setValue] = useState("");
+  const [animating, setAnimating] = useState(false);
+
+  // 1) startAnimation
+  const startAnimation = useCallback(() => {
     intervalRef.current = setInterval(() => {
       setCurrentPlaceholder((prev) => (prev + 1) % placeholders.length);
     }, 5000);
-  };
-  const handleVisibilityChange = () => {
+  }, [placeholders]);
+
+  // 2) handleVisibilityChange
+  const handleVisibilityChange = useCallback(() => {
     if (document.visibilityState !== "visible" && intervalRef.current) {
-      clearInterval(intervalRef.current); // Clear the interval when the tab is not visible
+      clearInterval(intervalRef.current);
       intervalRef.current = null;
     } else if (document.visibilityState === "visible") {
-      startAnimation(); // Restart the interval when the tab becomes visible
+      startAnimation();
     }
-  };
+  }, [startAnimation]);
 
+  // useEffect pour lancer l’animation
   useEffect(() => {
     startAnimation();
     document.addEventListener("visibilitychange", handleVisibilityChange);
@@ -42,14 +78,9 @@ export function PlaceholdersAndVanishInput({
       }
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [placeholders]);
+  }, [startAnimation, handleVisibilityChange]);
 
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const newDataRef = useRef<any[]>([]);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [value, setValue] = useState("");
-  const [animating, setAnimating] = useState(false);
-
+  // Fonction de dessin (typage plus strict)
   const draw = useCallback(() => {
     if (!inputRef.current) return;
     const canvas = canvasRef.current;
@@ -60,8 +91,8 @@ export function PlaceholdersAndVanishInput({
     canvas.width = 800;
     canvas.height = 800;
     ctx.clearRect(0, 0, 800, 800);
-    const computedStyles = getComputedStyle(inputRef.current);
 
+    const computedStyles = getComputedStyle(inputRef.current);
     const fontSize = parseFloat(computedStyles.getPropertyValue("font-size"));
     ctx.font = `${fontSize * 2}px ${computedStyles.fontFamily}`;
     ctx.fillStyle = "#FFF";
@@ -69,18 +100,18 @@ export function PlaceholdersAndVanishInput({
 
     const imageData = ctx.getImageData(0, 0, 800, 800);
     const pixelData = imageData.data;
-    const newData: any[] = [];
+    const rawData: RawPixel[] = [];
 
     for (let t = 0; t < 800; t++) {
-      let i = 4 * t * 800;
+      const i = 4 * t * 800;
       for (let n = 0; n < 800; n++) {
-        let e = i + 4 * n;
+        const e = i + 4 * n;
         if (
           pixelData[e] !== 0 &&
           pixelData[e + 1] !== 0 &&
           pixelData[e + 2] !== 0
         ) {
-          newData.push({
+          rawData.push({
             x: n,
             y: t,
             color: [
@@ -94,7 +125,7 @@ export function PlaceholdersAndVanishInput({
       }
     }
 
-    newDataRef.current = newData.map(({ x, y, color }) => ({
+    newDataRef.current = rawData.map(({ x, y, color }) => ({
       x,
       y,
       r: 1,
@@ -102,14 +133,16 @@ export function PlaceholdersAndVanishInput({
     }));
   }, [value]);
 
+  // Redessine quand "value" change
   useEffect(() => {
     draw();
   }, [value, draw]);
 
+  // Animation de disparition
   const animate = (start: number) => {
     const animateFrame = (pos: number = 0) => {
       requestAnimationFrame(() => {
-        const newArr = [];
+        const newArr: Particle[] = [];
         for (let i = 0; i < newDataRef.current.length; i++) {
           const current = newDataRef.current[i];
           if (current.x < pos) {
@@ -119,6 +152,7 @@ export function PlaceholdersAndVanishInput({
               current.r = 0;
               continue;
             }
+            // Variation aléatoire
             current.x += Math.random() > 0.5 ? 1 : -1;
             current.y += Math.random() > 0.5 ? 1 : -1;
             current.r -= 0.05 * Math.random();
@@ -129,11 +163,11 @@ export function PlaceholdersAndVanishInput({
         const ctx = canvasRef.current?.getContext("2d");
         if (ctx) {
           ctx.clearRect(pos, 0, 800, 800);
-          newDataRef.current.forEach((t) => {
-            const { x: n, y: i, r: s, color: color } = t;
-            if (n > pos) {
+          newDataRef.current.forEach((pixel) => {
+            const { x: px, y: py, r, color } = pixel;
+            if (px > pos) {
               ctx.beginPath();
-              ctx.rect(n, i, s, s);
+              ctx.rect(px, py, r, r);
               ctx.fillStyle = color;
               ctx.strokeStyle = color;
               ctx.stroke();
@@ -151,31 +185,33 @@ export function PlaceholdersAndVanishInput({
     animateFrame(start);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && !animating) {
-      vanishAndSubmit();
-    }
-  };
-
   const vanishAndSubmit = () => {
     setAnimating(true);
     draw();
-
-    const value = inputRef.current?.value || "";
-    if (value && inputRef.current) {
+    const val = inputRef.current?.value || "";
+    if (val && inputRef.current) {
       const maxX = newDataRef.current.reduce(
-        (prev, current) => (current.x > prev ? current.x : prev),
+        (prev, curr) => (curr.x > prev ? curr.x : prev),
         0
       );
       animate(maxX);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !animating) {
+      vanishAndSubmit();
+    }
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     vanishAndSubmit();
-    onSubmit && onSubmit(e);
+    if (onSubmit) {
+      onSubmit(e);
+    }
   };
+
   return (
     <form
       className={cn(
@@ -186,7 +222,7 @@ export function PlaceholdersAndVanishInput({
     >
       <canvas
         className={cn(
-          "absolute pointer-events-none  text-base transform scale-50 top-[20%] left-2 sm:left-8 origin-top-left filter invert dark:invert-0 pr-20",
+          "absolute pointer-events-none text-base transform scale-50 top-[20%] left-2 sm:left-8 origin-top-left filter invert dark:invert-0 pr-20",
           !animating ? "opacity-0" : "opacity-100"
         )}
         ref={canvasRef}
@@ -195,7 +231,9 @@ export function PlaceholdersAndVanishInput({
         onChange={(e) => {
           if (!animating) {
             setValue(e.target.value);
-            onChange && onChange(e);
+            if (onChange) {
+              onChange(e);
+            }
           }
         }}
         onKeyDown={handleKeyDown}
@@ -249,23 +287,11 @@ export function PlaceholdersAndVanishInput({
         <AnimatePresence mode="wait">
           {!value && (
             <motion.p
-              initial={{
-                y: 5,
-                opacity: 0,
-              }}
+              initial={{ y: 5, opacity: 0 }}
               key={`current-placeholder-${currentPlaceholder}`}
-              animate={{
-                y: 0,
-                opacity: 1,
-              }}
-              exit={{
-                y: -15,
-                opacity: 0,
-              }}
-              transition={{
-                duration: 0.3,
-                ease: "linear",
-              }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -15, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "linear" }}
               className="dark:text-zinc-500 text-sm sm:text-base font-normal text-neutral-500 pl-4 sm:pl-12 text-left w-[calc(100%-2rem)] truncate"
             >
               {placeholders[currentPlaceholder]}

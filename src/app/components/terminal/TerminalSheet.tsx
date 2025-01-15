@@ -10,9 +10,7 @@ import {
   import { Button } from "@/app/components/ui/button/Button"
 import { Terminal } from './Terminal'
 
-type Props = {}
-
-export const TerminalSheet = (props: Props) => {
+export const TerminalSheet = () => {
   return (
     <Sheet>
         <SheetTrigger asChild>

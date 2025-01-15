@@ -11,21 +11,11 @@ import { SwitchPDFMode } from '@/app/components/chat/SwitchPDFMode';
 import { useChats } from '@/app/hooks/useChats';
 import { LoadingPage } from '@/app/components/ui/LoadingPage';
 
-type ChatType = {
-  userId: string;
-  id: number;
-  pdfName: string;
-  pdfUrl: string;
-  createdAt: Date;
-  fileKey: string;
-};
-
 export default function ChatPage() {
   const [isEnabled, setIsEnabled] = useState(true);
   const { chatId, setChatId } = useChatSettings();
   const { chats, isLoading, getChatById } = useChats();
 
-  // Récupérer et vérifier le paramètre
   const params = useParams();
   const newChatId = Array.isArray(params.chatId) ? params.chatId[0] : params.chatId;
   const chatIdNumber = parseInt(newChatId ?? '0', 10);

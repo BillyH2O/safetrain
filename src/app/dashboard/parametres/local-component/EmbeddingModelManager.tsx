@@ -1,9 +1,7 @@
 import { EmbeddingModelSelector } from '@/app/components/terminal/selector/EmbeddingModelSelector'
 import React from 'react'
 
-type Props = {}
-
-export const EmbeddingModelManager = (props: Props) => {
+export const EmbeddingModelManager = () => {
   return (
     <div className='flex flex-col items-center justify-center bg-secondary border rounded-lg p-10 gap-10'>
         <div className="max-w-xl w-full p-6">

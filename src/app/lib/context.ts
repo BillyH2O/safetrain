@@ -183,7 +183,7 @@ export async function getAllContext(query: string, chunkingMethod: string, reran
     })
   );
 
-  let mergedDocs: HybridDoc[] = allDocs.flat();
+  const mergedDocs: HybridDoc[] = allDocs.flat();
   mergedDocs.sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
 
   const finalDocs: RerankedDoc[] = await applyReranking(query, mergedDocs, rerankingStrategy);
