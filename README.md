@@ -16,6 +16,7 @@ SafeTrain vise à rendre l'exploration de documents technique accessible, effica
 Voici un guide étape par étape pour déployer et intégrer la solution directement dans votre environnement.
 
 1. Prérequis ☢️ 
+   
 Avant de commencer, assurez-vous que votre environnement de développement est configuré avec :
 
 - Git : pour cloner le dépôt.
@@ -37,7 +38,8 @@ git clone https://github.com/BillyH2O/safetrain.git
 cd votre-projet
 ```
 
-3. Installer les dépendances ☢️ 
+3. Installer les dépendances ☢️
+   
 Selon le gestionnaire de paquets que vous préférez (npm ou yarn), exécutez :
 
 Avec npm
@@ -49,7 +51,8 @@ Avec yarn
 yarn install
 ```
 
-4. Configurer les variables d'environnement ☢️ 
+4. Configurer les variables d'environnement ☢️
+   
 Safetrain utilise plusieurs services (NeonDB, PineconeDB, AWS S3, LLM) qui nécessitent des identifiants et des clés secrètes. Pour configurer correctement l'application :
 
 - Dans la racine du projet, créez un fichier .env.local (Next.js charge automatiquement ce fichier en développement).
@@ -112,7 +115,8 @@ Next.js démarrera le serveur de développement sur le port par défaut 3000. Vo
 Local:    http://localhost:3000
 Network:  http://<votre-adresse-ip>:3000
 
-6. Accéder à l’application via le navigateur ☢️ 
+6. Accéder à l’application via le navigateur ☢️
+
 Ouvrez votre navigateur.
 Rendez-vous à l’adresse http://localhost:3000.
 Vous devriez voir l’interface Safetrain s’afficher.
