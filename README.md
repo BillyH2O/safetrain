@@ -11,16 +11,18 @@ Les fonctionnalités principales incluent :
 - Agents personnalisables : les utilisateurs peuvent configurer des modèles pour adapter les réponses à leurs besoins spécifiques.
 
 SafeTrain vise à rendre l'exploration de documents technique accessible, efficace et fiable.
+
+
 Voici un guide étape par étape pour déployer et intégrer la solution directement dans votre environnement.
 
-1. Prérequis
+1. Prérequis ☢️ 
 Avant de commencer, assurez-vous que votre environnement de développement est configuré avec :
 
 - Git : pour cloner le dépôt.
 - Node.js (version LTS recommandée) et npm ou yarn : pour installer les dépendances et lancer le projet.
 - Un éditeur de code (Visual Studio Code, par exemple) pour visualiser et modifier le code.
 
-2. Cloner le dépôt GitHub
+2. Cloner le dépôt GitHub ☢️ 
 
 - Ouvrir un terminal.
 - Cloner votre dépôt avec la commande suivante :
@@ -35,7 +37,7 @@ git clone https://github.com/BillyH2O/safetrain.git
 cd votre-projet
 ```
 
-3. Installer les dépendances
+3. Installer les dépendances ☢️ 
 Selon le gestionnaire de paquets que vous préférez (npm ou yarn), exécutez :
 
 Avec npm
@@ -47,7 +49,7 @@ Avec yarn
 yarn install
 ```
 
-4. Configurer les variables d'environnement
+4. Configurer les variables d'environnement ☢️ 
 Safetrain utilise plusieurs services (NeonDB, PineconeDB, AWS S3, LLM) qui nécessitent des identifiants et des clés secrètes. Pour configurer correctement l'application :
 
 - Dans la racine du projet, créez un fichier .env.local (Next.js charge automatiquement ce fichier en développement).
@@ -92,7 +94,7 @@ HUGGINGFACE_API_KEY="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"
 
 - Sauvegardez le fichier .env.local.
 
-5. Lancer le serveur de développement
+5. Lancer le serveur de développement ☢️ 
 
 Une fois le code cloné, les dépendances installées et la configuration faite, lancez le projet :
 
@@ -110,7 +112,7 @@ Next.js démarrera le serveur de développement sur le port par défaut 3000. Vo
 Local:    http://localhost:3000
 Network:  http://<votre-adresse-ip>:3000
 
-6. Accéder à l’application via le navigateur
+6. Accéder à l’application via le navigateur ☢️ 
 Ouvrez votre navigateur.
 Rendez-vous à l’adresse http://localhost:3000.
 Vous devriez voir l’interface Safetrain s’afficher.
