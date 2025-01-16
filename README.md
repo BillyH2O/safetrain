@@ -6,12 +6,13 @@ SafeTrain est une plateforme web qui combine la recherche documentaire et l'inte
 
 Les fonctionnalités principales incluent :
 
-Chat avec les documents PDF : les utilisateurs peuvent interagir directement avec leurs fichiers pour extraire des informations spécifiques.
-Techniques avancées de RAG : des méthodes comme le "late chunking", le "reranking", et la "recherche hybride" améliorent la pertinence des résultats.
-Agents personnalisables : les utilisateurs peuvent configurer des modèles pour adapter les réponses à leurs besoins spécifiques.
+- Chat avec les documents PDF : les utilisateurs peuvent interagir directement avec leurs fichiers pour extraire des informations spécifiques.
+- Techniques avancées de RAG : des méthodes comme le "late chunking", le "reranking", et la "recherche hybride" améliorent la pertinence des résultats.
+- Agents personnalisables : les utilisateurs peuvent configurer des modèles pour adapter les réponses à leurs besoins spécifiques.
+
 SafeTrain vise à rendre l'exploration de documents technique accessible, efficace et fiable, en particulier pour des secteurs nécessitant une précision élevée, comme la médecine ou l'industrie.
 
-2. Prérequis
+1. Prérequis
 Avant de commencer, assurez-vous que votre environnement de développement est configuré avec :
 
 - Git : pour cloner le dépôt.
