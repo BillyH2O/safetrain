@@ -1,5 +1,7 @@
 README Safetrain IA ☢️ 
 
+Ressource : le rapport Safetrain se trouve dans le répertoire public/docs/rapport-safetrain.pdf 📙
+
 Introduction :
 
 SafeTrain est une plateforme web qui combine la recherche documentaire et l'intelligence artificielle générative grâce à une technologie appelée Retrieval-Augmented Generation (RAG). Elle permet aux utilisateurs de téléverser des documents PDF, de poser des questions sur leur contenu, et d’obtenir des réponses précises basées sur ces documents, tout en utilisant des modèles avancés de traitement du langage.
