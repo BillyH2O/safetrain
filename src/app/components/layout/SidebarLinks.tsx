@@ -52,7 +52,7 @@ const SidebarLinks = () => {
     },
     {
       label: "Logout",
-      href: "#/sign-out",
+      href: "/",
       icon: (
         <IconArrowLeft className="foreground h-5 w-5 flex-shrink-0" />
       ),

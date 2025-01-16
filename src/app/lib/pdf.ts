@@ -48,8 +48,12 @@ export async function generatePdfThumbnail(pdfKey: string): Promise<string | nul
     // 5) Lire l'image en Buffer
     const thumbnailBuffer = fs.readFileSync(tmpImagePath);
 
+
     // 6) Uploader ce buffer sur S3
-    const { file_key: thumbnailKey } = await uploadBufferToS3(thumbnailBuffer, "thumbnail.png");
+    const uniqueId = Date.now().toString();
+    const safePdfKey = pdfKey.replace(/[^a-z0-9_\-\.]/gi, "-"); // Pour éviter caractères spéciaux
+    const thumbnailFileName = `uploads/${uniqueId}-${safePdfKey}-thumbnail.png`;
+    const { file_key: thumbnailKey } = await uploadBufferToS3(thumbnailBuffer, thumbnailFileName);
     console.log("[DEBUG] Miniature uploadée sur S3 avec succès :", thumbnailKey);
 
     // 7) Nettoyer les fichiers temporaires

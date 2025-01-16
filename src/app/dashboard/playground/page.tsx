@@ -5,17 +5,9 @@ import Chat from '@/app/components/chat/Chat';
 import { Terminal } from '@/app/components/terminal/Terminal';
 import { useChatSettings } from '@/app/components/context/ChatContext';
 
-type ChatType = {
-  userId: string;
-  id: number;
-  pdfName: string;
-  pdfUrl: string;
-  createdAt: Date;
-  fileKey: string;
-};
 
 export default function ChatPage() {
-  const { chatId, setChatId } = useChatSettings();
+  const { setChatId } = useChatSettings();
   
   React.useEffect(() => {
     setChatId(null);

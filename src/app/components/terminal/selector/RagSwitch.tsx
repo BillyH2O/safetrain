@@ -32,7 +32,7 @@ export const RagSwitch = () => {
       <div className="flex flex-col gap-1">
         <p className="text-medium">{switchTitle}</p>
         <p className="text-tiny ">
-            Lorsque cette option est activée, l'agent consulte des sources externes à sa base de connaissance pour enrichir ses réponses.
+          Lorsque cette option est activée, l&apos;agent consulte des sources externes à sa base de connaissance pour enrichir ses réponses.
         </p>
       </div>
     </Switch>

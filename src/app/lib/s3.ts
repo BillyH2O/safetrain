@@ -54,9 +54,10 @@ export async function uploadBufferToS3(
     const isThumbnail = fileName.toLowerCase().endsWith(".png");
 
     // Générer la clé en fonction du type de fichier
-    const file_key = isThumbnail
+    /*const file_key = isThumbnail
       ? "uploads/" + Date.now().toString() + fileName.replace(" ", "-")
-      : fileName.replace(" ", "-");
+      : fileName.replace(" ", "-");*/
+      const file_key = fileName;
     
     const params = {
       Bucket: process.env.NEXT_PUBLIC_S3_BUCKET_NAME!,

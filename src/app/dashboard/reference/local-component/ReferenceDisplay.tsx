@@ -9,7 +9,7 @@ export const ReferenceDisplay = ({ selectedTab }: Props) => {
       <div className="w-[90%] h-full flex justify-center items-center">
         {selectedTab === "rapport" && (
           <iframe 
-            src="/docs/rapport.pdf"
+            src="/docs/rapport-safetrain.pdf"
             className="w-full h-full border border-gray-300 rounded-md" 
             title="Rapport"
           ></iframe>
@@ -23,7 +23,7 @@ export const ReferenceDisplay = ({ selectedTab }: Props) => {
         )}
         {selectedTab === "démo" && (
           <iframe 
-            src="https://www.youtube.com/embed/rrB13utjYV4" 
+            src="https://youtu.be/CtiYCU3QXWk" 
             className="w-full h-full  border border-gray-300 rounded-md" 
             title="Démo"
             allowFullScreen

@@ -41,18 +41,14 @@ const loadingStates = [
 ];
 
 
-export const FileUpload = ({
-  onChange,
-}: {
-  onChange?: (files: File[]) => void;
-}) => {
+export const FileUpload = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {
     fileInputRef.current?.click();
   };
 
-  const { uploading, handleDrop, currentStepIndex } = useFileUpload(onChange);
+  const { uploading, handleDrop, currentStepIndex } = useFileUpload();
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
         'application/pdf': ['.pdf'],
