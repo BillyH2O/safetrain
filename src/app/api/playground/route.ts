@@ -1,15 +1,19 @@
 import { getAllContext} from '@/app/lib/context';
-import { messages as _messages } from '@/app/lib/db/schema';
 import { streamText } from 'ai';
 import { NextResponse } from 'next/server';
 import { getModelFromKey } from '../../../utils/modelSelector'
 import { generatePrompt } from '../../../utils/prompt'
+import { auth } from '@clerk/nextjs/server';
 
 
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
   const { messages, config} = await req.json();
+  const { userId } = await auth();
+  if (!userId) {
+      return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
 
   if (!config || typeof config !== 'object') {
     return NextResponse.json({ error: "Missing or invalid settings" }, { status: 400 });
@@ -20,7 +24,7 @@ export async function POST(req: Request) {
 
 
   const lastMessage = messages[messages.length - 1];
-  const context = await getAllContext(lastMessage.content, chunkingStrategy, rerankingModel, isHybridSearch, embeddingModel);
+  const context = await getAllContext(userId, lastMessage.content, chunkingStrategy, rerankingModel, isHybridSearch, embeddingModel);
   console.log("[CONTEXT] : ", context)
 
   const modelInstance = getModelFromKey(selectedModel);

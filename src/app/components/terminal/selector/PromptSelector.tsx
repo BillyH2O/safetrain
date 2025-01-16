@@ -33,7 +33,7 @@ type Config = {
 export function PromptSelector({name}: Props) {
 
     const {setIdConfigSelected} = useChatSettings(); 
-    const { configs, isLoading, error } = useConfigs();
+    const { configs } = useConfigs();
 
   return (
     <Select onValueChange={(value) => {

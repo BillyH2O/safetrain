@@ -5,9 +5,7 @@ import TokenLogo from "../../../assets/token-logo.png";
 import { UserButton } from '@clerk/nextjs';
 import ThemeSwitch from '../ui/button/ThemeSwitch';
 
-type Props = {}
-
-export const RightHeader = (props: Props) => {
+export const RightHeader = () => {
   return (
     <div className='flex justify-center items-center gap-10'>
         <ThemeSwitch/>

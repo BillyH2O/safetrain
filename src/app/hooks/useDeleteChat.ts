@@ -1,6 +1,17 @@
 import { useState } from 'react';
 import axios from 'axios';
 
+// types.ts
+export interface DeleteChatSuccessResponse {
+  message: string;
+}
+
+export interface DeleteChatErrorResponse {
+  error: string;
+  details?: unknown;
+}
+
+
 export const useDeleteChat = (onSuccess: (data: any) => void) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);

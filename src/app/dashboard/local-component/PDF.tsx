@@ -22,7 +22,7 @@ type PdfProps = {
 const PDF = ({chat, isEnabled, refetchChats}: PdfProps) => {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   
-  const { deleteChat, isLoading, error } = useDeleteChat(() => {
+  const { deleteChat } = useDeleteChat(() => {
     // Rafraîchir la liste des chats après suppression
     refetchChats();
   });

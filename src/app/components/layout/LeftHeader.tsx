@@ -3,9 +3,7 @@ import Image from 'next/image';
 import Logo from '../ui/Logo';
 import CYtechLogo from "../../../assets/cy-logo.png";
 
-type Props = {}
-
-export const LeftHeader = (props: Props) => {
+export const LeftHeader = () => {
   return (
     <div className='flex justify-center items-center gap-10'>
         <div className='flex justify-center items-center gap-5'>

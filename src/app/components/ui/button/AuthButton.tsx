@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@clerk/nextjs";
-import { LogInIcon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import Logo from "../Logo";

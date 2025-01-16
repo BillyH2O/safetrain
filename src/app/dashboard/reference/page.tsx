@@ -4,9 +4,7 @@ import React, { useState } from 'react';
 import { ReferenceTabs } from './local-component/ReferenceTabs';
 import { ReferenceDisplay } from './local-component/ReferenceDisplay';
 
-type Props = {};
-
-export default function Page({}: Props) {
+export default function Page() {
   const [selectedTab, setSelectedTab] = useState<string>("rapport");
 
   return (

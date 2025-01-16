@@ -54,7 +54,7 @@ const ThemeSwitch = (props: SwitchProps) => {
     localStorage.setItem("theme", newTheme); // Sauvegarde le thème dans localStorage
   };
 
-  const { Component, slots, isSelected, getBaseProps, getInputProps, getWrapperProps } =
+  const { Component, slots, getBaseProps, getInputProps, getWrapperProps } =
     useSwitch(props);
 
   return (

@@ -7,6 +7,7 @@ import { Document, RecursiveCharacterTextSplitter } from "@pinecone-database/doc
 import { ScoredVector } from "@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch/db_data";
 import { applyReranking, RerankedDoc } from "./reranking";
 import { applyHybridSearch, HybridDoc } from "./bm25";
+import { eq } from "drizzle-orm";
 
 export type Metadata = {
   text: string;
@@ -152,10 +153,10 @@ export async function getAllContextV0(query: string, chunkingMethod: string, rer
   .substring(0, 6000);
 }
 
-export async function getAllContext(query: string, chunkingMethod: string, rerankingStrategy: string, isHybridSearch: boolean, embeddingModel: string): Promise<string> {
+export async function getAllContext(userId: string, query: string, chunkingMethod: string, rerankingStrategy: string, isHybridSearch: boolean, embeddingModel: string): Promise<string> {
   console.log("KHAZIX : ", embeddingModel);
   const queryEmbeddings = await getEmbeddings(query, embeddingModel);
-  const fileKeys = await db.select({ fileKey: chats.fileKey }).from(chats);
+  const fileKeys = await db.select({ fileKey: chats.fileKey }).from(chats).where(eq(chats.userId, userId));
   console.log("[INFO]: File keys to query:", fileKeys);
   const allDocs = await Promise.all(
     fileKeys.map(async ({ fileKey }) => {
@@ -183,7 +184,7 @@ export async function getAllContext(query: string, chunkingMethod: string, reran
     })
   );
 
-  let mergedDocs: HybridDoc[] = allDocs.flat();
+  const mergedDocs: HybridDoc[] = allDocs.flat();
   mergedDocs.sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
 
   const finalDocs: RerankedDoc[] = await applyReranking(query, mergedDocs, rerankingStrategy);

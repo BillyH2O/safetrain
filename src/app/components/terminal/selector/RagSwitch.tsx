@@ -3,9 +3,7 @@ import React from 'react'
 import { cn } from '../../../lib/utils'
 import { useChatSettings } from '../../context/ChatContext'
 
-type Props = {}
-
-export const RagSwitch = (props: Props) => {
+export const RagSwitch = () => {
   const { isRAG, setRAG } = useChatSettings();
   const switchTitle = isRAG
     ? "Désactiver le RAG"
@@ -34,7 +32,7 @@ export const RagSwitch = (props: Props) => {
       <div className="flex flex-col gap-1">
         <p className="text-medium">{switchTitle}</p>
         <p className="text-tiny ">
-            Lorsque cette option est activée, l'agent consulte des sources externes à sa base de connaissance pour enrichir ses réponses.
+          Lorsque cette option est activée, l&apos;agent consulte des sources externes à sa base de connaissance pour enrichir ses réponses.
         </p>
       </div>
     </Switch>

@@ -1,4 +1,4 @@
-import { Bot, User } from "lucide-react";
+import { User } from "lucide-react";
 import { cn } from "../../lib/utils";
 import Logo from "../ui/Logo";
 

@@ -4,11 +4,7 @@ import { useChatSettings } from '../../context/ChatContext';
 import { modelOptions } from '../../../../data/model'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectLabel, SelectItem } from './select';
 
-type Props = {}
-
-
-
-export const ModelSelector = (props: Props) => {
+export const ModelSelector = () => {
   const { selectedModel, setSelectedModel } = useChatSettings();
 
   return (
